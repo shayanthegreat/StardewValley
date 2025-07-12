@@ -3,6 +3,7 @@ package com.StardewValley;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Time;
+import com.StardewValley.Views.GameView;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -27,15 +28,12 @@ public class Main extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
+        setScreen(new GameView());
     }
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        Time time = new Time();
-        time.updateBatch(batch);
-        batch.end();
+        super.render();
     }
 
     @Override
