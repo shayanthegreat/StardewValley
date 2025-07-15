@@ -16,6 +16,8 @@ import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.Time;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.io.Serializable;
 
@@ -27,7 +29,7 @@ public class Tool extends Item implements Serializable {
     protected int level = 0;
 
     public Tool(ToolType toolType) {
-        super(toolType.getName(), 0, false);
+        super(toolType.getName(), 0, false, toolType.getTexture());
         this.toolType = toolType;
         this.level = 0;
     }
@@ -37,7 +39,6 @@ public class Tool extends Item implements Serializable {
     }
 
     public LevelInfo getLevelInfo() {
-//        TODO: get level info from tool type
         return toolType.getLevel(level);
     }
 
@@ -305,6 +306,10 @@ public class Tool extends Item implements Serializable {
     @Override
     public String getName() {
         return toolType.getName();
+    }
+
+    public Texture getTexture() {
+        return getLevelInfo().texture();
     }
 
     public ToolType getToolType() {

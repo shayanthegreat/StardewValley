@@ -9,7 +9,7 @@ public class Material extends Item implements Serializable {
     private MaterialType type;
 
     public Material(MaterialType type) {
-        super(type.getName(), 0, false);
+        super(type.getName(), 0, false, type.getTexture());
         this.type = type;
     }
 

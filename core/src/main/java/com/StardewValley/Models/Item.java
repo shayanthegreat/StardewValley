@@ -7,6 +7,8 @@ import com.StardewValley.Models.Map.Tile;
 import com.StardewValley.Models.Map.TileObject;
 import com.StardewValley.Models.Tools.Tool;
 import com.StardewValley.Models.Tools.ToolType;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.io.Serializable;
 
@@ -16,13 +18,18 @@ public abstract class Item extends TileObject implements Serializable {
     protected final int takenSpace;
     protected final boolean isEdible;
     protected int price;
+    protected Texture texture;
+    protected Sprite sprite;
     abstract public int getPrice();
 
-    public Item(String name, int takenSpace, boolean isEdible){
+    public Item(String name, int takenSpace, boolean isEdible, Texture texture) {
         this.name = name;
         this.takenSpace = takenSpace;
         this.isEdible = isEdible;
         this.price = 0;
+        this.texture = texture;
+        this.sprite = new Sprite(texture);
+//        this.sprite
     }
 
     public static Item getItemByName(String name){
@@ -90,6 +97,10 @@ public abstract class Item extends TileObject implements Serializable {
         }
     }
 
+    public Sprite getSprite() {
+        return sprite;
+    }
+
     @Override
     public int hashCode() {
         return getName().toLowerCase().hashCode();
@@ -97,5 +108,9 @@ public abstract class Item extends TileObject implements Serializable {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 }

@@ -1,5 +1,7 @@
 package com.StardewValley.Models.Tools;
 
-public record LevelInfo(String levelName, int successEnergyCost, int failEnergyCost) {
+import com.badlogic.gdx.graphics.Texture;
+
+public record LevelInfo(String levelName, int successEnergyCost, int failEnergyCost, Texture texture) {
 
 }

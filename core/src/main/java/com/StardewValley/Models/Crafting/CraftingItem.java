@@ -11,7 +11,7 @@ public class CraftingItem extends Item implements Serializable {
     private  CraftingRecipe recipe;
 
     public CraftingItem(CraftingRecipe recipe) {
-        super(recipe.getProductName(),1,false);
+        super(recipe.getProductName(),1,false, recipe.getTexture());
         this.recipe = recipe;
     }
 

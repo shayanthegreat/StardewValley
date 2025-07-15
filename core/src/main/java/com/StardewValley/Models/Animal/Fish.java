@@ -22,7 +22,7 @@ public class Fish extends Item implements Serializable {
 
 
     public Fish(FishType type) {
-        super(type.getName(), 1,true);
+        super(type.getName(), 1,true, type.getTexture());
         this.type = type;
     }
 

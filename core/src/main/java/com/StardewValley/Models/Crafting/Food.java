@@ -10,7 +10,7 @@ public class Food extends Item implements Serializable {
     private CookingRecipe recipe;
 
     public Food(CookingRecipe recipe) {
-        super(recipe.getProductName(), 1,true);
+        super(recipe.getProductName(), 1,true, recipe.getTexture());
         this.recipe = recipe;
     }
 

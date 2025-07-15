@@ -2,7 +2,9 @@ package com.StardewValley.Models.Tools;
 
 import com.StardewValley.Models.Farming.Seed;
 import com.StardewValley.Models.Farming.SeedType;
+import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Item;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ public class BackPack implements Serializable {
     private HashMap<Item, Integer> items = new HashMap<>();
     private static ArrayList<Integer> capacity = new ArrayList<>();
     private static final ArrayList<String> name = new ArrayList<>();
+    private static final ArrayList<Texture> tex = new ArrayList<>();
     private int level;
     private int maxCapacity;
     private int amount;
@@ -23,6 +26,9 @@ public class BackPack implements Serializable {
         name.add("initial");
         name.add("big");
         name.add("deluxe");
+        tex.add(GameAssetManager.getInstance().BACKPACK);
+        tex.add(GameAssetManager.getInstance().BACKPACK);
+        tex.add(GameAssetManager.getInstance().BACKPACK);
     }
     public BackPack() {
         level = 0;

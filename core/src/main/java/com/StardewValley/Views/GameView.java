@@ -22,7 +22,6 @@ public class GameView implements Screen {
     public void show() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-
         // Create the popup menu
         farmMenu = new InventoryPopUp(stage);
 

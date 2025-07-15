@@ -11,7 +11,7 @@ public class AnimalProduct extends Item implements Serializable {
     private Quality quality;
 
     public AnimalProduct(AnimalProductType type) {
-        super(type.getName(), 1, type.isEdible());
+        super(type.getName(), 1, type.isEdible(), type.getTexture());
         this.type = type;
     }
 
