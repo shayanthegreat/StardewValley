@@ -3,6 +3,7 @@ package com.StardewValley.Views;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.PopUps.InventoryPopUp;
 import com.StardewValley.Models.PopUps.PopUpMenu;
+import com.StardewValley.Models.PopUps.SkillPopUp;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameView implements Screen {
     private Stage stage;
-    private InventoryPopUp farmMenu;
+    private SkillPopUp farmMenu;
 
     public GameView() {
     }
@@ -23,7 +24,7 @@ public class GameView implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         // Create the popup menu
-        farmMenu = new InventoryPopUp(stage);
+        farmMenu = new SkillPopUp(stage);
 
         // Create a button to show the menu (for testing)
         TextButton showMenuButton = new TextButton("Show Farm Menu", GameAssetManager.getInstance().SKIN);
