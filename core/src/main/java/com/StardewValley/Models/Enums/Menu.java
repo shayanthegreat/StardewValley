@@ -6,6 +6,7 @@ public enum Menu implements Serializable {
     RegistrationMenu("registration"),
     MainMenu("main"),
     ProfileMenu("profile"),
+    LoginMenu("login"),
     GameMenu("game");
 
     private final String name;

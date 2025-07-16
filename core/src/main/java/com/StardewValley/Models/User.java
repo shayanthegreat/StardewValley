@@ -15,6 +15,7 @@ public class User implements Serializable {
     private String answer;
     private Game currentGame;
     private ArrayList<Integer> gamesMoney;
+    private String avatarPath;
 
     public User(String username, String password, String nickname, String email, String gender) {
         this.username = username;

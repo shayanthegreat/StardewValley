@@ -10,7 +10,8 @@ public enum Direction implements Serializable {
     upRight("ur"),
     downRight("dr"),
     upLeft("ul"),
-    downLeft("dl");
+    downLeft("dl"),
+    center("c");
 
     private String direction;
     private int dx;
