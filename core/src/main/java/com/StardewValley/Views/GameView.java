@@ -6,11 +6,13 @@ import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Game;
+import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -36,8 +38,6 @@ public class GameView implements Screen , InputProcessor {
         else if(i == Input.Keys.S){
             PlayerController.getInstance().setGoingDown(true);
         }
-
-
 
         return false;
     }
@@ -69,7 +69,8 @@ public class GameView implements Screen , InputProcessor {
     }
 
     @Override
-    public boolean touchDown(int i, int i1, int i2, int i3) {
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
         return false;
     }
 
@@ -102,7 +103,6 @@ public class GameView implements Screen , InputProcessor {
     public void show() {
         stage = new Stage();
         Gdx.input.setInputProcessor(this);
-
     }
 
     @Override
@@ -116,6 +116,8 @@ public class GameView implements Screen , InputProcessor {
         WordController.getInstance().update();
         PlayerController.getInstance().update();
 //        All To print
+        game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
+        System.out.println(player.getPosition().x + " " + player.getPosition().y);
         Main.getInstance().getBatch().end();
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();

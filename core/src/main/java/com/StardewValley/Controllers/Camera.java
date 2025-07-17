@@ -83,5 +83,8 @@ public class Camera {
         }
     }
 
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
 
 }

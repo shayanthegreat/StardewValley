@@ -17,7 +17,7 @@ public class Time implements Serializable {
 
     private int clockWidth = 375;
     private int clockHeight = 275;
-    private Position position = new Position(Gdx.graphics.getWidth()-clockWidth, Gdx.graphics.getHeight()-clockHeight);
+//    private Position position = new Position(Gdx.graphics.getWidth()-clockWidth, Gdx.graphics.getHeight()-clockHeight);
     private Sprite clockMain = new Sprite(GameAssetManager.getInstance().CLOCK_MAIN);
     private Sprite clockArrow = new Sprite(GameAssetManager.getInstance().CLOCK_ARROW);
     private Sprite seasonSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[1]);
@@ -199,10 +199,11 @@ public class Time implements Serializable {
 
         return libgdxRotation;
     }
-    public void updateBatch(Batch batch){
+    public void updateBatch(Batch batch, Position position1) {
         updateWeather();
         updateSeason();
         clockMain.setSize(clockWidth, clockHeight);
+        Position position = new Position(position1.x * 32 + Gdx.graphics.getWidth()/2-clockWidth, position1.y * 32 + Gdx.graphics.getHeight()/2-clockHeight);
         clockMain.setPosition(position.x, position.y);
         clockMain.draw(batch);
         clockArrow.setSize(clockWidth * 0.1f, clockHeight * 0.28f);

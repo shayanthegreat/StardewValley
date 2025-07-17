@@ -3,6 +3,7 @@ package com.StardewValley;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Time;
+import com.StardewValley.Views.GameMenu;
 import com.StardewValley.Views.GameView;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
