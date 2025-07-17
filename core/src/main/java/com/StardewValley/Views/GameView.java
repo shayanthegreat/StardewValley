@@ -14,32 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameView implements Screen {
     private Stage stage;
-    private SkillPopUp farmMenu;
-
     public GameView() {
     }
 
     @Override
     public void show() {
-        stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
-        // Create the popup menu
-        farmMenu = new SkillPopUp(stage);
 
-        // Create a button to show the menu (for testing)
-        TextButton showMenuButton = new TextButton("Show Farm Menu", GameAssetManager.getInstance().SKIN);
-        showMenuButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                farmMenu.show();
-                showMenuButton.remove();
-            }
-        });
-
-        Table table = new Table();
-        table.setFillParent(true);
-        table.add(showMenuButton);
-        stage.addActor(table);
     }
 
     @Override
