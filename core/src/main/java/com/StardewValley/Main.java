@@ -1,18 +1,10 @@
 package com.StardewValley;
 
-import com.StardewValley.Models.App;
 import com.StardewValley.Models.GameAssetManager;
-import com.StardewValley.Models.Time;
-import com.StardewValley.View.GameMenu;
-import com.StardewValley.View.RegistrationMenu;
-import com.badlogic.gdx.ApplicationAdapter;
+import com.StardewValley.Views.GameMenu;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Main extends Game {
     private SpriteBatch batch;

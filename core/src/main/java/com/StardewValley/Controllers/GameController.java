@@ -1,4 +1,4 @@
-package com.StardewValley.Controller;
+package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
 import com.StardewValley.Models.App;
@@ -10,7 +10,7 @@ import com.StardewValley.Models.Map.FarmMap;
 import com.StardewValley.Models.Map.Map;
 import com.StardewValley.Models.Player;
 import com.StardewValley.Models.User;
-import com.StardewValley.View.MenuView;
+import com.StardewValley.Views.MenuView;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;

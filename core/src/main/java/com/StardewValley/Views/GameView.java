@@ -1,19 +1,16 @@
-package com.StardewValley.View;
+package com.StardewValley.Views;
 
-import com.StardewValley.Controller.Camera;
-import com.StardewValley.Controller.PlayerController;
-import com.StardewValley.Controller.WordController;
+import com.StardewValley.Controllers.Camera;
+import com.StardewValley.Controllers.PlayerController;
+import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Game;
-import com.StardewValley.Models.Map.Direction;
 import com.StardewValley.Models.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 

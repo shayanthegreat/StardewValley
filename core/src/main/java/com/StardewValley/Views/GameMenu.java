@@ -1,8 +1,7 @@
-package com.StardewValley.View;
+package com.StardewValley.Views;
 
-import com.StardewValley.Controller.GameController;
+import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Main;
-import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,8 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import java.util.ArrayList;
 
 public class GameMenu extends MenuView {
     private Stage stage;

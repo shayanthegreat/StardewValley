@@ -1,9 +1,8 @@
-package com.StardewValley.View;
+package com.StardewValley.Views;
 
-import com.StardewValley.Controller.GameController;
+import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.App;
-import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.StardewValley.Models.User;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

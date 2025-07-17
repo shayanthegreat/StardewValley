@@ -1,8 +1,7 @@
-package com.StardewValley.View;
+package com.StardewValley.Views;
 
-import com.StardewValley.Controller.RegistrationController;
+import com.StardewValley.Controllers.RegistrationController;
 import com.StardewValley.Main;
-import com.StardewValley.Models.App;
 import com.StardewValley.Models.Enums.Texts;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Interactions.Commands.RegistrationCommand;

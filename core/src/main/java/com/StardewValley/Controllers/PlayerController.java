@@ -1,13 +1,11 @@
-package com.StardewValley.Controller;
+package com.StardewValley.Controllers;
 
 import com.StardewValley.Models.App;
-import com.StardewValley.Models.Enums.AvatarType;
 import com.StardewValley.Models.Game;
 import com.StardewValley.Models.Map.Direction;
 import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Player;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class PlayerController {
     private static PlayerController instance ;
