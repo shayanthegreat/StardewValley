@@ -6,6 +6,8 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class App implements Serializable {
+    public int tileWidth = 80;
+    public int tileHeight = 80;
 
     private static App instance;
 
@@ -13,6 +15,7 @@ public class App implements Serializable {
     }
 
     public static App getInstance() {
+
         if (instance == null) {
             instance = App.loadApp();
         }
@@ -22,7 +25,7 @@ public class App implements Serializable {
     private final ArrayList<User> users = new ArrayList<>();
     private final ArrayList<Game> games = new ArrayList<>();
     private Menu currentMenu = Menu.RegistrationMenu;
-    private User currentUser;
+    private User currentUser = new User("ali","Ali@@13","ali","adsd","sdasasd");
     private Game currentGame;
     private User currentGameStarter;
     private boolean stayLoggedIn;

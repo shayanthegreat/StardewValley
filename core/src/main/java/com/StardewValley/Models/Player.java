@@ -7,6 +7,7 @@ import com.StardewValley.Models.Communication.NPCQuest;
 import com.StardewValley.Models.Crafting.Buff;
 import com.StardewValley.Models.Crafting.CookingRecipe;
 import com.StardewValley.Models.Crafting.CraftingRecipe;
+import com.StardewValley.Models.Enums.AvatarType;
 import com.StardewValley.Models.Enums.SkillType;
 import com.StardewValley.Models.Farming.Seed;
 import com.StardewValley.Models.Farming.SeedType;
@@ -41,6 +42,9 @@ public class Player implements Serializable {
     private int Hay;
     private ArrayList<NPCFriendship> NPCFriendships;
     private ArrayList<NPCQuest> NPCQuests;
+    private AvatarType avatarType;
+
+
     public Player(User user, Farm farm) {
         this.money = 100;
         this.user = user;
@@ -89,6 +93,7 @@ public class Player implements Serializable {
         this.NPCFriendships.add(new NPCFriendship(npcs.get(3)));
         this.NPCFriendships.add(new NPCFriendship(npcs.get(4)));
         this.Hay = 100;
+        this.avatarType = AvatarType.ABIGAIL;
     }
 
     public ArrayList<FriendShip> getFriendShips() {
@@ -300,5 +305,13 @@ public class Player implements Serializable {
 
     public ArrayList<NPCQuest> getNPCQuests() {
         return NPCQuests;
+    }
+
+    public void setAvatarType(AvatarType avatarType) {
+        this.avatarType = avatarType;
+    }
+
+    public AvatarType getAvatarType() {
+        return avatarType;
     }
 }
