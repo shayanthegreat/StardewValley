@@ -71,6 +71,9 @@ public class NPCQuest implements Serializable {
 
     public void addActiveQuest() {
         this.activeQuest++;
+        if (activeQuest == 3){
+            isDone = true;
+        }
         this.activeQuest = Math.max(this.activeQuest, 2);
     }
 
@@ -85,6 +88,20 @@ public class NPCQuest implements Serializable {
     public ArrayList<Pair<Item, Integer>> getRewards() {
         return rewards;
     }
+
+    public String getActiveQuestString() {
+        StringBuilder questString = new StringBuilder();
+        questString.append("Active Quest: ");
+        questString.append(requests.get(activeQuest));
+        return questString.toString();
+    }
+
+//    public String getActiveRewardString() {
+//        StringBuilder rewardString = new StringBuilder();
+//        rewardString.append("Active Reward: ");
+//        rewardString.append(rewards.get(activeQuest));
+//        return rewardString.toString();
+//    }
 
     public void setIsDone(boolean isDone) {
         this.isDone = isDone;

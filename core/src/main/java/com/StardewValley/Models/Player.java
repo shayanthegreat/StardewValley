@@ -94,6 +94,12 @@ public class Player implements Serializable {
         this.NPCFriendships.add(new NPCFriendship(npcs.get(4)));
         this.Hay = 100;
         this.avatarType = AvatarType.ABIGAIL;
+        this.NPCQuests = new ArrayList<>();
+        this.NPCQuests.add(new NPCQuest(new NPC("Sebastian")));
+        this.NPCQuests.add(new NPCQuest(new NPC("Abigail")));
+        this.NPCQuests.add(new NPCQuest(new NPC("Harvey")));
+        this.NPCQuests.add(new NPCQuest(new NPC("Lia")));
+        this.NPCQuests.add(new NPCQuest(new NPC("Robin")));
     }
 
     public ArrayList<FriendShip> getFriendShips() {

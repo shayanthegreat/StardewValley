@@ -8,10 +8,10 @@ import com.StardewValley.Models.App;
 import com.StardewValley.Models.Game;
 import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Player;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.StardewValley.Models.PopUps.InventoryPopUp;
+import com.StardewValley.Models.PopUps.PopUpManager;
+import com.StardewValley.Models.PopUps.PopUpMenu;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameView implements Screen , InputProcessor {
     private Stage stage;
-
+    private PopUpManager popUpMenu;
 
     @Override
     public boolean keyDown(int i) {
@@ -39,6 +39,9 @@ public class GameView implements Screen , InputProcessor {
             PlayerController.getInstance().setGoingDown(true);
         }
 
+        else if(i == Input.Keys.ESCAPE){
+            popUpMenu.show();
+        }
         return false;
     }
 
@@ -102,7 +105,11 @@ public class GameView implements Screen , InputProcessor {
     @Override
     public void show() {
         stage = new Stage();
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(this);  // your GameView InputProcessor first
+        multiplexer.addProcessor(stage); // stage input second for UI drag/drop
+        Gdx.input.setInputProcessor(multiplexer);
+        popUpMenu = PopUpManager.getInstance(stage);
     }
 
     @Override

@@ -2,11 +2,11 @@ package com.StardewValley.Models.PopUps;
 
 import com.StardewValley.Models.GameAssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.graphics.Color;
 
 public class PopUpMenu {
     protected Stage stage;
@@ -15,6 +15,10 @@ public class PopUpMenu {
     protected ImageButton trashCan;
     protected Texture slot;
     protected Table tabs;
+
+    public enum TabType {
+        INVENTORY, SKILL, SOCIAL, MAP, CRAFTING, COOKING
+    }
 
     public PopUpMenu(Stage stage) {
         this.stage = stage;
@@ -29,62 +33,63 @@ public class PopUpMenu {
         popupWindow.setModal(true);
         popupWindow.setMovable(false);
 
-        // Customize the appearance
         popupWindow.getTitleLabel().setText("Wiki Farm");
         popupWindow.getTitleLabel().setColor(Color.BROWN);
         popupWindow.setColor(Color.LIGHT_GRAY);
         popupWindow.pad(10);
 
-        // Initialize tabs if not already done
-        if (tabs == null) {
-            tabs = new Table();
-        }
         tabs.clear();
         tabs.top().left();
         tabs.defaults().size(70, 70).padRight(4);
 
-        // Create tab images with listeners
-        Image[] tabsArray = {
-            createTabImage(GameAssetManager.getInstance().INVENTORY_TAB),
-            createTabImage(GameAssetManager.getInstance().SKILL_TAB),
-            createTabImage(GameAssetManager.getInstance().SOCIAL_TAB),
-            createTabImage(GameAssetManager.getInstance().MAP_TAB),
-            createTabImage(GameAssetManager.getInstance().CRAFTING_TAB),
-            createTabImage(GameAssetManager.getInstance().COOKING_TAB)
-        };
-
-        // Add all tabs to the table
-        for (Image tab : tabsArray) {
-            tabs.add(tab);
-        }
+        tabs.add(createTabImage(GameAssetManager.getInstance().INVENTORY_TAB, TabType.INVENTORY));
+        tabs.add(createTabImage(GameAssetManager.getInstance().SKILL_TAB, TabType.SKILL));
+        tabs.add(createTabImage(GameAssetManager.getInstance().SOCIAL_TAB, TabType.SOCIAL));
+        tabs.add(createTabImage(GameAssetManager.getInstance().MAP_TAB, TabType.MAP));
+        tabs.add(createTabImage(GameAssetManager.getInstance().CRAFTING_TAB, TabType.CRAFTING));
+        tabs.add(createTabImage(GameAssetManager.getInstance().COOKING_TAB, TabType.COOKING));
 
         popupWindow.add(tabs).row();
-        // Size and hide initially
         popupWindow.pack();
         popupWindow.setVisible(false);
 
-        // Center the window
         updateWindowPosition();
         stage.addActor(popupWindow);
     }
 
-    private Image createTabImage(Texture texture) {
+    private Image createTabImage(Texture texture, TabType type) {
         Image tab = new Image(texture);
         tab.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Handle tab click here
-                // You can add specific behavior for each tab
+                onTabClicked(type);
             }
         });
         return tab;
     }
 
+    protected void onTabClicked(TabType type) {
+        switch (type) {
+            case INVENTORY:
+                PopUpManager.getInstance(stage).showInventoryTab();
+                break;
+            case SKILL:
+                PopUpManager.getInstance(stage).showSkillTab();
+                break;
+            case SOCIAL:
+                PopUpManager.getInstance(stage).showSocialTab();
+                break;
+            default:
+                System.out.println("Tab clicked: " + type);
+                break;
+        }
+    }
+
     protected void updateWindowPosition() {
         if (stage != null && popupWindow != null) {
             popupWindow.setPosition(
-                (stage.getWidth() - popupWindow.getWidth()) / 2,
-                (stage.getHeight() - popupWindow.getHeight()) / 2 + 200
+                    (stage.getWidth() - popupWindow.getWidth()) / 2,
+                    (stage.getHeight() - popupWindow.getHeight()) / 2 + 200
             );
         }
     }
@@ -106,7 +111,6 @@ public class PopUpMenu {
         return popupWindow != null && popupWindow.isVisible();
     }
 
-    // Cleanup resources when no longer needed
     public void dispose() {
         if (popupWindow != null) {
             popupWindow.remove();

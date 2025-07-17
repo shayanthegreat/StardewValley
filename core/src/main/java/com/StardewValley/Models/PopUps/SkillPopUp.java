@@ -1,6 +1,9 @@
 package com.StardewValley.Models.PopUps;
 
+import com.StardewValley.Models.App;
+import com.StardewValley.Models.Enums.SkillType;
 import com.StardewValley.Models.GameAssetManager;
+import com.StardewValley.Models.Player;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,11 +28,11 @@ public class SkillPopUp extends PopUpMenu {
         Texture foragingIcon = GameAssetManager.getInstance().FORAGING_SKILL_ICON;
         Texture miningIcon = GameAssetManager.getInstance().MINING_SKILL_ICON;
 
-        // TODO get levels from CurrentPlayer!;
-        addSkillRow(skillTable, "Farming", farmingIcon, 3, "Increases crop yield and farming efficiency.");
-        addSkillRow(skillTable, "Fishing", fishingIcon, 2, "Improves chance and speed of catching fish.");
-        addSkillRow(skillTable, "Foraging", foragingIcon, 4, "Boosts foraging items and resource drops.");
-        addSkillRow(skillTable, "Mining", miningIcon, 1, "Speeds up mining and boosts ore collection.");
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        addSkillRow(skillTable, "Farming", farmingIcon, player.getSkill(SkillType.farming).getLevel(), "Increases crop yield and farming efficiency.");
+        addSkillRow(skillTable, "Fishing", fishingIcon, player.getSkill(SkillType.fishing).getLevel(), "Improves chance and speed of catching fish.");
+        addSkillRow(skillTable, "Foraging", foragingIcon, player.getSkill(SkillType.foraging).getLevel(), "Boosts foraging items and resource drops.");
+        addSkillRow(skillTable, "Mining", miningIcon, player.getSkill(SkillType.mining).getLevel(), "Speeds up mining and boosts ore collection.");
 
         ScrollPane scrollPane = new ScrollPane(skillTable);
         scrollPane.setFadeScrollBars(false);

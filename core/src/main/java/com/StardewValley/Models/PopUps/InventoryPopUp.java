@@ -1,5 +1,6 @@
 package com.StardewValley.Models.PopUps;
 
+import com.StardewValley.Models.App;
 import com.StardewValley.Models.Crafting.CookingRecipe;
 import com.StardewValley.Models.Crafting.Food;
 import com.StardewValley.Models.Farming.Seed;
@@ -29,16 +30,7 @@ public class InventoryPopUp extends PopUpMenu {
     }
 
     private void createInventoryContent() {
-        backPack = new BackPack();
-        SeedType[] seedTypes = SeedType.values();
-        for (SeedType type : seedTypes) {
-            backPack.addItem(new Seed(type), 1);
-        }
-
-        backPack.addItem(new Tool(ToolType.scythe), 2);
-        backPack.addItem(new Food(CookingRecipe.pizza), 1);
-        backPack.addItem(new Tool(ToolType.wateringCan), 1);
-
+        backPack = App.getInstance().getCurrentGame().getCurrentPlayer().getBackPack();
         blocksTable = new Table();
         blocksTable.top().left();
         blocksTable.defaults().size(80, 80).pad(2);
