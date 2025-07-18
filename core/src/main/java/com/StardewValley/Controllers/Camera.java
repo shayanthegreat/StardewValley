@@ -15,7 +15,7 @@ public class Camera {
     private SpriteBatch batch;
     private float stateTime = 0f;
 
-    private static final float TILE_SIZE = 32f; // Assuming tiles are 32x32 pixels
+    public static final float TILE_SIZE = 32f; // Assuming tiles are 32x32 pixels
 
     private Camera() {
         camera = new OrthographicCamera();

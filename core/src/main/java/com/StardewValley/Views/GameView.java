@@ -13,10 +13,13 @@ import com.StardewValley.Models.PopUps.PopUpManager;
 import com.StardewValley.Models.PopUps.PopUpMenu;
 import com.StardewValley.Models.PopUps.ToolPopUp;
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import static com.StardewValley.Controllers.Camera.TILE_SIZE;
 
 public class GameView implements Screen , InputProcessor {
     private Stage stage;
@@ -130,6 +133,14 @@ public class GameView implements Screen , InputProcessor {
         WordController.getInstance().update();
         PlayerController.getInstance().update();
 //        All To print
+        if (player.getCurrentTool() != null) {
+            Texture toolTexture = player.getCurrentTool().getTexture();
+            float toolDrawX = player.getPosition().x + 1.5f; // offset right by 1 tile
+            float toolDrawY = player.getPosition().y;       // same vertical position (adjust if needed)
+
+            // Adjust scaling/size as needed; here we draw 1x1 tile size
+            Main.getInstance().getBatch().draw(toolTexture, toolDrawX * TILE_SIZE, toolDrawY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        }
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
