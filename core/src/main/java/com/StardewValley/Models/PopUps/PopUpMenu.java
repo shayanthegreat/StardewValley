@@ -15,6 +15,7 @@ public class PopUpMenu {
     protected ImageButton trashCan;
     protected Texture slot;
     protected Table tabs;
+    private ImageButton closeButton;  // Close button
 
     public enum TabType {
         INVENTORY, SKILL, SOCIAL, MAP, CRAFTING, COOKING
@@ -37,6 +38,23 @@ public class PopUpMenu {
         popupWindow.getTitleLabel().setColor(Color.BROWN);
         popupWindow.setColor(Color.LIGHT_GRAY);
         popupWindow.pad(10);
+
+        // Create close button using EXIT_BUTTON texture
+        Texture exitTexture = GameAssetManager.getInstance().EXIT_BUTTON;
+        ImageButton.ImageButtonStyle closeStyle = new ImageButton.ImageButtonStyle();
+        closeStyle.imageUp = new Image(exitTexture).getDrawable();
+        closeButton = new ImageButton(closeStyle);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                hide();
+                PopUpManager.getInstance(stage).hide();
+            }
+        });
+
+        // Add close button to window's title bar area (top right)
+        // Window supports adding buttons to title bar with addActor()
+        popupWindow.getTitleTable().add(closeButton).size(30, 30).right().padRight(5);
 
         tabs.clear();
         tabs.top().left();

@@ -11,6 +11,7 @@ import com.StardewValley.Models.Player;
 import com.StardewValley.Models.PopUps.InventoryPopUp;
 import com.StardewValley.Models.PopUps.PopUpManager;
 import com.StardewValley.Models.PopUps.PopUpMenu;
+import com.StardewValley.Models.PopUps.ToolPopUp;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,7 +21,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class GameView implements Screen , InputProcessor {
     private Stage stage;
     private PopUpManager popUpMenu;
-
+    private ToolPopUp toolPopUp;
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
@@ -41,6 +42,10 @@ public class GameView implements Screen , InputProcessor {
 
         else if(i == Input.Keys.ESCAPE){
             popUpMenu.show();
+        }
+
+        else if(i == Input.Keys.T){
+            toolPopUp.toggle();
         }
         return false;
     }
@@ -110,6 +115,8 @@ public class GameView implements Screen , InputProcessor {
         multiplexer.addProcessor(stage); // stage input second for UI drag/drop
         Gdx.input.setInputProcessor(multiplexer);
         popUpMenu = PopUpManager.getInstance(stage);
+        toolPopUp = new ToolPopUp(stage);
+        toolPopUp.show();
     }
 
     @Override
@@ -124,7 +131,6 @@ public class GameView implements Screen , InputProcessor {
         PlayerController.getInstance().update();
 //        All To print
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
-        System.out.println(player.getPosition().x + " " + player.getPosition().y);
         Main.getInstance().getBatch().end();
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
