@@ -1,19 +1,18 @@
-package com.StardewValley.View;
+package com.StardewValley.Views;
 
-import com.StardewValley.Controller.Camera;
-import com.StardewValley.Controller.PlayerController;
-import com.StardewValley.Controller.WordController;
+import com.StardewValley.Controllers.Camera;
+import com.StardewValley.Controllers.GameController;
+import com.StardewValley.Controllers.PlayerController;
+import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Game;
-import com.StardewValley.Models.Map.Direction;
 import com.StardewValley.Models.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -39,6 +38,17 @@ public class GameView implements Screen , InputProcessor {
             PlayerController.getInstance().setGoingDown(true);
         }
 
+        else if(i == Input.Keys.T){
+            GameController.getInstance().cheatTime();
+        }
+
+        else if(i == Input.Keys.F){
+            GameController.getInstance().cheatSeason();
+        }
+
+        else if(i == Input.Keys.R){
+            GameController.getInstance().cheatThor();
+        }
 
 
         return false;
@@ -109,16 +119,19 @@ public class GameView implements Screen , InputProcessor {
 
     @Override
     public void render(float v) {
-        ScreenUtils.clear(0,0,0,1);
+        ScreenUtils.clear(0,0,0,1f);
         Game game = App.getInstance().getCurrentGame();
         Player player = game.getCurrentPlayer();
         Camera.getInstance().update(player.getPosition().x, player.getPosition().y);
+        Main.getInstance().getBatch().setProjectionMatrix(Camera.getInstance().getCombined());
         Main.getInstance().getBatch().begin();
 //        All To print
         WordController.getInstance().update();
         PlayerController.getInstance().update();
 //        All To print
         Main.getInstance().getBatch().end();
+        WordController.getInstance().drawDarknessOverlay();
+
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

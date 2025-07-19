@@ -49,13 +49,34 @@ public enum AvatarType {
     }
 
     public Animation TiredAnimation(Direction direction) {
-//        TODO : Return the tired animation
-        return null;
+        int x = 0;
+        switch (direction) {
+            case up ->{
+                x = 2;
+                break;
+            }
+            case down ->{
+                x = 0;
+                break;
+            }
+            case left, upLeft, downLeft->{
+                x = 3;
+                break;
+            }
+            case right, upRight,downRight->{
+                x = 1;
+                break;
+            }
+        }
+        Animation<TextureRegion> animation = new Animation(0.1f, textureRegion[x][0] );
+        animation.setPlayMode(Animation.PlayMode.NORMAL);
+        return animation;
     }
 
     public Animation faintAnimation(Direction direction) {
-//        TODO
-        return null;
+        Animation<TextureRegion> animation = new Animation(0.1f, textureRegion[0][0] , textureRegion[0][3] , textureRegion[1][3] , textureRegion[1][0] );
+        animation.setPlayMode(Animation.PlayMode.NORMAL);
+        return animation;
     }
 
 }

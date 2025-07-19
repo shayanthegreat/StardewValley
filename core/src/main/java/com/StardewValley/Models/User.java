@@ -1,6 +1,7 @@
 package com.StardewValley.Models;
 
 import com.StardewValley.Models.Enums.Question;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class User implements Serializable {
     private String answer;
     private Game currentGame;
     private ArrayList<Integer> gamesMoney;
-    private String avatarPath;
+    private Texture avatarTexture;
 
     public User(String username, String password, String nickname, String email, String gender) {
         this.username = username;
@@ -26,6 +27,7 @@ public class User implements Serializable {
         this.gamesMoney = new ArrayList<>();
         this.question = Question.first;
         this.answer = "none";
+        this.avatarTexture = GameAssetManager.getInstance().ABIGAIL_PORTRAIT;
     }
 
     public String getNickname() {
@@ -106,6 +108,14 @@ public class User implements Serializable {
             maxMoney = maxMoney < money ? maxMoney : money;
         }
         return maxMoney;
+    }
+
+    public void setAvatarTexture(Texture avatarTexture) {
+        this.avatarTexture = avatarTexture;
+    }
+
+    public Texture getAvatarTexture() {
+        return avatarTexture;
     }
 
 }

@@ -28,15 +28,37 @@ public class GameAssetManager {
 
     public Skin skin = new Skin(Gdx.files.internal("skin/flat-earth-ui.json"));
 
-    public Texture GRASS_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_44.png");
+    public Texture SUMMER_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_44.png");
+
+    public Texture SPRING_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_50.png");
+
+    public Texture WINTER_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_54.png");
+
+    public Texture FALL_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_21.png");
 
     public Texture STONE_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_52.png");
+
+    public Texture LAKE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_26.png");
+
+    public Texture FENCE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fence/Wood_Fence.png");
 
     public Texture ABIGAIL = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/sprites/Abigail.png");
 
     public Texture SAM = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/sprites/Sam.png");
 
     public Texture Harvey = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/sprites/Harvey.png");
+
+    public Texture ABIGAIL_PORTRAIT = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Abigail.png");
+
+    public Texture GATE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fence/Gate.png");
+
+    public Texture HOUSE = new Texture("House/House.png");
+
+    public Texture GREEN_HOUSE = new Texture("HouseBuildings/greenHouse.png");
+
+    public Texture SAM_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Sam.png");
+
+    public Texture HARVEY_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Harvey.png");
 
     public Skin getSkin() {
         return skin;

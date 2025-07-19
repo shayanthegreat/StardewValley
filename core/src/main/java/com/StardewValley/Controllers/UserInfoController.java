@@ -1,4 +1,4 @@
-package com.StardewValley.Controller;
+package com.StardewValley.Controllers;
 
 import com.StardewValley.Models.App;
 

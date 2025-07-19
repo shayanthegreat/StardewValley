@@ -3,7 +3,7 @@ package com.StardewValley.Models;
 import java.io.Serializable;
 
 public class Energy implements Serializable {
-    public int amount = 200;
+    public float amount = 200;
     public int maxAmount = 200;
     public boolean isFainted = false;
     public boolean isUnlimited = false;
@@ -17,7 +17,7 @@ public class Energy implements Serializable {
         }
     }
 
-    public void decreaseEnergy(int amount) {
+    public void decreaseEnergy(float amount) {
         if(this.amount - amount >=0){
             this.amount -= amount;
         }
@@ -35,7 +35,7 @@ public class Energy implements Serializable {
         this.maxAmount -= amount;
     }
 
-    public int getAmount() {
+    public float getAmount() {
         return amount;
     }
 

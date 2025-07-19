@@ -1,10 +1,11 @@
-package com.StardewValley.Controller;
+package com.StardewValley.Controllers;
 
 import com.StardewValley.Models.App;
-import com.StardewValley.Models.Enums.AvatarType;
 import com.StardewValley.Models.Game;
 import com.StardewValley.Models.Map.Direction;
+import com.StardewValley.Models.Map.House;
 import com.StardewValley.Models.Map.Position;
+import com.StardewValley.Models.Map.Tile;
 import com.StardewValley.Models.Player;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,6 +16,8 @@ public class PlayerController {
     private boolean goingDown = false;
     private boolean goingLeft = false;
     private boolean goingRight = false;
+    private Direction playerDirection = Direction.center;
+    private Animation<TextureRegion> animation;
 
 
     public void update(){
@@ -34,50 +37,90 @@ public class PlayerController {
         Game game = App.getInstance().getCurrentGame();
         Player player = game.getCurrentPlayer();
         if(goingUp && !goingLeft && !goingRight){
-            player.setPosition(new Position(player.getPosition().x,player.getPosition().y+1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.up);
+            move(0,1);
+            playerDirection = Direction.up;
+            getAnimation(Direction.up);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
         }
         else if(goingDown && !goingLeft && !goingRight){
-            player.setPosition(new Position(player.getPosition().x,player.getPosition().y-1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.down);
+            move(0,-1);
+            playerDirection = Direction.down;
+            getAnimation(Direction.down);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
         }
         else if(goingLeft && !goingUp && !goingDown){
-            player.setPosition(new Position(player.getPosition().x-1,player.getPosition().y));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.left);
+            move(-1,0);
+            playerDirection = Direction.left;
+            getAnimation(Direction.left);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
         }
         else if(goingRight && !goingDown && !goingUp){
-            player.setPosition(new Position(player.getPosition().x+1,player.getPosition().y));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.right);
+            move(1,0);
+            playerDirection = Direction.right;
+            getAnimation(Direction.right);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
         }
         else if(goingUp && goingLeft){
-            player.setPosition(new Position(player.getPosition().x-1,player.getPosition().y+1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.upLeft);
+            move(-1,1);
+            playerDirection = Direction.up;
+            getAnimation(Direction.upLeft);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
         }
         else if(goingUp && goingRight){
-            player.setPosition(new Position(player.getPosition().x+1,player.getPosition().y+1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.upRight);
+            move(1,1);
+            playerDirection = Direction.up;
+            getAnimation(Direction.upRight);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
         }
         else if(goingDown && goingLeft){
-            player.setPosition(new Position(player.getPosition().x-1,player.getPosition().y-1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.downLeft);
+            move(-1,-1);
+            playerDirection = Direction.down;
+            getAnimation(Direction.downLeft);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
         }
         else if(goingDown && goingRight){
-            player.setPosition(new Position(player.getPosition().x+1,player.getPosition().y-1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.downRight);
+            move(1,-1);
+            playerDirection = Direction.right;
+            getAnimation(Direction.downRight);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
         }
         else {
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.center);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+//            if(!player.isFainted()){
+                animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().TiredAnimation(playerDirection);
+                Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+//            }
+
         }
     }
+
+    private void move(int dx , int dy){
+        Game game = App.getInstance().getCurrentGame();
+        Player player = game.getCurrentPlayer();
+
+        if(player.isFainted())
+            return;
+
+        Tile tile = game.getMap().getTile(new Position(player.getPosition().x + dx,player.getPosition().y + dy ));
+
+
+        if(tile != null && (tile.getBuilding() == null || (tile.getBuilding() instanceof House)) ){
+            player.setPosition(new Position(player.getPosition().x +dx,player.getPosition().y + dy));
+            player.decreaseEnergy(0.1f);
+            if(player.getEnergy().amount == 0){
+                player.setFainted(true);
+            }
+        }
+    }
+
+    private void getAnimation(Direction direction){
+        if(App.getInstance().getCurrentGame().getCurrentPlayer().isFainted()){
+           animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().faintAnimation(direction);
+        }
+        else{
+            animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().walkingAnimation(direction);
+        }
+    }
+
 
     public void setGoingUp(boolean goingUp){
         this.goingUp = goingUp;

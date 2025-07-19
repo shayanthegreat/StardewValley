@@ -1,4 +1,4 @@
-package com.StardewValley.Controller;
+package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
 import com.badlogic.gdx.Gdx;
@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Camera {
     private static Camera instance;
@@ -15,7 +17,7 @@ public class Camera {
     private SpriteBatch batch;
     private float stateTime = 0f;
 
-    private static final float TILE_SIZE = 32f; // Assuming tiles are 32x32 pixels
+    private static final float TILE_SIZE = 32f;
 
     private Camera() {
         camera = new OrthographicCamera();
@@ -35,6 +37,10 @@ public class Camera {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
     }
+    public Matrix4 getCombined() {
+        return camera.combined;
+    }
+
 
     public void begin() {
         batch.begin();
@@ -82,6 +88,23 @@ public class Camera {
             batch.draw(frame, pixelX, pixelY, width * TILE_SIZE, height * TILE_SIZE);
         }
     }
+
+    public float getX(){
+        return camera.position.x;
+    }
+
+    public float getY(){
+        return camera.position.y;
+    }
+
+    public float getViewportWidth() {
+        return camera.viewportWidth;
+    }
+
+    public float getViewportHeight() {
+        return camera.viewportHeight;
+    }
+
 
 
 }

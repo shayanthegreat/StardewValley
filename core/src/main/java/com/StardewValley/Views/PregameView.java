@@ -1,9 +1,8 @@
-package com.StardewValley.View;
+package com.StardewValley.Views;
 
-import com.StardewValley.Controller.GameController;
+import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.App;
-import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.StardewValley.Models.User;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -126,8 +125,6 @@ public class PregameView extends MenuView{
     @Override
     public void render(float v) {
         ScreenUtils.clear(0,0,0,1);
-        Main.getInstance().getBatch().begin();
-        Main.getInstance().getBatch().end();
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

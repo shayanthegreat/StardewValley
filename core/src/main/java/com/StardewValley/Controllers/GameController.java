@@ -1,4 +1,4 @@
-package com.StardewValley.Controller;
+package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
 import com.StardewValley.Models.App;
@@ -8,15 +8,20 @@ import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.StardewValley.Models.Map.Farm;
 import com.StardewValley.Models.Map.FarmMap;
 import com.StardewValley.Models.Map.Map;
+import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Player;
 import com.StardewValley.Models.User;
-import com.StardewValley.View.MenuView;
+import com.StardewValley.Views.MenuView;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ModelInfluencer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameController implements Controller {
     private static GameController instance;
@@ -30,6 +35,7 @@ public class GameController implements Controller {
         }
         return instance;
     }
+
 
     @Override
     public void showError(String error, Stage stage, Skin skin) {
@@ -87,5 +93,23 @@ public class GameController implements Controller {
         Main.getInstance().getScreen().dispose();
         Main.getInstance().setScreen(menu);
     }
+
+    public void cheatTime(){
+        Game game = App.getInstance().getCurrentGame();
+        game.nextHour();
+    }
+
+    public void cheatSeason(){
+        Game game = App.getInstance().getCurrentGame();
+        game.nextSeason();
+    }
+
+    public GameMessage cheatThor() {
+        int x = ThreadLocalRandom.current().nextInt(1, 100);
+        int y = ThreadLocalRandom.current().nextInt(1, 100);
+        App.getInstance().getCurrentGame().thor(new Position(x, y));
+        return new GameMessage(null, "you thor " + x + " " + y);
+    }
+
 
 }

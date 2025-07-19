@@ -1,4 +1,4 @@
-package com.StardewValley.Controller;
+package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
 import com.StardewValley.Models.App;
@@ -8,9 +8,8 @@ import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Interactions.Commands.RegistrationCommand;
 import com.StardewValley.Models.Interactions.Messages.RegistrationMessage;
 import com.StardewValley.Models.User;
-import com.StardewValley.View.LoginMenu;
-import com.StardewValley.View.MenuView;
-import com.badlogic.gdx.Gdx;
+import com.StardewValley.Views.MainMenu;
+import com.StardewValley.Views.MenuView;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -199,6 +198,8 @@ public class RegistrationController implements UserInfoController , Controller{
 
         app.setCurrentUser(user);
         app.setCurrentMenu(Menu.MainMenu);
+        Main.getInstance().getScreen().dispose();
+        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
         return new RegistrationMessage(null, "You logged in successfully! you are now in main menu");
     }
 

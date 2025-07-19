@@ -1,8 +1,6 @@
-package com.StardewValley.View;
+package com.StardewValley.Views;
 
-import com.StardewValley.Controller.RegistrationController;
-import com.StardewValley.Main;
-import com.StardewValley.Models.App;
+import com.StardewValley.Controllers.RegistrationController;
 import com.StardewValley.Models.Enums.Texts;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Interactions.Commands.RegistrationCommand;
@@ -149,8 +147,6 @@ public class RegistrationMenu extends MenuView {
     @Override
     public void render(float v) {
         ScreenUtils.clear(0,0,0,1);
-        Main.getInstance().getBatch().begin();
-        Main.getInstance().getBatch().end();
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
