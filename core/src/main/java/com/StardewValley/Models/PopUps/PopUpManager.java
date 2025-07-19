@@ -110,7 +110,6 @@ public class PopUpManager {
         // Optionally, hide your main popupWindow content (or keep visible as tabs container)
         popupWindow.setVisible(true);
         inventoryPopUp.refresh();
-
     }
 
     public void showSkillTab() {

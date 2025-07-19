@@ -88,5 +88,4 @@ public class SocialPopUp extends PopUpMenu {
         popupWindow.pack();
         updateWindowPosition();
     }
-
 }
