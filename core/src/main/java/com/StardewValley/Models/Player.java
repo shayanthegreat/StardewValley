@@ -56,12 +56,14 @@ public class Player implements Serializable {
         WateringCan wateringCan = new WateringCan(ToolType.wateringCan);
         Tool axe = new Tool(ToolType.axe);
         Tool shear = new Tool(ToolType.shear);
+        Tool hoe = new Tool(ToolType.hoe);
         backPack.addItem(scythe, 1);
         backPack.addItem(wateringCan, 1);
         backPack.addItem(axe, 1);
+        backPack.addItem(hoe, 1);
         backPack.addItem(shear, 1);
         // add this bullshit to backpack
-        backPack.addItem(new Seed(SeedType.carrot), 10);
+        backPack.addItem(new Seed(SeedType.carrot), 8);
         trashCan = new TrashCan();
         skills = new HashMap<>();
         skills.put(SkillType.mining, new Skill(SkillType.mining));

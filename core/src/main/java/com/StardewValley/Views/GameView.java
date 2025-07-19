@@ -1,17 +1,19 @@
 package com.StardewValley.Views;
 
 import com.StardewValley.Controllers.Camera;
+import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Controllers.PlayerController;
 import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.App;
+import com.StardewValley.Models.Farming.Crop;
+import com.StardewValley.Models.Farming.CropType;
 import com.StardewValley.Models.Game;
+import com.StardewValley.Models.Map.Map;
 import com.StardewValley.Models.Map.Position;
+import com.StardewValley.Models.Map.Tile;
 import com.StardewValley.Models.Player;
-import com.StardewValley.Models.PopUps.InventoryPopUp;
-import com.StardewValley.Models.PopUps.PopUpManager;
-import com.StardewValley.Models.PopUps.PopUpMenu;
-import com.StardewValley.Models.PopUps.ToolPopUp;
+import com.StardewValley.Models.PopUps.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
@@ -25,6 +27,7 @@ public class GameView implements Screen , InputProcessor {
     private Stage stage;
     private PopUpManager popUpMenu;
     private ToolPopUp toolPopUp;
+    private SeedPopUp seedPopUp;
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
@@ -50,6 +53,9 @@ public class GameView implements Screen , InputProcessor {
         else if(i == Input.Keys.T){
             toolPopUp.toggle();
         }
+        else if(i == Input.Keys.G){
+            App.getInstance().getCurrentGame().getTime().nextDay();
+        }
         return false;
     }
 
@@ -70,7 +76,6 @@ public class GameView implements Screen , InputProcessor {
         else if(i == Input.Keys.S){
             PlayerController.getInstance().setGoingDown(false);
         }
-
         return false;
     }
 
@@ -81,7 +86,30 @@ public class GameView implements Screen , InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (button == Input.Buttons.LEFT) {
+            // Step 1: Convert screen coordinates to world coordinates
+            Vector3 worldCoordinates = Camera.getInstance().getCamera().unproject(new Vector3(screenX, screenY, 0));
 
+            // Step 2: Convert world coordinates to tile coordinates
+            int tileX = (int)(worldCoordinates.x / TILE_SIZE);
+            int tileY = (int)(worldCoordinates.y / TILE_SIZE);
+
+            // Optional: if you want to do something with the tile position
+            Position clickedPosition = new Position(tileX, tileY);
+
+            Map map = App.getInstance().getCurrentGame().getMap();
+            Tile tile = map.getTile(clickedPosition);
+            if(tile.isPlowed() && !tile.containsPlant()){
+                seedPopUp.setTargetPosition(clickedPosition);
+                seedPopUp.setOnSeedSelected((seed, position) -> {
+                    GameController.getInstance().plant(seed, position);
+                });
+                seedPopUp.show();
+            }
+            else{
+                GameController.getInstance().handleTileClick(clickedPosition);
+            }
+        }
         return false;
     }
 
@@ -119,6 +147,7 @@ public class GameView implements Screen , InputProcessor {
         Gdx.input.setInputProcessor(multiplexer);
         popUpMenu = PopUpManager.getInstance(stage);
         toolPopUp = new ToolPopUp(stage);
+        seedPopUp = new SeedPopUp(stage);
         toolPopUp.show();
     }
 

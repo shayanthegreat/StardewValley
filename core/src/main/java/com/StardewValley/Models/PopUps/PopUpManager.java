@@ -93,7 +93,7 @@ public class PopUpManager {
 
     public void show() {
         popupWindow.setVisible(true);
-        showInventoryTab(); // default tab
+        showInventoryTab();
     }
 
     public void hide() {
@@ -109,6 +109,8 @@ public class PopUpManager {
         socialPopUp.hide();
         // Optionally, hide your main popupWindow content (or keep visible as tabs container)
         popupWindow.setVisible(true);
+        inventoryPopUp.refresh();
+
     }
 
     public void showSkillTab() {
@@ -116,6 +118,7 @@ public class PopUpManager {
         skillPopUp.show();
         socialPopUp.hide();
         popupWindow.setVisible(true);
+        inventoryPopUp.refresh();
     }
 
     public void showSocialTab() {
@@ -123,7 +126,12 @@ public class PopUpManager {
         inventoryPopUp.hide();
         skillPopUp.hide();
         popupWindow.setVisible(true);
+        inventoryPopUp.refresh();
 
+    }
+
+    public InventoryPopUp getInventoryPopUp() {
+        return inventoryPopUp;
     }
 }
 

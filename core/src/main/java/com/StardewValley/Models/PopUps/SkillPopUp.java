@@ -86,4 +86,5 @@ public class SkillPopUp extends PopUpMenu {
         table.add(row).row();
         table.add(detailLabel).padLeft(100).width(280).row(); // align with icon
     }
+
 }

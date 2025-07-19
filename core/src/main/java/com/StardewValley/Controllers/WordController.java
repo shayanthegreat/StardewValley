@@ -1,8 +1,10 @@
 package com.StardewValley.Controllers;
 
 import com.StardewValley.Models.App;
+import com.StardewValley.Models.Farming.Plant;
 import com.StardewValley.Models.Game;
 import com.StardewValley.Models.GameAssetManager;
+import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.*;
 
 public class WordController {
@@ -45,8 +47,21 @@ public class WordController {
                 }
                 Building building = tile.getBuilding();
                 TileObject tileObject = tile.getObject();
-                if(building == null ){
-                    camera.print(GameAssetManager.getInstance().GRASS_FLOORING, i,j,1,1);
+                if(building == null){
+                    if(tileObject == null){
+                        if(tile.isPlowed()){
+                            camera.print(GameAssetManager.getInstance().PLOWED_FLOOR, i , j , 1 , 1);
+                        }
+                        else{
+                            camera.print(GameAssetManager.getInstance().GRASS_FLOORING, i,j,1,1);
+                        }
+                    }
+                    else if(tileObject instanceof Item){
+                        camera.print(((Item) tileObject).getTexture(), i,j,1,1);
+                    }
+                    else if(tileObject instanceof Plant){
+                        camera.print(((Plant) tileObject).getType().getCrop().getTexture(), i,j,1,1);
+                    }
                 }
             }
         }

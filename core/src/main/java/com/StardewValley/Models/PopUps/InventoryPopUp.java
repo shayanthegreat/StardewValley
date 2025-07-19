@@ -30,7 +30,6 @@ public class InventoryPopUp extends PopUpMenu {
     }
 
     private void createInventoryContent() {
-        backPack = App.getInstance().getCurrentGame().getCurrentPlayer().getBackPack();
         blocksTable = new Table();
         blocksTable.top().left();
         blocksTable.defaults().size(80, 80).pad(2);
@@ -81,6 +80,7 @@ public class InventoryPopUp extends PopUpMenu {
         int cols = 5;
         int itemCount = 0;
 
+        backPack = App.getInstance().getCurrentGame().getCurrentPlayer().getBackPack();
         for (Map.Entry<Item, Integer> entry : backPack.getItems().entrySet()) {
             Stack stack = new Stack();
             Image slotBg = new Image(GameAssetManager.getInstance().BLOCK);
@@ -131,5 +131,8 @@ public class InventoryPopUp extends PopUpMenu {
             background = null;
         }
         super.dispose();
+    }
+    public void refresh() {
+        populateBackpackItems();
     }
 }
