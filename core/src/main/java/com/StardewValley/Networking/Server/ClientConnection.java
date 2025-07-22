@@ -40,6 +40,14 @@ public class ClientConnection extends Connection {
 
     @Override
     protected boolean handleMessage(ConnectionMessage message) {
+        if(message.getType().equals(ConnectionMessage.Type.command)) {
+            if(message.getFromBody("command").equals("add_user")) {
+                controller.addUser(message);
+            }
+            if(message.getFromBody("command").equals("get_user")) {
+                controller.getUser(message);
+            }
+        }
 //        TODO: handle different messages
         return false;
     }
