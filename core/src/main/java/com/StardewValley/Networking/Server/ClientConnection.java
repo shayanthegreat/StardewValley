@@ -15,8 +15,8 @@ public class ClientConnection extends Connection {
 
     private boolean exitFlag = false;
 
-    protected ClientConnection(Socket socket, String ip, int port, String clientIp, int clienPort) throws IOException {
-        super(socket, clientIp, clienPort);
+    protected ClientConnection(Socket socket, String ip, int port) throws IOException {
+        super(socket);
         this.ip = ip;
         this.port = port;
         this.username = null;

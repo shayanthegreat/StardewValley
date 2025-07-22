@@ -21,9 +21,7 @@ public abstract class Connection extends Thread {
     protected AtomicBoolean end;
     protected boolean initialized = false;
 
-    protected Connection(Socket socket, String otherSideIP, int otherSidePort) throws IOException {
-        this.otherSidePort = otherSidePort;
-        this.otherSideIP = otherSideIP;
+    protected Connection(Socket socket) throws IOException {
         this.socket = socket;
         this.dataInputStream = new DataInputStream(socket.getInputStream());
         this.dataOutputStream = new DataOutputStream(socket.getOutputStream());

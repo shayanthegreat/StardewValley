@@ -1,5 +1,6 @@
 package com.StardewValley.Networking.Common;
 
+import com.StardewValley.Models.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -21,6 +22,14 @@ public class ConnectionMessage {
 
     public synchronized static ConnectionMessage fromJson(String json) {
         return gson.fromJson(json, ConnectionMessage.class);
+    }
+
+    public static synchronized String userToJson(User user) {
+        return gson.toJson(user);
+    }
+
+    public static synchronized User userFromJson(String json) {
+        return gson.fromJson(json, User.class);
     }
 
 

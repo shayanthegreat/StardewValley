@@ -13,8 +13,8 @@ public class ServerConnection extends Connection {
 
     private boolean exitFlag = false;
 
-    protected ServerConnection(Socket socket, String ip, int port, String serverIp, int serverPort) throws IOException {
-        super(socket, serverIp, serverPort);
+    protected ServerConnection(Socket socket, String ip, int port) throws IOException {
+        super(socket);
         this.port = port;
         this.ip = ip;
         controller.setConnection(this);

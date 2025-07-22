@@ -18,6 +18,7 @@ public class ServerMain {
     private static ArrayList<ClientConnection> connections = new ArrayList<>();
 
     public static void main(String[] args) {
+        UserDAO.initializeDatabase();
         try {
             Scanner sc = new Scanner(System.in);
             ip = sc.nextLine();
@@ -51,6 +52,16 @@ public class ServerMain {
     public static void handleConnection(Socket socket) {
         if (socket == null) {
             return;
+        }
+        try{
+            new ClientConnection(socket, ip, port).start();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            try{
+                socket.close();
+            }
+            catch (Exception ignored) {}
         }
 
     }

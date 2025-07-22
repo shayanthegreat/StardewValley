@@ -13,7 +13,7 @@ public class User implements Serializable {
     private final String gender;
     private Question question;
     private String answer;
-    private Game currentGame;
+    private transient Game currentGame;
     private ArrayList<Integer> gamesMoney;
     private String avatarPath;
 
@@ -26,6 +26,19 @@ public class User implements Serializable {
         this.gamesMoney = new ArrayList<>();
         this.question = Question.first;
         this.answer = "none";
+    }
+
+//    constructor for SQLite database
+    public User(String username, String password, String nickname, String email, String gender,
+                String answer, ArrayList<Integer> gamesMoney, String avatarPath) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.email = email;
+        this.gender = gender;
+        this.answer = answer;
+        this.gamesMoney = gamesMoney;
+        this.avatarPath = avatarPath;
     }
 
     public String getNickname() {
@@ -90,6 +103,14 @@ public class User implements Serializable {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public ArrayList<Integer> getGamesMoney() {
+        return gamesMoney;
+    }
+
+    public String getAvatarPath() {
+        return avatarPath;
     }
 
     public void addGamesMoney(int money) {
