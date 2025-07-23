@@ -34,4 +34,9 @@ public class Position implements Serializable {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return x + " " + y;
+    }
 }

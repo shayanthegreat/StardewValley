@@ -199,29 +199,29 @@ public class Time implements Serializable {
 
         return libgdxRotation;
     }
-    public void updateBatch(Batch batch, Position ignoredPosition) {
+    public void updateBatch(Batch batch, Position position) {
         updateWeather();
         updateSeason();
 
-        float centerX = Gdx.graphics.getWidth() / 2f - clockWidth / 2f;
-        float centerY = Gdx.graphics.getHeight() / 2f - clockHeight / 2f;
+        float clockX = 32 * (position.x - 50) + 1650;
+        float clockY = 32 * (position.y - 50) + 1640;
 
         clockMain.setSize(clockWidth, clockHeight);
-        clockMain.setPosition(centerX, centerY);
+        clockMain.setPosition(clockX, clockY);
         clockMain.draw(batch);
 
         clockArrow.setSize(clockWidth * 0.1f, clockHeight * 0.28f);
         clockArrow.setRotation(getArrowRotation());
-        clockArrow.setPosition(centerX + 100, centerY + 180);
-        clockArrow.setOrigin(clockWidth * 0.1f * clockScale / 2f - 1, 0f);
+        clockArrow.setOrigin(clockArrow.getWidth() / 2f, 0f);
+        clockArrow.setPosition(clockX + 100, clockY + 180);
         clockArrow.draw(batch);
 
         weatherSprite.setSize(clockWidth * 0.180f, clockHeight * 0.200f);
-        weatherSprite.setPosition(centerX + 0.405f * clockWidth, centerY + 0.55f * clockHeight);
+        weatherSprite.setPosition(clockX + 0.405f * clockWidth, clockY + 0.55f * clockHeight);
         weatherSprite.draw(batch);
 
         seasonSprite.setSize(weatherSprite.getWidth(), weatherSprite.getHeight());
-        seasonSprite.setPosition(centerX + 0.405f * clockWidth + 0.33f * clockWidth, centerY + 0.55f * clockHeight);
+        seasonSprite.setPosition(clockX + 0.405f * clockWidth + 0.33f * clockWidth, clockY + 0.55f * clockHeight);
         seasonSprite.draw(batch);
 
         GameAssetManager.getInstance().MAIN_FONT.setColor(Color.WHITE);
@@ -230,22 +230,24 @@ public class Time implements Serializable {
         String timeText = String.format("%d:00 %s",
             hour <= 12 ? hour : hour - 12,
             hour < 12 ? "AM" : "PM");
+
         String dateText = String.format("%s %d, %s",
-            season.name().substring(0, 1).toUpperCase() +
-                season.name().substring(1),
+            season.name().substring(0, 1).toUpperCase() + season.name().substring(1),
             day,
             calculateWeekDay());
 
         GlyphLayout timeLayout = new GlyphLayout(GameAssetManager.getInstance().MAIN_FONT, timeText);
-        GameAssetManager.getInstance().MAIN_FONT.draw(batch, dateText,
-            centerX + clockWidth / 2 - timeLayout.width / 2,
-            centerY + clockHeight * 0.9f);
-
         GlyphLayout dateLayout = new GlyphLayout(GameAssetManager.getInstance().MAIN_FONT, dateText);
+
+        GameAssetManager.getInstance().MAIN_FONT.draw(batch, dateText,
+            clockX + clockWidth / 2 - dateLayout.width / 2,
+            clockY + clockHeight * 0.9f);
+
         GameAssetManager.getInstance().MAIN_FONT.draw(batch, timeText,
-            centerX + clockWidth / 2,
-            centerY + clockHeight * 0.5f);
+            clockX + clockWidth / 2 - timeLayout.width / 2,
+            clockY + clockHeight * 0.5f);
     }
+
 
 
     public void updateWeather(){

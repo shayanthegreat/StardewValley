@@ -224,7 +224,7 @@ public class GameView implements Screen , InputProcessor {
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();
         WordController.getInstance().drawDarknessOverlay();
-
+        System.out.println(App.getInstance().getCurrentGame().getCurrentPlayer().getPosition());
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
