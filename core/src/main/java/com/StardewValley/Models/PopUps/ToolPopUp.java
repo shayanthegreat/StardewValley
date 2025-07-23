@@ -39,6 +39,8 @@ public class ToolPopUp {
     }
 
     private void createContent() {
+        window.clear(); // ✅ Clear previous content before re-adding
+
         Table toolTable = new Table();
         toolTable.defaults().pad(5).size(80);
         toolTable.align(Align.left);
@@ -122,7 +124,8 @@ public class ToolPopUp {
         }
     }
 
-    public void refresh(){
-        createContent();
+    /** Rebuilds the tool popup with latest data */
+    public void refresh() {
+        createContent(); // Safely refresh content
     }
 }

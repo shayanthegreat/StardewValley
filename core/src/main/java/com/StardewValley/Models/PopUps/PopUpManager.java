@@ -113,6 +113,7 @@ public class PopUpManager {
     }
 
     public void showSkillTab() {
+        skillPopUp.refresh();
         inventoryPopUp.hide();
         skillPopUp.show();
         socialPopUp.hide();
@@ -121,6 +122,7 @@ public class PopUpManager {
     }
 
     public void showSocialTab() {
+        socialPopUp.refresh();
         socialPopUp.show();
         inventoryPopUp.hide();
         skillPopUp.hide();

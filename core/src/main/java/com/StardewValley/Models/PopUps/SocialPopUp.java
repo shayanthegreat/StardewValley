@@ -16,19 +16,26 @@ public class SocialPopUp extends PopUpMenu {
 
     public SocialPopUp(Stage stage) {
         super(stage);
-        createSocialContent();
+        createSocialContent(); // Initial content
+    }
+
+    // Called to rebuild the popup when reopened
+    public void refresh() {
+        popupWindow.clear();                // Clear existing UI
+        popupWindow.add(tabs).row();        // Re-add tabs
+        createSocialContent();              // Rebuild content
     }
 
     private void createSocialContent() {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+
         Table socialTable = new Table();
         socialTable.defaults().pad(10).left();
 
         Label.LabelStyle style = new Label.LabelStyle();
         style.font = GameAssetManager.getInstance().MAIN_FONT;
         style.fontColor = Color.WHITE;
-
-        // Map NPC name to their quest (for quick lookup)
+        // Map NPC name to their active quest (if any)
         HashMap<String, NPCQuest> questMap = new HashMap<>();
         for (NPCQuest quest : player.getNPCQuests()) {
             if (!quest.isDone()) {
@@ -36,7 +43,7 @@ public class SocialPopUp extends PopUpMenu {
             }
         }
 
-
+        // Friendship rows
         for (NPCFriendship friendship : player.getNPCFriendships()) {
             String npcName = friendship.getNpc().getName();
             int level = friendship.getLevel();
@@ -45,7 +52,6 @@ public class SocialPopUp extends PopUpMenu {
             Table row = new Table();
             row.defaults().left().padRight(10);
 
-            // NPC Name and Friendship Info
             Label nameLabel = new Label(npcName, style);
             nameLabel.setFontScale(1.5f);
 
@@ -56,31 +62,34 @@ public class SocialPopUp extends PopUpMenu {
             row.add(levelLabel);
 
             socialTable.add(row).left().row();
-            socialTable.add().height(10).row(); // spacer between rows
+            socialTable.add().height(10).row(); // spacer
         }
 
+        // Quest section
         ArrayList<NPCQuest> npcQuests = player.getNPCQuests();
-
         for (NPCQuest quest : npcQuests) {
             Table row = new Table();
             int step = quest.getActiveQuest();
-
             String task = quest.getActiveQuestString();
 
             Label npcNameLabel = new Label(quest.getNpc().getName(), style);
             npcNameLabel.setFontScale(1.7f);
+
             Label questStepLabel = new Label("Quest Step: " + (step + 1) + "/3", style);
             questStepLabel.setFontScale(1.2f);
-            row.add(npcNameLabel);
 
+            row.add(npcNameLabel);
             row.add(questStepLabel).row();
 
             Label taskLabel = new Label("→ Task: " + task, style);
             taskLabel.setFontScale(1.1f);
+
             row.add(taskLabel).colspan(3).padLeft(40).row();
             socialTable.add(row).left().row();
             socialTable.add().height(10).row();
         }
+
+        // Scrollable content
         ScrollPane scrollPane = new ScrollPane(socialTable);
         scrollPane.setFadeScrollBars(false);
 

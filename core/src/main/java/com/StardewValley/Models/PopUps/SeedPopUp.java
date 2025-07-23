@@ -90,7 +90,7 @@ public class SeedPopUp {
         float stageHeight = stage.getViewport().getWorldHeight();
         window.pack();
         float x = (stageWidth - window.getWidth()) / 2f;
-        float y = 10f;
+        float y = 100f;
         window.setPosition(x, y);
     }
 

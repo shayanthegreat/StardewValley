@@ -172,6 +172,7 @@ public class GameView implements Screen , InputProcessor {
         }
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();
+        toolPopUp.refresh();
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

@@ -19,6 +19,11 @@ public class SkillPopUp extends PopUpMenu {
         createSkillContent();
     }
 
+    public void refresh() {
+        popupWindow.clear();                // Clear existing UI
+        popupWindow.add(tabs).row();        // Re-add tabs
+        createSkillContent();           // Rebuild content
+    }
     private void createSkillContent() {
         Table skillTable = new Table();
         skillTable.defaults().pad(10).left();
