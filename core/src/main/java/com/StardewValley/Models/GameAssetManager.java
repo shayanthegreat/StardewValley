@@ -56,6 +56,16 @@ public class GameAssetManager {
 
     public Texture GREEN_HOUSE = new Texture("HouseBuildings/greenHouse.png");
 
+    public Texture FISH = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fish/Anchovy.png");
+
+    public Texture FISH2 = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fish/Angler.png");
+
+    public Texture FISH3 = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fish/Red_Mullet.png");
+
+    public Texture BARN = new Texture("Barn/Barn.png");
+
+    public Texture BUILT_GREENHOUSE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Greenhouse/greenhouse.png");
+
     public Texture SAM_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Sam.png");
 
     public Texture HARVEY_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Harvey.png");

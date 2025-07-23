@@ -5,6 +5,7 @@ import com.StardewValley.Models.Map.Direction;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public enum AvatarType {
     ABIGAIL("Abigail", GameAssetManager.getInstance().ABIGAIL,"female"),
@@ -15,12 +16,15 @@ public enum AvatarType {
     private final Texture texture;
     private final TextureRegion[][] textureRegion;
     private final String gender;
+    private boolean isPetting = false;
+
 
     AvatarType(String name, Texture texture, String gender) {
         this.name = name;
         this.texture = texture;
         this.gender = gender;
         this.textureRegion = TextureRegion.split(texture, 16, 32);
+
     }
 
     public Animation walkingAnimation(Direction direction) {
@@ -78,5 +82,20 @@ public enum AvatarType {
         animation.setPlayMode(Animation.PlayMode.NORMAL);
         return animation;
     }
+
+
+    public Animation pettingAnimation() {
+        Animation<TextureRegion> animation = new Animation<>(0.1f,textureRegion[7][2],textureRegion[7][3] );
+        animation.setPlayMode(Animation.PlayMode.NORMAL);
+        return animation;
+    }
+
+    public Animation feedingAnimation() {
+        Animation<TextureRegion> animation = new Animation<>(0.3f,textureRegion[13][1],textureRegion[13][0] );
+        animation.setPlayMode(Animation.PlayMode.NORMAL);
+        return animation;
+    }
+
+
 
 }

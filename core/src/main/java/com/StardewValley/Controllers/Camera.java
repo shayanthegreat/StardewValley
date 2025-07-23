@@ -16,6 +16,7 @@ public class Camera {
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private float stateTime = 0f;
+    private float zoom = 1f;
 
     private static final float TILE_SIZE = 32f;
 
@@ -34,11 +35,21 @@ public class Camera {
 
     public void update(float centerX, float centerY) {
         camera.position.set(centerX * TILE_SIZE, centerY * TILE_SIZE, 0);
+        camera.viewportWidth = 800 * zoom;
+        camera.viewportHeight = 600 * zoom;
         camera.update();
         batch.setProjectionMatrix(camera.combined);
     }
     public Matrix4 getCombined() {
         return camera.combined;
+    }
+
+    public void zoomOut() {
+        this.zoom = 10f;
+    }
+
+    public void zoomIn() {
+        this.zoom = 1f;
     }
 
 

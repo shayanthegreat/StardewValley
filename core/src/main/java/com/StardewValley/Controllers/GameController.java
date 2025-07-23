@@ -1,19 +1,18 @@
 package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
-import com.StardewValley.Models.App;
+import com.StardewValley.Models.*;
+import com.StardewValley.Models.Animal.*;
 import com.StardewValley.Models.Communication.FriendShip;
-import com.StardewValley.Models.Game;
+import com.StardewValley.Models.Crafting.Material;
+import com.StardewValley.Models.Crafting.MaterialType;
+import com.StardewValley.Models.Enums.FarmBuildings;
+import com.StardewValley.Models.Enums.Season;
+import com.StardewValley.Models.Enums.SkillType;
 import com.StardewValley.Models.Interactions.Messages.GameMessage;
-import com.StardewValley.Models.Map.Farm;
-import com.StardewValley.Models.Map.FarmMap;
-import com.StardewValley.Models.Map.Map;
-import com.StardewValley.Models.Map.Position;
-import com.StardewValley.Models.Player;
-import com.StardewValley.Models.User;
+import com.StardewValley.Models.Map.*;
 import com.StardewValley.Views.MenuView;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ModelInfluencer;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -25,8 +24,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GameController implements Controller {
     private static GameController instance;
+    private static long time;
 
     private GameController() {
+        time = System.currentTimeMillis();
     }
 
     public static GameController getInstance() {
@@ -35,6 +36,20 @@ public class GameController implements Controller {
         }
         return instance;
     }
+
+    public void update(float delta) {
+        if (lightningEffect != null) {
+            lightningEffect.update(delta);
+            if (lightningEffect.isFinished()) {
+                lightningEffect = null;
+            }
+        }
+        time(System.currentTimeMillis());
+    }
+
+
+    private LightningEffect lightningEffect;
+    private float lightningX, lightningY;
 
 
     @Override
@@ -104,11 +119,324 @@ public class GameController implements Controller {
         game.nextSeason();
     }
 
-    public GameMessage cheatThor() {
+    public void cheatThor() {
         int x = ThreadLocalRandom.current().nextInt(1, 100);
         int y = ThreadLocalRandom.current().nextInt(1, 100);
+
         App.getInstance().getCurrentGame().thor(new Position(x, y));
-        return new GameMessage(null, "you thor " + x + " " + y);
+        lightningEffect = new LightningEffect();
+        lightningX = x;
+        lightningY = y;
+    }
+
+    public LightningEffect getLightningEffect() {
+        return lightningEffect;
+    }
+
+    public float getLightningX() {
+        return lightningX;
+    }
+
+    public float getLightningY() {
+        return lightningY;
+    }
+
+
+    private void time(long l) {
+        long elapsed = l - time;
+
+        int hoursToAdvance = (int) (elapsed / 30000);
+        if (hoursToAdvance > 0) {
+            for (int i = 0; i < hoursToAdvance; i++) {
+                App.getInstance().getCurrentGame().nextHour();
+            }
+            time += hoursToAdvance * 30000;
+        }
+    }
+
+
+    public void buildGreenHouse() {
+        App app = App.getInstance();
+        Game game = app.getCurrentGame();
+        Player player = app.getCurrentGame().getCurrentPlayer();
+        if(!player.getBackPack().checkItem(new Material(MaterialType.wood),15)){
+            return;
+        }
+        player.getBackPack().removeItem(new Material(MaterialType.wood),15);
+        if(player.getMoney() < 40){
+            return;
+        }
+        player.decreaseMoney(40);
+        Farm farm = App.getInstance().getCurrentGame().getCurrentPlayer().getFarm();
+        farm.getGreenHouse().build();
+    }
+
+    public void fishing(boolean isPerfect){
+        App app = App.getInstance();
+        Game game = app.getCurrentGame();
+        Player player = app.getCurrentGame().getCurrentPlayer();
+        player.decreaseEnergy(8);
+        boolean isLegendary = false;
+        if(isPerfect)
+            isLegendary = true;
+        FishType type = generateRandomFish(game.getTime().getSeason(), isLegendary);
+        Fish fish = new Fish(type);
+        int count = fish.getFishingCount(game.getTodayWeather(), player.getSkill(SkillType.fishing).getLevel());
+        String quality = fish.getFishingQuality(game.getTodayWeather(),player.getSkill(SkillType.fishing).getLevel(),"Training");
+        player.getBackPack().addItem(fish,count);
+        if(isPerfect){
+            player.getSkill(SkillType.fishing).addAmount(player.getSkill(SkillType.fishing).getLevel() * 2);
+        }
+        else {
+            player.getSkill(SkillType.fishing).addAmount(5);
+        }
+    }
+
+    private FishType generateRandomFish(Season season,boolean legendary) {
+        Random rand = new Random();
+        if(!legendary){
+            int fishCount = rand.nextInt(4) + 1;
+            if(season==Season.spring){
+                switch (fishCount) {
+                    case 1:{
+                        return FishType.flounder;
+                    }
+                    case 2:{
+                        return FishType.lionFish;
+                    }
+                    case 3:{
+                        return FishType.herring;
+                    }
+                    case 4:{
+                        return FishType.ghostFish;
+                    }
+                }
+            }
+            else if(season==Season.winter){
+                switch (fishCount) {
+                    case 1:{
+                        return FishType.midnightCarp;
+                    }
+                    case 2:{
+                        return FishType.squid;
+                    }
+                    case 3:{
+                        return FishType.tuna;
+                    }
+                    case 4:{
+                        return FishType.perch;
+                    }
+                }
+            }
+            else if(season==Season.fall){
+                switch (fishCount) {
+                    case 1:{
+                        return FishType.salmon;
+                    }
+                    case 2:{
+                        return FishType.sardine;
+                    }
+                    case 3:{
+                        return FishType.shad;
+                    }
+                    case 4:{
+                        return FishType.blueDiscus;
+                    }
+                }
+            }
+            else if(season==Season.summer){
+                switch (fishCount) {
+                    case 1:{
+                        return FishType.tilapia;
+                    }
+                    case 2:{
+                        return FishType.dorado;
+                    }
+                    case 3:{
+                        return FishType.sunFish;
+                    }
+                    case 4:{
+                        return FishType.rainbowTrout;
+                    }
+                }
+            }
+        }
+        else{
+            int fishCount = rand.nextInt(5) + 1;
+            if(season==Season.spring){
+                switch (fishCount) {
+                    case 1:{
+                        return FishType.flounder;
+                    }
+                    case 2:{
+                        return FishType.lionFish;
+                    }
+                    case 3:{
+                        return FishType.herring;
+                    }
+                    case 4:{
+                        return FishType.ghostFish;
+                    }
+                    case 5:{
+                        return FishType.legend;
+                    }
+                }
+            }
+            else if(season==Season.winter){
+                switch (fishCount) {
+                    case 1:{
+                        return FishType.midnightCarp;
+                    }
+                    case 2:{
+                        return FishType.squid;
+                    }
+                    case 3:{
+                        return FishType.tuna;
+                    }
+                    case 4:{
+                        return FishType.perch;
+                    }
+                    case 5:{
+                        return FishType.glacierFish;
+                    }
+                }
+            }
+            else if(season==Season.fall){
+                switch (fishCount) {
+                    case 1:{
+                        return FishType.salmon;
+                    }
+                    case 2:{
+                        return FishType.sardine;
+                    }
+                    case 3:{
+                        return FishType.shad;
+                    }
+                    case 4:{
+                        return FishType.blueDiscus;
+                    }
+                    case 5:{
+                        return FishType.angler;
+                    }
+                }
+            }
+            else if(season== Season.summer){
+                switch (fishCount) {
+                    case 1:{
+                        return FishType.tilapia;
+                    }
+                    case 2:{
+                        return FishType.dorado;
+                    }
+                    case 3:{
+                        return FishType.sunFish;
+                    }
+                    case 4:{
+                        return FishType.rainbowTrout;
+                    }
+                    case 5:{
+                        return FishType.crimsonFish;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public void buildBarn(FarmBuildings buildings, int x, int y) {
+        App app = App.getInstance();
+        Player player = app.getCurrentGame().getCurrentPlayer();
+//        if(player.getCurrentStore()==null || !player.getCurrentStore().getOwnerName().equals("Robin")){
+//            return;
+//        }
+        Position position = new Position(x, y);
+        Position position1 = new Position(x+1,y);
+        Position position2 = new Position(x, y+1);
+        Position position3 = new Position(x+1, y+1);
+        if(player.getFarm().getBarn() != null){
+            return;
+        }
+        if (player.getFarm().getTile(position) == null) {
+            return;
+        }
+        if (player.getFarm().getTile(position1) == null) {
+            return;
+        }
+        if (player.getFarm().getTile(position2) == null) {
+            return;
+        }
+        if (player.getFarm().getTile(position3) == null) {
+            return;
+        }
+        Tile tile = player.getFarm().getTile(position);
+        if (!tile.isTotallyEmpty()) {
+            return;
+        }
+        Tile tile1 = player.getFarm().getTile(position1);
+        Tile tile2 = player.getFarm().getTile(position2);
+        Tile tile3 = player.getFarm().getTile(position3);
+        if(!tile1.isTotallyEmpty()){
+            return;
+        }
+        if(!tile2.isTotallyEmpty()){
+            return;
+        }
+        if(!tile3.isTotallyEmpty()){
+            return;
+        }
+//        if(!player.getBackPack().checkItem(new Material(MaterialType.wood),350) || !player.getBackPack().checkItem(new Material(MaterialType.stone),150)){
+//            return;
+//        }
+        if (buildings == FarmBuildings.Barn) {
+            Barn barn = new Barn();
+            player.getFarm().setBarn(barn);
+            tile.setObject(barn);
+            tile1.setObject(barn);
+            tile2.setObject(barn);
+            tile3.setObject(barn);
+            barn.setPlacedTile(tile);
+
+        }
+        else if (buildings == FarmBuildings.Coop) {
+            Coop coop = new Coop();
+            player.getFarm().setCoop(coop);
+            tile.setObject(coop);
+            tile1.setObject(coop);
+            tile2.setObject(coop);
+            tile3.setObject(coop);
+            coop.setPlacedTile(tile);
+
+        }
+
+    }
+
+    public void buyAnimal(AnimalType animalType1,String animalName){
+        App app = App.getInstance();
+        Player player=app.getCurrentGame().getCurrentPlayer();
+        if(animalType1==null){
+            return;
+        }
+        Animal animal = new Animal(animalType1,player,animalName);
+        if(animalType1.isInCage()){
+            if(player.getFarm().getCoop()==null){
+                return;
+            }
+
+//                TODO:check if there is the needed cage for this animal
+            player.getFarm().getCoop().addAnimal(animal,animalType1);
+        }
+        else {
+            if(player.getFarm().getBarn()==null){
+                return;
+            }
+//            TODO:check if there is the needed barn
+
+            player.getFarm().getBarn().addAnimal(animal,animalType1);
+        }
+//        if(player.getMoney() < animal.getType().getCost()){
+//            return;
+//        }
+//        player.decreaseMoney(animal.getType().getCost());
     }
 
 

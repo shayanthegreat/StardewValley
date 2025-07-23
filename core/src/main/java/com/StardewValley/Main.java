@@ -1,6 +1,7 @@
 package com.StardewValley;
 
 import com.StardewValley.Models.GameAssetManager;
+import com.StardewValley.Views.FishingMiniGameView;
 import com.StardewValley.Views.MainMenu;
 import com.StardewValley.Views.ProfileMenu;
 import com.badlogic.gdx.Game;

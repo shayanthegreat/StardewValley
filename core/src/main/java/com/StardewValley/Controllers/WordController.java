@@ -2,6 +2,7 @@ package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
 import com.StardewValley.Models.Animal.AnimalProduct;
+import com.StardewValley.Models.Animal.Barn;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Enums.Weather;
 import com.StardewValley.Models.Game;
@@ -14,6 +15,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class WordController {
     private boolean wideView = false;
     private Camera camera;
@@ -21,7 +24,7 @@ public class WordController {
     private Texture texture;
     private ParticleEffect rainEffect;
     private Weather lastWeather = null;
-    private boolean isHousePrinted = false;
+    private boolean isWide = false;
 
 
     private WordController() {
@@ -80,13 +83,14 @@ public class WordController {
         }
     }
 
-
-    public boolean isWideView() {
-        return wideView;
-    }
-
-    public void setWideView(boolean wideView) {
-        this.wideView = wideView;
+    public void zoom(){
+        wideView = !wideView;
+        if(wideView){
+            camera.zoomOut();
+        }
+        else {
+            camera.zoomIn();
+        }
     }
 
 
@@ -140,7 +144,24 @@ public class WordController {
                 }
 
                 else if(building instanceof Lake lake){
+                    ThreadLocalRandom rand = ThreadLocalRandom.current();
+                    int random = rand.nextInt(2);
+                    int random2 = rand.nextInt(3);
                     camera.print(GameAssetManager.getInstance().LAKE, i,j,1,1);
+                    switch(random2){
+                        case 0:{
+                            camera.print(GameAssetManager.getInstance().FISH, i+random,j+random,0.5f,0.5f);
+                            break;
+                        }
+                        case 1:{
+                            camera.print(GameAssetManager.getInstance().FISH2, i+random,j+random,0.5f,0.5f);
+                            break;
+                        }
+                        case 2:{
+                            camera.print(GameAssetManager.getInstance().FISH3, i+random,j+random,0.5f,0.5f);
+                            break;
+                        }
+                    }
                 }
 
                 else if(building instanceof GreenHouse greenHouse){
@@ -148,8 +169,12 @@ public class WordController {
                         camera.print(GameAssetManager.getInstance().GREEN_HOUSE, greenHouse.getOrigin().x,greenHouse.getOrigin().y,5,6);
                     }
                     else if(i==greenHouse.getTopRight().x && j== greenHouse.getTopRight().y){
-                        camera.print(GameAssetManager.getInstance().GREEN_HOUSE, greenHouse.getOrigin().x,greenHouse.getOrigin().y,5,6);
+                        camera.print(GameAssetManager.getInstance().BUILT_GREENHOUSE, greenHouse.getOrigin().x,greenHouse.getOrigin().y,5,6);
                     }
+                }
+
+                else if(tileObject instanceof Barn barn){
+                    camera.print(GameAssetManager.getInstance().BARN, barn.getPlacedTile().getPosition().x,barn.getPlacedTile().getPosition().y,2,2);
                 }
 
 
@@ -213,12 +238,6 @@ public class WordController {
         shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
-
-
-
-
-
-
 
 }
 
