@@ -144,9 +144,6 @@ public class WordController {
                         if(tile.isPlowed()){
                             camera.print(GameAssetManager.getInstance().PLOWED_FLOOR, i , j , 1 , 1);
                         }
-                        else{
-                            camera.print(GameAssetManager.getInstance().GRASS_FLOORING, i,j,1,1);
-                        }
                     }
                     else if(tileObject instanceof Item){
                         camera.print(((Item) tileObject).getTexture(), i,j,1,1);

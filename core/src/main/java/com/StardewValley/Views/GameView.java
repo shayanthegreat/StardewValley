@@ -6,6 +6,7 @@ import com.StardewValley.Controllers.PlayerController;
 import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.*;
+import com.StardewValley.Models.Map.Lake;
 import com.StardewValley.Models.Map.Map;
 import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Map.Tile;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 import static com.StardewValley.Controllers.Camera.TILE_SIZE;
 
@@ -55,11 +57,9 @@ public class GameView implements Screen , InputProcessor {
             GameController.getInstance().cheatSeason();
         }
 
-        else if(i == Input.Keys.R){
+        else if(i == Input.Keys.R) {
             GameController.getInstance().cheatThor();
-        }
-
-        else if(i == Input.Keys.M){
+        } else if (i == Input.Keys.M) {
             WordController.getInstance().zoom();
         }
 
@@ -149,6 +149,9 @@ public class GameView implements Screen , InputProcessor {
 
             Map map = App.getInstance().getCurrentGame().getMap();
             Tile tile = map.getTile(clickedPosition);
+            if(tile == null){
+                return false;
+            }
             if(tile.isPlowed() && !tile.containsPlant()){
                 seedPopUp.setTargetPosition(clickedPosition);
                 seedPopUp.setOnSeedSelected((seed, position) -> {
@@ -160,6 +163,31 @@ public class GameView implements Screen , InputProcessor {
                 GameController.getInstance().handleTileClick(clickedPosition);
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
+    @Override
+    public boolean touchCancelled(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int i, int i1, int i2) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int i, int i1) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(float v, float v1) {
         return false;
     }
 
@@ -190,7 +218,8 @@ public class GameView implements Screen , InputProcessor {
             float toolDrawY = player.getPosition().y;       // same vertical position (adjust if needed)
 
             // Adjust scaling/size as needed; here we draw 1x1 tile size
-            Main.getInstance().getBatch().draw(toolTexture, toolDrawX * TILE_SIZE, toolDrawY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            Camera.getInstance().print(toolTexture, App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().x+1, App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().y, 1, 1);
+//            (toolTexture, toolDrawX * TILE_SIZE, toolDrawY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();

@@ -32,7 +32,7 @@ public class GameAssetManager {
 
 
     //
-    public final Texture BARN = new Texture("Farm_Buildings/Barn.png");
+//    public final Texture BARN = new Texture("Farm_Buildings/Barn.png");
     public final Texture BIG_BARN = new Texture("Farm_Buildings/Big_Barn.png");
     public final Texture DELUXE_BARN = new Texture("Farm_Buildings/Deluxe_Barn.png");
     public final Texture COOP = new Texture("Farm_Buildings/Coop.png");
@@ -40,7 +40,7 @@ public class GameAssetManager {
     public final Texture DELUXE_COOP = new Texture("Farm_Buildings/Deluxe_Coop.png");
     public final Texture WELL = new Texture("Farm_Buildings/Well.png");
     public final Texture SHIPPINGBIN = new Texture("Farm_Buildings/Shipping_Bin_Anim.png");
-    public final Texture HOUSE = new Texture("Cottage/House_(tier_3).png");
+//    public final Texture HOUSE = new Texture("Cottage/House_(tier_3).png");
     public final Texture COTTAGE_INSIDE = new Texture("Cottage/Cottage_Inside.png");
     public final Texture BROKEN_GREENHOUSE = new Texture("Greenhouse/Broken_Greenhouse.png");
     public final Texture WATER = new Texture("Flooring/water.png");
@@ -49,7 +49,7 @@ public class GameAssetManager {
     public final Texture GREEN_FLOOR = new Texture("Flooring/Flooring_28.png");
     public final Texture PATH_FLOOR = new Texture("Flooring/Flooring_52.png");
     public final Texture STONE_FENCE = new Texture("Fence/Stone_Fence.png");
-    public final Texture GATE = new Texture("Fence/Gate.png");
+//    public final Texture GATE = new Texture("Fence/Gate.png");
     public final Texture PLOWED_FLOOR = new Texture("Flooring/Flooring_21.png");
     public final Texture SNOWED_FLOOR = new Texture("Flooring/Flooring_54.png");
     public final Texture FLOWER = new Texture("Crafting/Tub_o%27_Flowers.png");
@@ -593,7 +593,7 @@ public class GameAssetManager {
     public final Texture FIBER = new Texture("Crafting/Fiber.png");
     public final Texture FIBER_SEEDS = new Texture("Crafting/Fiber_Seeds.png");
     public final Texture FIRE_QUARTZ = new Texture("Crafting/Fire_Quartz.png");
-    public final Texture FISH = new Texture("Crafting/Fish.png");
+//    public final Texture FISH = new Texture("Crafting/Fish.png");
     public final Texture FROZEN_TEAR = new Texture("Crafting/Frozen_Tear.png");
     public final Texture GARLIC = new Texture("Crafting/Garlic.png");
     public final Texture GINGER = new Texture("Crafting/Ginger.png");

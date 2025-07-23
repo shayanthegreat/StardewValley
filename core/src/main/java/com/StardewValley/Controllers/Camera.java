@@ -18,7 +18,7 @@ public class Camera {
     private float stateTime = 0f;
     private float zoom = 1f;
 
-    private static final float TILE_SIZE = 32f;
+    public static final float TILE_SIZE = 32f;
 
     private Camera() {
         camera = new OrthographicCamera();
