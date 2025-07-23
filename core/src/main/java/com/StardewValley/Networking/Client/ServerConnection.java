@@ -5,13 +5,14 @@ import com.StardewValley.Networking.Common.ConnectionMessage;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerConnection extends Connection {
     private String ip;
     private int port;
     private ServerConnectionController controller = ServerConnectionController.getInstance();
 
-    private boolean exitFlag = false;
+    private AtomicBoolean exitFlag = new AtomicBoolean(false);
 
     protected ServerConnection(Socket socket, String ip, int port) throws IOException {
         super(socket);
@@ -41,13 +42,14 @@ public class ServerConnection extends Connection {
         return false;
     }
 
-    public void terminate() {
-        exitFlag = true;
+    @Override
+    public void end() {
+        exitFlag.set(true);
         super.end();
     }
 
     public boolean isEnded() {
-        return exitFlag;
+        return exitFlag.get();
     }
 
     public String getIp() {

@@ -6,6 +6,7 @@ import com.StardewValley.Networking.Common.ConnectionMessage;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientConnection extends Connection {
     private String ip;
@@ -13,7 +14,7 @@ public class ClientConnection extends Connection {
     private String username;
     private ClientConnectionController controller;
 
-    private boolean exitFlag = false;
+    private AtomicBoolean exitFlag = new AtomicBoolean(false);
 
     protected ClientConnection(Socket socket, String ip, int port) throws IOException {
         super(socket);
@@ -34,6 +35,7 @@ public class ClientConnection extends Connection {
 
     @Override
     public void end() {
+        exitFlag.set(true);
         super.end();
         ServerMain.removeConnection(this);
     }
@@ -47,18 +49,16 @@ public class ClientConnection extends Connection {
             if(message.getFromBody("command").equals("get_user")) {
                 controller.getUser(message);
             }
+            if(message.getFromBody("command").equals("inform_login")) {
+                controller.informLogin(message);
+            }
         }
 //        TODO: handle different messages
         return false;
     }
 
-    public void terminate() {
-        exitFlag = true;
-        super.end();
-    }
-
     public boolean isEnded() {
-        return exitFlag;
+        return exitFlag.get();
     }
 
     public boolean refreshStatus() {
@@ -79,6 +79,17 @@ public class ClientConnection extends Connection {
         catch (Exception e) {
             return false;
         }
+    }
 
+    public ClientConnectionController getController() {
+        return controller;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

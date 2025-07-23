@@ -1,12 +1,19 @@
 package com.StardewValley.Networking.Server;
 
+import com.StardewValley.Networking.Common.Lobby;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 
 import static com.StardewValley.Networking.Common.Connection.TIMEOUT;
 
@@ -16,6 +23,8 @@ public class ServerMain {
     private static ServerSocket serverSocket;
     private static boolean exitFlag = false;
     private static ArrayList<ClientConnection> connections = new ArrayList<>();
+
+    private static ArrayList<Lobby> lobbies = new ArrayList<>();
 
     public static void main(String[] args) {
         UserDAO.initializeDatabase();
@@ -28,6 +37,21 @@ public class ServerMain {
             System.err.println("Could not start the server");
             e.printStackTrace();
         }
+
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        Runnable refreshStatus = () -> {
+            Iterator<ClientConnection> it = connections.iterator();
+            while (it.hasNext()) {
+                ClientConnection connection = it.next();
+                if(!connection.refreshStatus()) {
+                    connection.end();
+                }
+//                TODO: inform logged in clients the list
+            }
+        };
+        scheduler.scheduleAtFixedRate(refreshStatus, 5, 3, TimeUnit.SECONDS);
+
+
         try {
             serverSocket.setSoTimeout(TIMEOUT);
             while (!exitFlag) {
@@ -105,4 +129,15 @@ public class ServerMain {
         }
     }
 
+    public static void addLobby(Lobby lobby) {
+        lobbies.add(lobby);
+    }
+
+    public static void removeLobby(Lobby lobby) {
+        lobbies.remove(lobby);
+    }
+
+    public static ArrayList<Lobby> getLobbies() {
+        return lobbies;
+    }
 }

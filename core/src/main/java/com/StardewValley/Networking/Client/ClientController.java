@@ -63,4 +63,13 @@ public class ClientController {
         }
         return ConnectionMessage.userFromJson(response.getFromBody("user"));
     }
+
+    public void informLogin(String username) {
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>(){{
+            put("command", "inform_login");
+            put("username", username);
+        }}, ConnectionMessage.Type.command);
+
+        connection.sendMessage(message);
+    }
 }

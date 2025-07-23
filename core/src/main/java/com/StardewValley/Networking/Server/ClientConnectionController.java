@@ -36,5 +36,10 @@ public class ClientConnectionController {
         connection.sendMessage(response);
     }
 
+    public void informLogin(ConnectionMessage message) {
+        String username = message.getFromBody("username");
+        connection.setUsername(username);
+    }
+
 
 }
