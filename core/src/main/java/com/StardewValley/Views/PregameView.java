@@ -125,8 +125,6 @@ public class PregameView extends MenuView{
     @Override
     public void render(float v) {
         ScreenUtils.clear(0,0,0,1);
-        Main.getInstance().getBatch().begin();
-        Main.getInstance().getBatch().end();
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

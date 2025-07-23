@@ -1,25 +1,26 @@
 package com.StardewValley.Views;
 
+import com.StardewValley.Controllers.*;
 import com.StardewValley.Controllers.Camera;
-import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Controllers.PlayerController;
 import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
-import com.StardewValley.Models.App;
-import com.StardewValley.Models.Farming.Crop;
-import com.StardewValley.Models.Farming.CropType;
-import com.StardewValley.Models.Game;
+import com.StardewValley.Models.*;
 import com.StardewValley.Models.Map.Map;
 import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Map.Tile;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
+import com.StardewValley.Models.App;
+import com.StardewValley.Models.Game;
 import com.StardewValley.Models.Player;
 import com.StardewValley.Models.PopUps.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.ScreenUtils;
 
 import static com.StardewValley.Controllers.Camera.TILE_SIZE;
 
@@ -46,6 +47,26 @@ public class GameView implements Screen , InputProcessor {
             PlayerController.getInstance().setGoingDown(true);
         }
 
+        else if(i == Input.Keys.P){
+            GameController.getInstance().cheatTime();
+        }
+
+        else if(i == Input.Keys.F){
+            GameController.getInstance().cheatSeason();
+        }
+
+        else if(i == Input.Keys.R){
+            GameController.getInstance().cheatThor();
+        }
+
+        else if(i == Input.Keys.M){
+            WordController.getInstance().zoom();
+        }
+
+        else if(i == Input.Keys.Y && PlayerController.getInstance().whatIsClose() instanceof Lake){
+            Main.getInstance().getScreen().dispose();
+            Main.getInstance().setScreen(new FishingMiniGameView(GameAssetManager.getInstance().getSkin()));
+       }
         else if(i == Input.Keys.ESCAPE){
             popUpMenu.show();
         }
@@ -56,6 +77,14 @@ public class GameView implements Screen , InputProcessor {
         else if(i == Input.Keys.G){
             App.getInstance().getCurrentGame().getTime().nextDay();
         }
+//        else if(i == Input.Keys.X){
+//            GameController.getInstance().buildBarn(FarmBuildings.Barn,40,40);
+//            GameController.getInstance().buyAnimal(AnimalType.cow,"abbas");
+//            GameController.getInstance().buyAnimal(AnimalType.pig,"abbas");
+//            GameController.getInstance().buyAnimal(AnimalType.goat,"abbas");
+//            GameController.getInstance().buyAnimal(AnimalType.sheep,"abbas");
+//        }
+
         return false;
     }
 
@@ -76,12 +105,33 @@ public class GameView implements Screen , InputProcessor {
         else if(i == Input.Keys.S){
             PlayerController.getInstance().setGoingDown(false);
         }
+
+//        else if(i == Input.Keys.P){
+//            PlayerController.getInstance().startPetting();
+//        }
+
+
+
         return false;
     }
 
     @Override
     public boolean keyTyped(char c) {
         return false;
+    }
+
+
+    @Override
+    public void show() {
+        stage = new Stage();
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(this);  // your GameView InputProcessor first
+        multiplexer.addProcessor(stage); // stage input second for UI drag/drop
+        Gdx.input.setInputProcessor(multiplexer);
+        popUpMenu = PopUpManager.getInstance(stage);
+        toolPopUp = new ToolPopUp(stage);
+        seedPopUp = new SeedPopUp(stage);
+        toolPopUp.show();
     }
 
     @Override
@@ -114,44 +164,6 @@ public class GameView implements Screen , InputProcessor {
     }
 
     @Override
-    public boolean touchUp(int i, int i1, int i2, int i3) {
-        return false;
-    }
-
-    @Override
-    public boolean touchCancelled(int i, int i1, int i2, int i3) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int i, int i1, int i2) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int i, int i1) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(float v, float v1) {
-        return false;
-    }
-
-    @Override
-    public void show() {
-        stage = new Stage();
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(this);  // your GameView InputProcessor first
-        multiplexer.addProcessor(stage); // stage input second for UI drag/drop
-        Gdx.input.setInputProcessor(multiplexer);
-        popUpMenu = PopUpManager.getInstance(stage);
-        toolPopUp = new ToolPopUp(stage);
-        seedPopUp = new SeedPopUp(stage);
-        toolPopUp.show();
-    }
-
-    @Override
     public void render(float v) {
         ScreenUtils.clear(0,0,0,1);
         Game game = App.getInstance().getCurrentGame();
@@ -161,6 +173,16 @@ public class GameView implements Screen , InputProcessor {
 //        All To print
         WordController.getInstance().update();
         PlayerController.getInstance().update();
+        GameController.getInstance().update(Gdx.graphics.getDeltaTime());
+        AnimalController.getInstance().update();
+
+        LightningEffect lightning = GameController.getInstance().getLightningEffect();
+        if (lightning != null) {
+            lightning.render(Main.getInstance().getBatch(),
+                GameController.getInstance().getLightningX(),
+                GameController.getInstance().getLightningY());
+        }
+
 //        All To print
         if (player.getCurrentTool() != null) {
             Texture toolTexture = player.getCurrentTool().getTexture();
@@ -172,7 +194,8 @@ public class GameView implements Screen , InputProcessor {
         }
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();
-        toolPopUp.refresh();
+        WordController.getInstance().drawDarknessOverlay();
+
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
@@ -201,5 +224,4 @@ public class GameView implements Screen , InputProcessor {
     public void dispose() {
 
     }
-
 }

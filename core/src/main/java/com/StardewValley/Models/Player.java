@@ -136,7 +136,7 @@ public class Player implements Serializable {
             this.energy.addEnergy(amount);
     }
 
-    public void decreaseEnergy(int amount) {
+    public void decreaseEnergy(float amount) {
         this.energy.decreaseEnergy(amount);
     }
 
