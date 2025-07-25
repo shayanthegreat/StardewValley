@@ -15,8 +15,8 @@ import java.io.Serializable;
 
 public class Time implements Serializable {
 
-    private int clockWidth = 375;
-    private int clockHeight = 275;
+    private int clockWidth = 225;
+    private int clockHeight = 165;
 //    private Position position = new Position(Gdx.graphics.getWidth()-clockWidth, Gdx.graphics.getHeight()-clockHeight);
     private Sprite clockMain = new Sprite(GameAssetManager.getInstance().CLOCK_MAIN);
     private Sprite clockArrow = new Sprite(GameAssetManager.getInstance().CLOCK_ARROW);
@@ -86,6 +86,7 @@ public class Time implements Serializable {
     public void nextDay() {
         if(day == 28) {
             day = 1;
+            nextSeason();
         }
         else {
             day++;
@@ -95,6 +96,7 @@ public class Time implements Serializable {
     public void nextHour() {
         if(hour == 22) {
             hour = 9;
+            nextDay();
         }
         else {
             hour++;
@@ -203,8 +205,8 @@ public class Time implements Serializable {
         updateWeather();
         updateSeason();
 
-        float clockX = 32 * (position.x - 50) + 1650;
-        float clockY = 32 * (position.y - 50) + 1640;
+        float clockX = 32 * (position.x - 50) + 1780;
+        float clockY = 32 * (position.y - 50) + 1740;
 
         clockMain.setSize(clockWidth, clockHeight);
         clockMain.setPosition(clockX, clockY);
@@ -213,7 +215,7 @@ public class Time implements Serializable {
         clockArrow.setSize(clockWidth * 0.1f, clockHeight * 0.28f);
         clockArrow.setRotation(getArrowRotation());
         clockArrow.setOrigin(clockArrow.getWidth() / 2f, 0f);
-        clockArrow.setPosition(clockX + 100, clockY + 180);
+        clockArrow.setPosition(clockX + 57, clockY + 103);
         clockArrow.draw(batch);
 
         weatherSprite.setSize(clockWidth * 0.180f, clockHeight * 0.200f);
@@ -225,7 +227,7 @@ public class Time implements Serializable {
         seasonSprite.draw(batch);
 
         GameAssetManager.getInstance().MAIN_FONT.setColor(Color.WHITE);
-        GameAssetManager.getInstance().MAIN_FONT.getData().setScale(2f);
+        GameAssetManager.getInstance().MAIN_FONT.getData().setScale(1f);
 
         String timeText = String.format("%d:00 %s",
             hour <= 12 ? hour : hour - 12,
@@ -251,12 +253,12 @@ public class Time implements Serializable {
 
 
     public void updateWeather(){
-//        switch (App.getInstance().getCurrentGame().getTodayWeather()) {
-//            case rain -> weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[6]);
-//            case snow -> weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[9]);
-//            case storm -> weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[11]);
-//            case sunny -> weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[7]);
-//        }
+        switch (App.getInstance().getCurrentGame().getTodayWeather()) {
+            case rain -> weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[6]);
+            case snow -> weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[9]);
+            case storm -> weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[11]);
+            case sunny -> weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[7]);
+        }
     }
 
     public void updateSeason(){

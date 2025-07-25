@@ -46,7 +46,7 @@ public class Player implements Serializable {
 
 
     public Player(User user, Farm farm) {
-        this.money = 100;
+        this.money = 1000000;
         this.user = user;
         this.farm = farm;
         this.position = new Position(farm.getTopLeft().x + 50, farm.getTopLeft().y + 50);

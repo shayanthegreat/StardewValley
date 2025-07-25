@@ -10,6 +10,7 @@ import com.StardewValley.Models.Game;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.*;
+import com.StardewValley.Models.Store.Store;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -188,7 +189,9 @@ public class WordController {
                         camera.print(GameAssetManager.getInstance().BUILT_GREENHOUSE, greenHouse.getOrigin().x,greenHouse.getOrigin().y,5,6);
                     }
                 }
-
+                else if(building instanceof Store){
+                    camera.print(GameAssetManager.getInstance().STORES, i, j, 1, 1);
+                }
                 else if(tileObject instanceof Barn barn){
                     camera.print(GameAssetManager.getInstance().BARN, barn.getPlacedTile().getPosition().x,barn.getPlacedTile().getPosition().y,2,2);
                 }

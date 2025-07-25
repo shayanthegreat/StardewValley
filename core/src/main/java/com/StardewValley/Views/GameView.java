@@ -6,10 +6,8 @@ import com.StardewValley.Controllers.PlayerController;
 import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.*;
-import com.StardewValley.Models.Map.Lake;
-import com.StardewValley.Models.Map.Map;
-import com.StardewValley.Models.Map.Position;
-import com.StardewValley.Models.Map.Tile;
+import com.StardewValley.Models.Map.*;
+import com.StardewValley.Models.Store.Store;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -24,6 +22,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.util.ArrayList;
+
 import static com.StardewValley.Controllers.Camera.TILE_SIZE;
 
 public class GameView implements Screen , InputProcessor {
@@ -31,6 +31,7 @@ public class GameView implements Screen , InputProcessor {
     private PopUpManager popUpMenu;
     private ToolPopUp toolPopUp;
     private SeedPopUp seedPopUp;
+    private StorePopUp storePopUp;
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
@@ -132,6 +133,8 @@ public class GameView implements Screen , InputProcessor {
         toolPopUp = new ToolPopUp(stage);
         seedPopUp = new SeedPopUp(stage);
         toolPopUp.show();
+        storePopUp = new StorePopUp(stage);
+        storePopUp.hide();
     }
 
     @Override
@@ -147,17 +150,31 @@ public class GameView implements Screen , InputProcessor {
             // Optional: if you want to do something with the tile position
             Position clickedPosition = new Position(tileX, tileY);
 
+//            if(storePopUp.isVisible()){
+//                return false;
+//            }
             Map map = App.getInstance().getCurrentGame().getMap();
             Tile tile = map.getTile(clickedPosition);
             if(tile == null){
                 return false;
             }
+
+            Building building = tile.getBuilding();
             if(tile.isPlowed() && !tile.containsPlant()){
                 seedPopUp.setTargetPosition(clickedPosition);
                 seedPopUp.setOnSeedSelected((seed, position) -> {
                     GameController.getInstance().plant(seed, position);
                 });
                 seedPopUp.show();
+            }
+            else if(building instanceof Store){
+                NPCVillage npcVillages = App.getInstance().getCurrentGame().getMap().getNpcVillage();
+                for (int i = 0; i < npcVillages.getStorePositions().size(); i++) {
+                    if(npcVillages.getStorePositions().get(i).equals(clickedPosition)){
+                        storePopUp.refresh(App.getInstance().getCurrentGame().getMap().getNpcVillage().getStores().get(i));
+                        storePopUp.show();
+                    }
+                }
             }
             else{
                 GameController.getInstance().handleTileClick(clickedPosition);
@@ -224,7 +241,6 @@ public class GameView implements Screen , InputProcessor {
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();
         WordController.getInstance().drawDarknessOverlay();
-        System.out.println(App.getInstance().getCurrentGame().getCurrentPlayer().getPosition());
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

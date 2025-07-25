@@ -2420,7 +2420,7 @@ public class GameAssetManager {
     public final Texture WOOD_CLUB = new Texture("Weapon/Wood_Club.png");
     public final Texture WOOD_MALLET = new Texture("Weapon/Wood_Mallet.png");
     public final Texture WOODEN_BLADE = new Texture("Weapon/Wooden_Blade.png");
-
+    public final Texture STORES = new Texture("Stores.png");
     // ALI
 
     public Skin skin = new Skin(Gdx.files.internal("skin/flat-earth-ui.json"));

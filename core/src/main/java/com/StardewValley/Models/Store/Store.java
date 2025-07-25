@@ -601,4 +601,7 @@ public class Store extends Building implements Serializable {
         return false;
     }
 
+    public ArrayList<StoreRecipes> getRecipes() {
+        return recipes;
+    }
 }

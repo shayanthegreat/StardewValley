@@ -131,6 +131,10 @@ public class PopUpManager {
 
     }
 
+    public boolean isVisible() {
+        return popupWindow.isVisible();
+    }
+
     public InventoryPopUp getInventoryPopUp() {
         return inventoryPopUp;
     }
