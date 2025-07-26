@@ -15,11 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import jdk.jshell.execution.Util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-// ... (imports and package remain unchanged)
 
 public class StorePopUp {
     private final Stage stage;
@@ -82,10 +79,21 @@ public class StorePopUp {
             }
         });
 
+        // Trash Button
+        ImageButton trashButton = new ImageButton(new Image(GameAssetManager.getInstance().TRASH_CAN_COPPER).getDrawable());
+        trashButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                hide();
+                PopUpManager.getInstance(stage).showInventoryTab();
+            }
+        });
+
         Table topBar = new Table();
         topBar.add(refreshButton).left().pad(5);
         topBar.add(toggleFilterButton).pad(5);
         topBar.add().expandX();
+        topBar.add(trashButton).size(30, 30).right().pad(5);
         topBar.add(closeButton).right().pad(5);
 
         totalPriceLabel = new Label("Total: $0", skin);
