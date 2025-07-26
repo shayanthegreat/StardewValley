@@ -11,10 +11,12 @@ import com.StardewValley.Models.Farming.ForagingCrop;
 import com.StardewValley.Models.Farming.ForagingCropType;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Item;
+import com.StardewValley.Models.Tools.BackPack;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 public enum CookingRecipe implements Recipe, Serializable {
     friedEgg("Fried Egg",new HashMap<>() {{
@@ -144,5 +146,24 @@ public enum CookingRecipe implements Recipe, Serializable {
 
     public Texture getTexture() {
         return texture;
+    }
+
+    public boolean canCook(BackPack backPack) {
+        for (Map.Entry<Item, Integer> itemIntegerEntry : this.getIngredients().entrySet()) {
+            Item item = itemIntegerEntry.getKey();
+            Integer quantity = itemIntegerEntry.getValue();
+            if(backPack.getItemCount(item) < quantity) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void consume(BackPack backPack) {
+        for (Map.Entry<Item, Integer> itemIntegerEntry : this.getIngredients().entrySet()) {
+            Item item = itemIntegerEntry.getKey();
+            Integer quantity = itemIntegerEntry.getValue();
+            backPack.removeItem(item, quantity);
+        }
     }
 }

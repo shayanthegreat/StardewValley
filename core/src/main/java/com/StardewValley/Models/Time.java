@@ -86,7 +86,6 @@ public class Time implements Serializable {
     public void nextDay() {
         if(day == 28) {
             day = 1;
-            nextSeason();
         }
         else {
             day++;
@@ -96,7 +95,6 @@ public class Time implements Serializable {
     public void nextHour() {
         if(hour == 22) {
             hour = 9;
-            nextDay();
         }
         else {
             hour++;
