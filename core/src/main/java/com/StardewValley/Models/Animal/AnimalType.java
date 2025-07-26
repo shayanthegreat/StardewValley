@@ -1,13 +1,15 @@
 package com.StardewValley.Models.Animal;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public enum AnimalType implements Serializable {
-    cow(false,1500,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.milk) , new AnimalProduct(AnimalProductType.bigMilk))),4,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/cow.png")),
+    cow(false,1500,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.milk) , new AnimalProduct(AnimalProductType.bigMilk))),4,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/cow.png"),),
     goat(false,4000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.goatMilk),new AnimalProduct(AnimalProductType.bigGoatMilk))),8,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Goat.png")),
     sheep(false,8000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.wool))),12,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Sheep.png")),
     pig(false,16000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.truffle))),8,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Pig.png")),
@@ -22,13 +24,15 @@ public enum AnimalType implements Serializable {
     private ArrayList<AnimalProduct> products;
     private boolean isInCage;
     private Texture texture;
+    private Animation<TextureRegion> walkingAnimation;
 
-    AnimalType(boolean isInCage,int cost,ArrayList<AnimalProduct> products,int capacity,Texture texture) {
+    AnimalType(boolean isInCage,int cost,ArrayList<AnimalProduct> products,int capacity,Texture texture,Animation<TextureRegion> walkingAnimation) {
         this.isInCage = isInCage;
         this.cost = cost;
         this.products = products;
         this.capacity = capacity;
         this.texture = texture;
+        this.walkingAnimation = walkingAnimation;
     }
 
     public int getCapacity() {

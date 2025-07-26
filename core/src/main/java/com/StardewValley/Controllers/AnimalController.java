@@ -67,6 +67,7 @@ public class AnimalController implements Controller{
     public void petAnimal(String animalName){
         App app = App.getInstance();
         Player player=app.getCurrentGame().getCurrentPlayer();
+
         if (player.getFarm().getBarn() == null && player.getFarm().getCoop() == null) {
             return;
         }
@@ -85,6 +86,7 @@ public class AnimalController implements Controller{
             return;
         }
 
+        PlayerController.getInstance().startPetting(animal);
 
         if( Math.abs(player.getPosition().x-animal.getPosition().x)<=1 && Math.abs(player.getPosition().y-animal.getPosition().y)<=1){
             animal.increaseFriendship(15);
@@ -107,9 +109,31 @@ public class AnimalController implements Controller{
         if (animal.isOutside()) {
             return;
         }
+
+        PlayerController.getInstance().startFeeding(animal);
+
         animal.setLastFeedingTime(game.getTime());
         player.decreaseHay(2);
-        return;
+    }
+
+    public void sellAnimal(String animalName) {
+        App app = App.getInstance();
+        Game game = app.getCurrentGame();
+        Player player = app.getCurrentGame().getCurrentPlayer();
+        Animal animal = player.getFarm().getBarn().getAnimalByName(animalName);
+        if (animal != null) {
+            int price = animal.calSellingPrice();
+            player.addMoney(price);
+            player.getFarm().getBarn().getAnimals().remove(animal);
+        }
+        else{
+            animal = player.getFarm().getCoop().getAnimalByName(animalName);
+            if (animal != null) {
+                int price = animal.calSellingPrice();
+                player.addMoney(price);
+                player.getFarm().getCoop().getAnimals().remove(animal);
+            }
+        }
     }
 
 

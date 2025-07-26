@@ -1,5 +1,6 @@
 package com.StardewValley.Controllers;
 
+import com.StardewValley.Models.Animal.Animal;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Game;
 import com.StardewValley.Models.Map.*;
@@ -19,11 +20,13 @@ public class PlayerController {
     private Animation<TextureRegion> animation;
     private long pettingStartTime = 0;
     private boolean petting = false;
+    private boolean feeding = false;
 
 
     public void update(){
         movePlayer();
         petting();
+        feeding();
     }
 
 
@@ -104,6 +107,17 @@ public class PlayerController {
         }
     }
 
+    private void feeding(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(feeding){
+            if(TimeUtils.millis() - pettingStartTime > 3000){
+                feeding = false;
+                return;
+            }
+            Camera.getInstance().print(player.getAvatarType().feedingAnimation(),player.getPosition().x,player.getPosition().y,1,1);
+        }
+    }
+
     private void move(int dx , int dy){
         Game game = App.getInstance().getCurrentGame();
         Player player = game.getCurrentPlayer();
@@ -161,9 +175,17 @@ public class PlayerController {
         return null;
     }
 
-    public void startPetting(){
-//        AnimalController.getInstance().petAnimal();
+    public void startPetting(Animal animal){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        player.setPosition(new Position(animal.getPosition().x-1,animal.getPosition().y));
         pettingStartTime = TimeUtils.millis();
         petting = true;
+    }
+
+    public void startFeeding(Animal animal){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        player.setPosition(new Position(animal.getPosition().x+1,animal.getPosition().y));
+        feeding = true;
+        pettingStartTime = TimeUtils.millis();
     }
 }

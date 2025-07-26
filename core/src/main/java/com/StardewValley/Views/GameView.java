@@ -6,6 +6,8 @@ import com.StardewValley.Controllers.PlayerController;
 import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.*;
+import com.StardewValley.Models.Animal.AnimalType;
+import com.StardewValley.Models.Enums.FarmBuildings;
 import com.StardewValley.Models.Map.Lake;
 import com.StardewValley.Models.Map.Map;
 import com.StardewValley.Models.Map.Position;
@@ -31,6 +33,7 @@ public class GameView implements Screen , InputProcessor {
     private PopUpManager popUpMenu;
     private ToolPopUp toolPopUp;
     private SeedPopUp seedPopUp;
+    private AnimalPopUp animalPopUp;
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
@@ -77,13 +80,13 @@ public class GameView implements Screen , InputProcessor {
         else if(i == Input.Keys.G){
             App.getInstance().getCurrentGame().getTime().nextDay();
         }
-//        else if(i == Input.Keys.X){
-//            GameController.getInstance().buildBarn(FarmBuildings.Barn,40,40);
-//            GameController.getInstance().buyAnimal(AnimalType.cow,"abbas");
-//            GameController.getInstance().buyAnimal(AnimalType.pig,"abbas");
-//            GameController.getInstance().buyAnimal(AnimalType.goat,"abbas");
-//            GameController.getInstance().buyAnimal(AnimalType.sheep,"abbas");
-//        }
+        else if(i == Input.Keys.X){
+            GameController.getInstance().buildBarn(FarmBuildings.Barn,40,40);
+            GameController.getInstance().buyAnimal(AnimalType.cow,"abbas");
+            GameController.getInstance().buyAnimal(AnimalType.pig,"ahmad");
+            GameController.getInstance().buyAnimal(AnimalType.goat,"asd");
+            GameController.getInstance().buyAnimal(AnimalType.sheep,"asss");
+        }
 
         return false;
     }
@@ -131,6 +134,7 @@ public class GameView implements Screen , InputProcessor {
         popUpMenu = PopUpManager.getInstance(stage);
         toolPopUp = new ToolPopUp(stage);
         seedPopUp = new SeedPopUp(stage);
+        animalPopUp = new AnimalPopUp(stage);
         toolPopUp.show();
     }
 
@@ -162,6 +166,10 @@ public class GameView implements Screen , InputProcessor {
             else{
                 GameController.getInstance().handleTileClick(clickedPosition);
             }
+        }
+
+        if(button == Input.Buttons.RIGHT){
+            animalPopUp.show();
         }
         return false;
     }
