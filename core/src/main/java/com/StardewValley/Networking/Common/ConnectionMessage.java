@@ -32,6 +32,14 @@ public class ConnectionMessage {
         return gson.fromJson(json, User.class);
     }
 
+    public static synchronized String lobbyToJson(Lobby lobby) {
+        return gson.toJson(lobby);
+    }
+
+    public static synchronized Lobby lobbyFromJson(String json) {
+        return gson.fromJson(json, Lobby.class);
+    }
+
 
     private Type type;
     private HashMap<String, Object> body;
@@ -58,5 +66,6 @@ public class ConnectionMessage {
     public enum Type {
         command,
         response,
+        inform,
     }
 }

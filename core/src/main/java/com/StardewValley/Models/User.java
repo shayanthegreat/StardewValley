@@ -1,6 +1,7 @@
 package com.StardewValley.Models;
 
 import com.StardewValley.Models.Enums.Question;
+import com.StardewValley.Networking.Common.Lobby;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ public class User implements Serializable {
     private transient Game currentGame;
     private ArrayList<Integer> gamesMoney;
     private String avatarPath;
+
+    private transient Lobby lobby = null;
 
     public User(String username, String password, String nickname, String email, String gender) {
         this.username = username;
@@ -129,4 +132,11 @@ public class User implements Serializable {
         return maxMoney;
     }
 
+    public Lobby getLobby() {
+        return lobby;
+    }
+
+    public void setLobby(Lobby lobby) {
+        this.lobby = lobby;
+    }
 }

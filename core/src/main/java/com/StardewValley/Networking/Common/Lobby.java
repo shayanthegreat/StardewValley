@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Lobby {
-    private String name;
-    private String code;
+    private final String name;
+    private final String code;
     private String adminUsername;
-    private ArrayList<String> members;
+    private final ArrayList<String> members;
     private Long lastJoin;
-    private boolean isPrivate;
-    private String password;
-    private boolean isVisible;
+    private final boolean isPrivate;
+    private final String password;
+    private final boolean isVisible;
 
     public Lobby(String name, String adminUsername, boolean isPrivate, String password, boolean isVisible) {
         this.name = name;
@@ -60,6 +60,18 @@ public class Lobby {
         return members;
     }
 
+    public void addMember(String member) {
+        members.add(member);
+        lastJoin = System.currentTimeMillis();
+    }
+
+    public void removeMember(String member) {
+        members.remove(member);
+        if(adminUsername.equals(member)) {
+            adminUsername = members.get(0);
+        }
+    }
+
     public Long getLastJoin() {
         return lastJoin;
     }
@@ -74,5 +86,13 @@ public class Lobby {
 
     public boolean isVisible() {
         return isVisible;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Lobby other) {
+            return name.equals(other.name) && code.equals(other.code);
+        }
+        return false;
     }
 }

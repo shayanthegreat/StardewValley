@@ -11,16 +11,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ClientConnection extends Connection {
     private String ip;
     private int port;
-    private String username;
     private ClientConnectionController controller;
-
     private AtomicBoolean exitFlag = new AtomicBoolean(false);
+
+    private String username;
+    private String lobbyCode;
 
     protected ClientConnection(Socket socket, String ip, int port) throws IOException {
         super(socket);
         this.ip = ip;
         this.port = port;
-        this.username = null;
+        this.username = "";
+        this.lobbyCode = "";
         this.controller = new ClientConnectionController(this);
     }
 
@@ -49,11 +51,21 @@ public class ClientConnection extends Connection {
             if(message.getFromBody("command").equals("get_user")) {
                 controller.getUser(message);
             }
-            if(message.getFromBody("command").equals("inform_login")) {
+            if(message.getFromBody("command").equals("send_lobbies")) {
+                controller.sendLobbies(message);
+            }
+            if(message.getFromBody("command").equals("create_lobby")) {
+                controller.createLobby(message);
+            }
+            if(message.getFromBody("command").equals("join_lobby")) {
+                controller.joinLobby(message);
+            }
+        }
+        if(message.getType().equals(ConnectionMessage.Type.inform)) {
+            if(message.getFromBody("information").equals("inform_login")) {
                 controller.informLogin(message);
             }
         }
-//        TODO: handle different messages
         return false;
     }
 
@@ -91,5 +103,13 @@ public class ClientConnection extends Connection {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getLobbyCode() {
+        return lobbyCode;
+    }
+
+    public void setLobbyCode(String lobbyCode) {
+
     }
 }
