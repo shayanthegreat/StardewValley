@@ -165,11 +165,13 @@ public class StorePopUp {
             Item item = storeItem.getItem();
             int price = storeItem.getPrice();
             itemQuantities.put(storeItem, 0);
-
             Table itemRow = new Table().defaults().pad(4).center().getTable();
 
             Image itemImage = new Image(item.getTexture());
             itemImage.setSize(60, 60);
+            if(dailyLimit == 0){
+                itemImage.setColor(0.3f, 0.3f, 0.3f, 1);
+            }
             itemRow.add(itemImage).size(70);
 
             Label nameLabel = new Label(item.getName() + " ($" + price + ")", skin);
@@ -225,6 +227,9 @@ public class StorePopUp {
             Table recipeRow = new Table().defaults().pad(4).center().getTable();
 
             Image recipeImage = new Image(recipeEntry.getRecipe().getTexture());
+            if(dailyLimit == 0){
+                recipeImage.setColor(0.3f, 0.3f, 0.3f, 1);
+            }
             recipeImage.setSize(60, 60);
             recipeRow.add(recipeImage).size(70);
 

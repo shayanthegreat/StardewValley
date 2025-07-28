@@ -191,7 +191,7 @@ public class Player implements Serializable {
     public void applyBuff(Buff buff) {
         App app = App.getInstance();
         Game game = app.getCurrentGame();
-        Time time = game.getTime();
+        Time time = new Time(game.getTime());
         switch (buff.getSkillType()){
             case farming :{
                 lastBuffTime[0] = Time.addHour(time,buff.getHours());

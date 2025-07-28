@@ -33,6 +33,7 @@ public class GameView implements Screen , InputProcessor {
     private SeedPopUp seedPopUp;
     private StorePopUp storePopUp;
     private CookingPopUp cookingPopUp;
+    private FridgePopUp fridgePopUp;
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
@@ -81,6 +82,9 @@ public class GameView implements Screen , InputProcessor {
         }
         else if(i == Input.Keys.C){
             cookingPopUp.show();
+        }
+        else if(i == Input.Keys.Q){
+            fridgePopUp.show();
         }
 //        else if(i == Input.Keys.X){
 //            GameController.getInstance().buildBarn(FarmBuildings.Barn,40,40);
@@ -141,6 +145,8 @@ public class GameView implements Screen , InputProcessor {
         storePopUp.hide();
         cookingPopUp = new CookingPopUp(stage);
         cookingPopUp.hide();
+        fridgePopUp = new FridgePopUp(stage);
+        fridgePopUp.hide();
     }
 
     @Override

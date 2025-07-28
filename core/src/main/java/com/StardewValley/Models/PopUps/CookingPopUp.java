@@ -81,7 +81,6 @@ public class CookingPopUp {
                     else{
                         UIUtils.showTopMessage(stage, GameAssetManager.getInstance().SKIN, "you don't have enough ingredients");
                     }
-
                 }
             }
         });
