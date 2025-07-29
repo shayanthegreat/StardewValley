@@ -28,7 +28,7 @@ public class ClientConnection extends Connection {
 
     @Override
     public boolean initialHandshake() {
-        if(!refreshStatus()) {
+        if (!refreshStatus()) {
             return false;
         }
         ServerMain.addConnection(this);
@@ -44,26 +44,44 @@ public class ClientConnection extends Connection {
 
     @Override
     protected boolean handleMessage(ConnectionMessage message) {
-        if(message.getType().equals(ConnectionMessage.Type.command)) {
-            if(message.getFromBody("command").equals("add_user")) {
+        if (message.getType().equals(ConnectionMessage.Type.command)) {
+            if (message.getFromBody("command").equals("add_user")) {
                 controller.addUser(message);
+                return true;
             }
-            if(message.getFromBody("command").equals("get_user")) {
+            if (message.getFromBody("command").equals("get_user")) {
                 controller.getUser(message);
+                return true;
             }
-            if(message.getFromBody("command").equals("send_lobbies")) {
+            if (message.getFromBody("command").equals("send_lobbies")) {
                 controller.sendLobbies(message);
+                return true;
             }
-            if(message.getFromBody("command").equals("create_lobby")) {
+            if (message.getFromBody("command").equals("create_lobby")) {
                 controller.createLobby(message);
+                return true;
             }
-            if(message.getFromBody("command").equals("join_lobby")) {
+            if (message.getFromBody("command").equals("join_lobby")) {
                 controller.joinLobby(message);
+                return true;
+            }
+            if (message.getFromBody("command").equals("leave_lobby")) {
+                controller.leaveLobby(message);
+                return true;
+            }
+            if (message.getFromBody("command").equals("start_game")) {
+                controller.startGame(message);
+                return true;
             }
         }
-        if(message.getType().equals(ConnectionMessage.Type.inform)) {
-            if(message.getFromBody("information").equals("inform_login")) {
+        if (message.getType().equals(ConnectionMessage.Type.inform)) {
+            if (message.getFromBody("information").equals("inform_login")) {
                 controller.informLogin(message);
+                return true;
+            }
+            if (message.getFromBody("information").equals("inform_logout")) {
+                controller.informLogout(message);
+                return true;
             }
         }
         return false;
@@ -80,15 +98,14 @@ public class ClientConnection extends Connection {
         try {
             ConnectionMessage response = sendAndWaitForResponse(request, TIMEOUT);
 
-            if(response == null) {
+            if (response == null) {
                 return false;
             }
 
             setOtherSideIP(response.getFromBody("client_ip"));
             setOtherSidePort(response.getIntFromBody("client_port"));
             return true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -112,4 +129,6 @@ public class ClientConnection extends Connection {
     public void setLobbyCode(String lobbyCode) {
 
     }
+
+
 }

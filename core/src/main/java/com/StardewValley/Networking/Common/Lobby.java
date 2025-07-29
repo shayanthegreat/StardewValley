@@ -1,7 +1,9 @@
 package com.StardewValley.Networking.Common;
 
+import com.StardewValley.Networking.Server.ClientConnection;
 import com.StardewValley.Networking.Server.ServerMain;
 
+import java.rmi.ServerError;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -44,6 +46,18 @@ public class Lobby {
         return str.toString();
     }
 
+    public void terminate() {
+        for (String member : members) {
+            ClientConnection connection = ServerMain.getConnectionByUsername(member);
+            try{
+                connection.getController().informLobbyTermination();
+            }catch (NullPointerException e) {
+                System.err.println("no connection found with the username " + member);
+            }
+        }
+        ServerMain.removeLobby(this);
+    }
+
     public String getName() {
         return name;
     }
@@ -67,7 +81,10 @@ public class Lobby {
 
     public void removeMember(String member) {
         members.remove(member);
-        if(adminUsername.equals(member)) {
+        if(members.isEmpty()) {
+            ServerMain.removeLobby(this);
+        }
+        else if(adminUsername.equals(member)) {
             adminUsername = members.get(0);
         }
     }

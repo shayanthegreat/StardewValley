@@ -38,7 +38,7 @@ public class ServerMain {
             e.printStackTrace();
         }
 
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
         Runnable refreshStatus = () -> {
             Iterator<ClientConnection> it = connections.iterator();
             while (it.hasNext()) {
@@ -49,7 +49,17 @@ public class ServerMain {
 //                TODO: inform logged in clients the list
             }
         };
-        scheduler.scheduleAtFixedRate(refreshStatus, 5, 3, TimeUnit.SECONDS);
+        Runnable checkLobbies = () -> {
+            Long time = System.currentTimeMillis();
+            Iterator<Lobby> it = lobbies.iterator();
+            while (it.hasNext()) {
+                Lobby lobby = it.next();
+                if(time - lobby.getLastJoin() > (3 * 60 * 1000)) {
+                    lobby.terminate();
+                }
+            }
+        };
+        scheduler.scheduleAtFixedRate(refreshStatus, 10, 3, TimeUnit.SECONDS);
 
 
         try {
@@ -108,6 +118,15 @@ public class ServerMain {
         return null;
     }
 
+    public static ClientConnection getConnectionByUsername(String username) {
+        for (ClientConnection connection : connections) {
+            if (connection.getUsername().equals(username)) {
+                return connection;
+            }
+        }
+        return null;
+    }
+
     public static boolean isEnded() {
         return exitFlag;
     }
@@ -139,5 +158,14 @@ public class ServerMain {
 
     public static ArrayList<Lobby> getLobbies() {
         return lobbies;
+    }
+
+    public static Lobby getLobbyByCode(String code) {
+        for(Lobby lobby : lobbies) {
+            if(lobby.getCode().equals(code)) {
+                return lobby;
+            }
+        }
+        return null;
     }
 }

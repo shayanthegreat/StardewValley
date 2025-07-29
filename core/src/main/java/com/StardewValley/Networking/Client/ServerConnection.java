@@ -38,8 +38,16 @@ public class ServerConnection extends Connection {
 
     @Override
     protected boolean handleMessage(ConnectionMessage message) {
-//        TODO: handle different messages
+        if (message.getType().equals(ConnectionMessage.Type.command)) {
+
+        } else if (message.getType().equals(ConnectionMessage.Type.inform)) {
+            if (message.getFromBody("information").equals("lobby_termination")) {
+                controller.lobbyTerminated(message);
+                return true;
+            }
+        }
         return false;
+
     }
 
     @Override

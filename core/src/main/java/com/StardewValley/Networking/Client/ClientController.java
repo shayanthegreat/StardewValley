@@ -2,7 +2,6 @@ package com.StardewValley.Networking.Client;
 
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.User;
-import com.StardewValley.Networking.Common.Connection;
 import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.Lobby;
 
@@ -46,7 +45,7 @@ public class ClientController {
     }
 
     public void addUserToDB(User user) {
-        ConnectionMessage message = new ConnectionMessage(new HashMap<>(){{
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
             put("command", "add_user");
             put("user", ConnectionMessage.userToJson(user));
         }}, ConnectionMessage.Type.command);
@@ -55,23 +54,31 @@ public class ClientController {
     }
 
     public User getUserFromDB(String username) {
-        ConnectionMessage request = new ConnectionMessage(new HashMap<>(){{
+        ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
             put("command", "get_user");
             put("username", username);
         }}, ConnectionMessage.Type.command);
 
         ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
 
-        if(response.getFromBody("response").equals("not_found")) {
+        if (response.getFromBody("response").equals("not_found")) {
             return null;
         }
         return ConnectionMessage.userFromJson(response.getFromBody("user"));
     }
 
     public void informLogin(String username) {
-        ConnectionMessage message = new ConnectionMessage(new HashMap<>(){{
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
             put("information", "inform_login");
             put("username", username);
+        }}, ConnectionMessage.Type.inform);
+
+        connection.sendMessage(message);
+    }
+
+    public void informLogout(String username) {
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
+            put("information", "inform_logout");
         }}, ConnectionMessage.Type.inform);
 
         connection.sendMessage(message);
@@ -86,13 +93,13 @@ public class ClientController {
 
         ArrayList<String> lobbiesJson = response.getFromBody("lobbies");
         data.lobbies.clear();
-        for(String json : lobbiesJson) {
+        for (String json : lobbiesJson) {
             data.lobbies.add(ConnectionMessage.lobbyFromJson(json));
         }
     }
 
     public boolean createLobby(String name, boolean isPrivate, String password, boolean isVisible) {
-        if(!isPrivate) password = "";
+        if (!isPrivate) password = "";
         String finalPassword = (isPrivate ? password : "");
         ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
             put("command", "create_lobby");
@@ -104,10 +111,10 @@ public class ClientController {
 
         ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
 
-        if(response.getFromBody("response").equals("ok")) {
+        if (response.getFromBody("response").equals("ok")) {
             refreshLobbies();
-            for(Lobby lobby : data.lobbies) {
-                if(lobby.getName().equals(name)) {
+            for (Lobby lobby : data.lobbies) {
+                if (lobby.getName().equals(name)) {
                     App.getInstance().getCurrentUser().setLobby(lobby);
                 }
             }
@@ -123,12 +130,43 @@ public class ClientController {
         }}, ConnectionMessage.Type.command);
 
         ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
-        if(response.getFromBody("response").equals("ok")) {
+        if (response.getFromBody("response").equals("ok")) {
             data.lobbyCode = code;
+            refreshLobbies();
             return "joined successfully";
-        }
-        else {
+        } else {
             return response.getFromBody("error");
         }
+    }
+
+    public String leaveLobby() {
+        String code = data.lobbyCode;
+        ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
+            put("command", "leave_lobby");
+            put("code", code);
+        }}, ConnectionMessage.Type.command);
+
+        ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
+        if (response.getFromBody("response").equals("ok")) {
+            data.lobbyCode = "";
+            refreshLobbies();
+            return "leaved successfully";
+        } else {
+            return response.getFromBody("error");
+        }
+    }
+
+    public String startGame() {
+        ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
+            put("command", "start_game");
+        }}, ConnectionMessage.Type.command);
+
+        ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
+        if (response.getFromBody("response").equals("ok")) {
+            return "game started successfully";
+        } else {
+            return response.getFromBody("error");
+        }
+
     }
 }

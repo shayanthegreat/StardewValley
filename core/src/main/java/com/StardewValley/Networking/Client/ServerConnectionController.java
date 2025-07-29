@@ -7,6 +7,7 @@ import java.util.HashMap;
 public class ServerConnectionController {
     private static ServerConnectionController instance;
     private ServerConnection connection;
+    private ClientData data = ClientData.getInstance();
 
     private ServerConnectionController() {
     }
@@ -27,6 +28,18 @@ public class ServerConnectionController {
         }}, ConnectionMessage.Type.response);
 
         return message;
+    }
+
+    public void lobbyTerminated(ConnectionMessage message) {
+        data.lobbyCode = "";
+
+        try{
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ClientController.getInstance().refreshLobbies();
     }
 
     public void setConnection(ServerConnection connection) {
