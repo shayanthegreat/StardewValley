@@ -87,7 +87,7 @@ public class GameView implements Screen , InputProcessor {
         else if(i == Input.Keys.Q){
             fridgePopUp.show();
         }
-        else if(i == Input.Keys.J){
+        else if(i == Input.Keys.B){
             craftingPopUp.show();
         }
 //        else if(i == Input.Keys.X){
