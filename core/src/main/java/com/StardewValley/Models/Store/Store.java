@@ -45,6 +45,10 @@ public class Store extends Building implements Serializable {
                 this.items.add(new StoreItem(new Material(MaterialType.ironOre), 150, 2000, null, 150));
                 this.items.add(new StoreItem(new Material(MaterialType.goldOre), 400, 2000, null, 400));
                 this.items.add(new StoreItem(new Material(MaterialType.coal), 150, 2000, null, 150));
+                this.items.add(new StoreItem(new Material(MaterialType.sugar), 150, 2000, null, 150));
+                this.items.add(new StoreItem(new Material(MaterialType.fiber), 150, 2000, null, 150));
+                this.items.add(new StoreItem(new Material(MaterialType.oil), 150, 2000, null, 150));
+
                 break;
             }
             case "Robin":{

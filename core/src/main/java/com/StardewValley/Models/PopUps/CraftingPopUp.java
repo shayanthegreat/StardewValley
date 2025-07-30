@@ -2,6 +2,7 @@ package com.StardewValley.Models.PopUps;
 
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Crafting.CookingRecipe;
+import com.StardewValley.Models.Crafting.CraftingItem;
 import com.StardewValley.Models.Crafting.CraftingRecipe;
 import com.StardewValley.Models.Crafting.Food;
 import com.StardewValley.Models.GameAssetManager;
@@ -72,8 +73,9 @@ public class CraftingPopUp {
                     BackPack backPack = App.getInstance().getCurrentGame().getCurrentPlayer().getBackPack();
                     if (selectedRecipe.canCook(backPack)) {
                         selectedRecipe.consume(backPack);
+                        backPack.addItem(new CraftingItem(selectedRecipe), 1);
                         refresh();
-                        UIUtils.showTopMessage(stage, GameAssetManager.getInstance().SKIN, "you cooked some " + selectedRecipe.getProductName());
+                        UIUtils.showTopMessage(stage, GameAssetManager.getInstance().SKIN, "you craft some " + selectedRecipe.getProductName());
                     }
                     else{
                         UIUtils.showTopMessage(stage, GameAssetManager.getInstance().SKIN, "you don't have enough ingredients");
