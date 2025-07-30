@@ -14,6 +14,7 @@ import com.StardewValley.Models.Farming.PlantType;
 import com.StardewValley.Models.Farming.Seed;
 import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.StardewValley.Models.Map.*;
+import com.StardewValley.Models.PopUps.PopUpManager;
 import com.StardewValley.Views.MenuView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -455,16 +456,23 @@ public class GameController implements Controller {
         return false;
     }
 
-    public void handleTileClick(Position position) {
+    public void handleTileClick(Position position, Stage stage) {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         Position playerPos = player.getPosition();
-
         if(isNear(position)){
             if(player.getCurrentTool() != null){
                 GameMessage gameMessage = player.getCurrentTool().use(position);
                 System.out.println(gameMessage.message());
             }
         }
+
+        Item item = PopUpManager.getInstance(stage).getInventoryPopUp().getSelectedItem();
+        if(player.getFarm().getTile(position) != null && item != null){
+            item.drop(player.getFarm().getTile(position));
+            player.getBackPack().removeItem(item, 1);
+            PopUpManager.getInstance(stage).getInventoryPopUp().refresh();
+        }
+
     }
 
     public void plant(Seed seed, Position position) {

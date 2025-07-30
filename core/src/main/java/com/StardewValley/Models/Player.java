@@ -62,6 +62,7 @@ public class Player implements Serializable {
         backPack.addItem(axe, 1);
         backPack.addItem(hoe, 1);
         backPack.addItem(shear, 1);
+        backPack.addItem(new Tool(ToolType.pickaxe), 1);
         // add this bullshit to backpack
         backPack.addItem(new Seed(SeedType.carrot), 8);
         trashCan = new TrashCan();

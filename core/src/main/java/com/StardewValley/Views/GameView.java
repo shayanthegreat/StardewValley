@@ -97,6 +97,9 @@ public class GameView implements Screen , InputProcessor {
 //            GameController.getInstance().buyAnimal(AnimalType.goat,"abbas");
 //            GameController.getInstance().buyAnimal(AnimalType.sheep,"abbas");
 //        }
+        else if(i == Input.Keys.Z){
+            App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool(null);
+        }
 
         return false;
     }
@@ -176,7 +179,6 @@ public class GameView implements Screen , InputProcessor {
             if(tile == null){
                 return false;
             }
-
             Building building = tile.getBuilding();
             if(tile.isPlowed() && !tile.containsPlant()){
                 seedPopUp.setTargetPosition(clickedPosition);
@@ -195,7 +197,7 @@ public class GameView implements Screen , InputProcessor {
                 }
             }
             else{
-                GameController.getInstance().handleTileClick(clickedPosition);
+                GameController.getInstance().handleTileClick(clickedPosition, stage);
             }
         }
         return false;
