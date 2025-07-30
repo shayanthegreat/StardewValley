@@ -16,6 +16,7 @@ public class ClientConnection extends Connection {
 
     private String username;
     private String lobbyCode;
+    private boolean isInGame;
 
     protected ClientConnection(Socket socket, String ip, int port) throws IOException {
         super(socket);
@@ -23,6 +24,7 @@ public class ClientConnection extends Connection {
         this.port = port;
         this.username = "";
         this.lobbyCode = "";
+        this.isInGame = false;
         this.controller = new ClientConnectionController(this);
     }
 
@@ -127,8 +129,14 @@ public class ClientConnection extends Connection {
     }
 
     public void setLobbyCode(String lobbyCode) {
-
+        this.lobbyCode = lobbyCode;
     }
 
+    public boolean isInGame() {
+        return isInGame;
+    }
 
+    public void setInGame(boolean inGame) {
+        isInGame = inGame;
+    }
 }

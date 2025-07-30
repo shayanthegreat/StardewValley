@@ -45,6 +45,14 @@ public class ServerConnection extends Connection {
                 controller.lobbyTerminated(message);
                 return true;
             }
+            if (message.getFromBody("information").equals("start_game")) {
+                controller.gameStarted(message);
+                return true;
+            }
+            if (message.getFromBody("information").equals("online_users")) {
+                controller.updateOnlineUsers(message);
+                return true;
+            }
         }
         return false;
 

@@ -1,15 +1,13 @@
 package com.StardewValley.Networking.Server;
 
+import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.Lobby;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,13 +38,34 @@ public class ServerMain {
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
         Runnable refreshStatus = () -> {
+            ArrayList<String> onlineUsers = new ArrayList<>();
+            ArrayList<ClientConnection> onlineConnections = new ArrayList<>();
             Iterator<ClientConnection> it = connections.iterator();
             while (it.hasNext()) {
                 ClientConnection connection = it.next();
                 if(!connection.refreshStatus()) {
                     connection.end();
                 }
-//                TODO: inform logged in clients the list
+                if(!connection.getUsername().isEmpty() && !connection.isInGame()) {
+                    String info = connection.getUsername();
+                    if(!connection.getLobbyCode().isEmpty()) {
+                        Lobby lobby = getLobbyByCode(connection.getLobbyCode());
+                        if(lobby == null) {
+                            continue;
+                        }
+                        info += " : " + lobby.getName() + "(" + lobby.getCode() + ")";
+                    }
+                    onlineUsers.add(info);
+                    onlineConnections.add(connection);
+                }
+            }
+            ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
+                put("information", "online_users");
+                put("online_users", onlineUsers);
+            }}, ConnectionMessage.Type.response);
+
+            for (ClientConnection connection : onlineConnections) {
+                connection.sendMessage(message);
             }
         };
         Runnable checkLobbies = () -> {

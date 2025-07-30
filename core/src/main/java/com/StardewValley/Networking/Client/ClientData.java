@@ -18,6 +18,7 @@ public class ClientData {
 
     public ArrayList<Lobby> lobbies;
     public String lobbyCode;
+    public ArrayList<String> onlineUsers;
 
     public Lobby getLobby(String lobbyCode){
         for (Lobby lobby : lobbies) {

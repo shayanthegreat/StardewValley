@@ -2,6 +2,7 @@ package com.StardewValley.Networking.Client;
 
 import com.StardewValley.Networking.Common.ConnectionMessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ServerConnectionController {
@@ -40,6 +41,18 @@ public class ServerConnectionController {
         }
 
         ClientController.getInstance().refreshLobbies();
+    }
+
+    public void gameStarted(ConnectionMessage message) {
+        ArrayList<String> members = message.getFromBody("members");
+        String admin = message.getFromBody("admin");
+
+//        TODO: do needed stuff
+    }
+
+    public void updateOnlineUsers(ConnectionMessage message) {
+        data.onlineUsers = message.getFromBody("online_users");
+
     }
 
     public void setConnection(ServerConnection connection) {

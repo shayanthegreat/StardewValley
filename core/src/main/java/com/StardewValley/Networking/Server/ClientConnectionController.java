@@ -162,16 +162,14 @@ public class ClientConnectionController {
         Lobby lobby = ServerMain.getLobbyByCode(connection.getLobbyCode());
         if (code.isEmpty() || lobby == null) {
             error = "you are not in a lobby";
-        }
-        else if(!lobby.getAdminUsername().equals(connection.getUsername())) {
+        } else if (!lobby.getAdminUsername().equals(connection.getUsername())) {
             error = "you are not the admin of the lobby";
-        }
-        else if(lobby.getMembers().size() <= 1) {
+        } else if (lobby.getMembers().size() <= 1) {
             error = "there must be at least two members";
         }
 
         ConnectionMessage response;
-        if(!error.isEmpty()) {
+        if (!error.isEmpty()) {
             String finalError = error;
             response = new ConnectionMessage(new HashMap<>() {{
                 put("response", "error");
@@ -180,8 +178,7 @@ public class ClientConnectionController {
 
             connection.sendMessage(response);
             return;
-        }
-        else {
+        } else {
             response = new ConnectionMessage(new HashMap<>() {{
                 put("response", "ok");
             }}, ConnectionMessage.Type.response);
@@ -189,10 +186,20 @@ public class ClientConnectionController {
             connection.sendMessage(response);
         }
 
-        for(String member : lobby.getMembers()) {
-            ClientConnection
+        for (String member : lobby.getMembers()) {
+            ClientConnection connection = ServerMain.getConnectionByUsername(member);
+            ConnectionMessage information = new ConnectionMessage(new HashMap<>() {{
+                put("information", "start_game");
+                put("members", lobby.getMembers());
+                put("admin", lobby.getAdminUsername());
+            }}, ConnectionMessage.Type.inform);
+
+            connection.sendMessage(information);
+            connection.setInGame(true);
         }
+//        TODO: do other stuff for game
     }
-
-
 }
+
+
+
