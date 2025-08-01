@@ -13,6 +13,7 @@ public class ClientConnection extends Connection {
     private int port;
     private ClientConnectionController controller;
     private AtomicBoolean exitFlag = new AtomicBoolean(false);
+    private long lastRefresh;
 
     private String username;
     private String lobbyCode;
@@ -22,6 +23,7 @@ public class ClientConnection extends Connection {
         super(socket);
         this.ip = ip;
         this.port = port;
+        this.lastRefresh = System.currentTimeMillis();
         this.username = "";
         this.lobbyCode = "";
         this.isInGame = false;
@@ -138,5 +140,13 @@ public class ClientConnection extends Connection {
 
     public void setInGame(boolean inGame) {
         isInGame = inGame;
+    }
+
+    public long getLastRefresh() {
+        return lastRefresh;
+    }
+
+    public void setLastRefresh(long lastRefresh) {
+        this.lastRefresh = lastRefresh;
     }
 }

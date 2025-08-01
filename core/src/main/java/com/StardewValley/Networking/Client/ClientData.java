@@ -1,5 +1,6 @@
 package com.StardewValley.Networking.Client;
 
+import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class ClientData {
     public ArrayList<Lobby> lobbies;
     public String lobbyCode;
     public ArrayList<String> onlineUsers;
+    public boolean isInGame = false;
+    public GameDetails gameDetails;
 
     public Lobby getLobby(String lobbyCode){
         for (Lobby lobby : lobbies) {

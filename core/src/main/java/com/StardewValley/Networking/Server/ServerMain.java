@@ -1,6 +1,7 @@
 package com.StardewValley.Networking.Server;
 
 import com.StardewValley.Networking.Common.ConnectionMessage;
+import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
 
 import java.io.IOException;
@@ -12,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
 import static com.StardewValley.Networking.Common.Connection.TIMEOUT;
 
 public class ServerMain {
@@ -23,6 +23,7 @@ public class ServerMain {
     private static ArrayList<ClientConnection> connections = new ArrayList<>();
 
     private static ArrayList<Lobby> lobbies = new ArrayList<>();
+    private static ArrayList<GameDetails> games = new ArrayList<>();
 
     public static void main(String[] args) {
         UserDAO.initializeDatabase();
@@ -43,14 +44,17 @@ public class ServerMain {
             Iterator<ClientConnection> it = connections.iterator();
             while (it.hasNext()) {
                 ClientConnection connection = it.next();
-                if(!connection.refreshStatus()) {
+                if (connection.refreshStatus()) {
+                    connection.setLastRefresh(System.currentTimeMillis());
+                } else if (System.currentTimeMillis() - connection.getLastRefresh() > 2 * 60 * 1000) {
                     connection.end();
+                    continue;
                 }
-                if(!connection.getUsername().isEmpty() && !connection.isInGame()) {
+                if (!connection.getUsername().isEmpty() && !connection.isInGame()) {
                     String info = connection.getUsername();
-                    if(!connection.getLobbyCode().isEmpty()) {
+                    if (!connection.getLobbyCode().isEmpty()) {
                         Lobby lobby = getLobbyByCode(connection.getLobbyCode());
-                        if(lobby == null) {
+                        if (lobby == null) {
                             continue;
                         }
                         info += " : " + lobby.getName() + "(" + lobby.getCode() + ")";
@@ -73,11 +77,13 @@ public class ServerMain {
             Iterator<Lobby> it = lobbies.iterator();
             while (it.hasNext()) {
                 Lobby lobby = it.next();
-                if(time - lobby.getLastJoin() > (3 * 60 * 1000)) {
+                if (time - lobby.getLastJoin() > (3 * 60 * 1000)) {
                     lobby.terminate();
                 }
             }
         };
+
+        scheduler.scheduleAtFixedRate(refreshStatus, 10, 3, TimeUnit.SECONDS);
         scheduler.scheduleAtFixedRate(refreshStatus, 10, 3, TimeUnit.SECONDS);
 
 
@@ -106,15 +112,14 @@ public class ServerMain {
         if (socket == null) {
             return;
         }
-        try{
+        try {
             new ClientConnection(socket, ip, port).start();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            try{
+            try {
                 socket.close();
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored) {}
         }
 
     }
@@ -180,9 +185,30 @@ public class ServerMain {
     }
 
     public static Lobby getLobbyByCode(String code) {
-        for(Lobby lobby : lobbies) {
-            if(lobby.getCode().equals(code)) {
+        for (Lobby lobby : lobbies) {
+            if (lobby.getCode().equals(code)) {
                 return lobby;
+            }
+        }
+        return null;
+    }
+
+    public static void addGame(GameDetails game) {
+        games.add(game);
+    }
+
+    public static void removeGame(GameDetails game) {
+        games.remove(game);
+    }
+
+    public static ArrayList<GameDetails> getGames() {
+        return games;
+    }
+
+    public static GameDetails getGameById(int id) {
+        for(GameDetails game : games) {
+            if(game.getGameId() == id) {
+                return game;
             }
         }
         return null;

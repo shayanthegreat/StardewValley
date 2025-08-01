@@ -1,0 +1,17 @@
+package com.StardewValley.Networking.Common;
+
+public class PlayerDetails {
+    public String username;
+    public int posX;
+    public int posY;
+
+    public PlayerDetails(String username) {
+        this.username = username;
+        posX = 0;
+        posY = 0;
+    }
+
+    public void updateInfo() {
+//        TODO: update needed info from game
+    }
+}

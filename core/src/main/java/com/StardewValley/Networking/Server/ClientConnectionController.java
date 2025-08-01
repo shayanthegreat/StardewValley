@@ -1,7 +1,9 @@
 package com.StardewValley.Networking.Server;
 
 import com.StardewValley.Models.User;
+import com.StardewValley.Networking.Client.ServerConnection;
 import com.StardewValley.Networking.Common.ConnectionMessage;
+import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
 
 import java.util.ArrayList;
@@ -186,8 +188,13 @@ public class ClientConnectionController {
             connection.sendMessage(response);
         }
 
+        GameDetails gameDetails = new GameDetails(lobby.getMembers(), lobby.getAdminUsername());
+        ServerMain.addGame(gameDetails);
+
+        ArrayList<ClientConnection> connections = new ArrayList<>();
         for (String member : lobby.getMembers()) {
             ClientConnection connection = ServerMain.getConnectionByUsername(member);
+            connections.add(connection);
             ConnectionMessage information = new ConnectionMessage(new HashMap<>() {{
                 put("information", "start_game");
                 put("members", lobby.getMembers());
@@ -197,6 +204,9 @@ public class ClientConnectionController {
             connection.sendMessage(information);
             connection.setInGame(true);
         }
+
+        gameDetails.setConnections(connections);
+
 //        TODO: do other stuff for game
     }
 }
