@@ -144,7 +144,8 @@ public class GameView implements Screen , InputProcessor {
         multiplexer.addProcessor(this);  // your GameView InputProcessor first
         multiplexer.addProcessor(stage); // stage input second for UI drag/drop
         Gdx.input.setInputProcessor(multiplexer);
-        popUpMenu = PopUpManager.getInstance(stage);
+//        popUpMenu = PopUpManager.getInstance(stage);
+        popUpMenu = PopUpManager.set(stage);
         toolPopUp = new ToolPopUp(stage);
         seedPopUp = new SeedPopUp(stage);
         toolPopUp.show();

@@ -18,6 +18,10 @@ public class PopUpManager {
         return instance;
     }
 
+    public static PopUpManager set(Stage stage){
+        instance = new PopUpManager(stage);
+        return instance;
+    }
 
     private Stage stage;
     private Window popupWindow;
