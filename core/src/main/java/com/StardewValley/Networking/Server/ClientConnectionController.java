@@ -5,9 +5,13 @@ import com.StardewValley.Networking.Client.ServerConnection;
 import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
+import com.StardewValley.Networking.Common.PlayerDetails;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ClientConnectionController {
     private ClientConnection connection;
@@ -190,6 +194,7 @@ public class ClientConnectionController {
 
         GameDetails gameDetails = new GameDetails(lobby.getMembers(), lobby.getAdminUsername());
         ServerMain.addGame(gameDetails);
+        String json = ConnectionMessage.gameDetailsToJson(gameDetails);
 
         ArrayList<ClientConnection> connections = new ArrayList<>();
         for (String member : lobby.getMembers()) {
@@ -197,17 +202,34 @@ public class ClientConnectionController {
             connections.add(connection);
             ConnectionMessage information = new ConnectionMessage(new HashMap<>() {{
                 put("information", "start_game");
-                put("members", lobby.getMembers());
-                put("admin", lobby.getAdminUsername());
+                put("game_details", json);
             }}, ConnectionMessage.Type.inform);
 
             connection.sendMessage(information);
             connection.setInGame(true);
+            connection.setGame(gameDetails);
         }
 
         gameDetails.setConnections(connections);
-
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> {
+            if (connection.getGame().isRunning()) {
+                connection.getGame().sendGameDetails();
+            } else {
+                scheduler.shutdown();
+            }
+        }, 5, 1, TimeUnit.SECONDS);
 //        TODO: do other stuff for game
+    }
+
+    public void updateSelf(ConnectionMessage message) {
+        String json = message.getFromBody("json");
+        PlayerDetails newSelf = ConnectionMessage.playerDetailsFromJson(json);
+        String username = newSelf.username;
+        GameDetails game = connection.getGame();
+        if(game.isRunning()){
+            game.putPlayerByUsername(username, newSelf);
+        }
     }
 }
 

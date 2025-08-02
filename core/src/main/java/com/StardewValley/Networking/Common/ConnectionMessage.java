@@ -40,6 +40,21 @@ public class ConnectionMessage {
         return gson.fromJson(json, Lobby.class);
     }
 
+    public static synchronized String gameDetailsToJson(GameDetails gameDetails) {
+        return gson.toJson(gameDetails);
+    }
+
+    public static synchronized GameDetails gameDetailsFromJson(String json) {
+        return gson.fromJson(json, GameDetails.class);
+    }
+
+    public static synchronized String playerDetailsToJson(PlayerDetails playerDetails) {
+        return gson.toJson(playerDetails);
+    }
+
+    public static synchronized PlayerDetails playerDetailsFromJson(String json) {
+        return gson.fromJson(json, PlayerDetails.class);
+    }
 
     private Type type;
     private HashMap<String, Object> body;
@@ -67,5 +82,6 @@ public class ConnectionMessage {
         command,
         response,
         inform,
+        update,
     }
 }

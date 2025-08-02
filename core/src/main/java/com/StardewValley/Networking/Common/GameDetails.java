@@ -10,8 +10,9 @@ public class GameDetails {
 
     private String adminUsername;
     private HashMap<String, PlayerDetails> players;
-    private ArrayList<ClientConnection> connections;
+    private transient ArrayList<ClientConnection> connections;
     private int gameId;
+    private boolean isRunning;
 
     public GameDetails(ArrayList<String> usernames, String adminUsername) {
         players = new HashMap<>();
@@ -20,6 +21,7 @@ public class GameDetails {
         }
         this.adminUsername = adminUsername;
         this.gameId = availableId++;
+        this.isRunning = true;
     }
 
     public GameDetails(ArrayList<String> usernames, String adminUsername, int gameId) {
@@ -29,6 +31,18 @@ public class GameDetails {
         }
         this.adminUsername = adminUsername;
         this.gameId = gameId;
+    }
+
+    public void sendGameDetails() {
+        String json = ConnectionMessage.gameDetailsToJson(this);
+        ConnectionMessage update = new ConnectionMessage(new HashMap<>() {{
+            put("update", "update_game");
+            put("json", json);
+            put("game-code", gameId);
+        }}, ConnectionMessage.Type.update);
+        for(ClientConnection connection : connections) {
+            connection.sendMessage(update);
+        }
     }
 
     public PlayerDetails getPlayerByUsername(String username) {
@@ -65,5 +79,13 @@ public class GameDetails {
 
     public void setConnections(ArrayList<ClientConnection> connections) {
         this.connections = connections;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
     }
 }

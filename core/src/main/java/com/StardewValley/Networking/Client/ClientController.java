@@ -33,7 +33,7 @@ public class ClientController {
             connection = new ServerConnection(socket, ip, port);
             connection.setOtherSideIP(serverIp);
             connection.setOtherSidePort(serverPort);
-
+            data.connection = connection;
         } catch (Exception e) {
             e.printStackTrace();
         }

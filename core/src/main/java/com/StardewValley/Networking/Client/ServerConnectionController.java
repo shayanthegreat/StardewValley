@@ -1,9 +1,12 @@
 package com.StardewValley.Networking.Client;
 
 import com.StardewValley.Networking.Common.ConnectionMessage;
+import com.StardewValley.Networking.Common.GameDetails;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ServerConnectionController {
     private static ServerConnectionController instance;
@@ -34,7 +37,7 @@ public class ServerConnectionController {
     public void lobbyTerminated(ConnectionMessage message) {
         data.lobbyCode = "";
 
-        try{
+        try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -44,9 +47,19 @@ public class ServerConnectionController {
     }
 
     public void gameStarted(ConnectionMessage message) {
-        ArrayList<String> members = message.getFromBody("members");
-        String admin = message.getFromBody("admin");
+        GameDetails game = ConnectionMessage.gameDetailsFromJson(message.getFromBody("game_details"));
+        data.gameDetails = game;
+        data.isInGame = true;
 
+
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> {
+            if (data.isInGame) {
+                data.updateAndSendSelf();
+            } else {
+                scheduler.shutdown();
+            }
+        }, 5, 1, TimeUnit.SECONDS);
 //        TODO: do needed stuff
     }
 
@@ -57,5 +70,9 @@ public class ServerConnectionController {
 
     public void setConnection(ServerConnection connection) {
         this.connection = connection;
+    }
+
+    public void updateGame(ConnectionMessage message) {
+        data.gameDetails = ConnectionMessage.gameDetailsFromJson(message.getFromBody("json"));
     }
 }

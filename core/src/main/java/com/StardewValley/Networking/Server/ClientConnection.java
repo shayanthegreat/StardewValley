@@ -2,6 +2,7 @@ package com.StardewValley.Networking.Server;
 
 import com.StardewValley.Networking.Common.Connection;
 import com.StardewValley.Networking.Common.ConnectionMessage;
+import com.StardewValley.Networking.Common.GameDetails;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -18,6 +19,7 @@ public class ClientConnection extends Connection {
     private String username;
     private String lobbyCode;
     private boolean isInGame;
+    private GameDetails game;
 
     protected ClientConnection(Socket socket, String ip, int port) throws IOException {
         super(socket);
@@ -88,6 +90,11 @@ public class ClientConnection extends Connection {
                 return true;
             }
         }
+        if(message.getType().equals(ConnectionMessage.Type.update)) {
+            if(message.getFromBody("update").equals("update_self")) {
+                controller.updateSelf(message);
+            }
+        }
         return false;
     }
 
@@ -140,6 +147,14 @@ public class ClientConnection extends Connection {
 
     public void setInGame(boolean inGame) {
         isInGame = inGame;
+    }
+
+    public GameDetails getGame() {
+        return game;
+    }
+
+    public void setGame(GameDetails game) {
+        this.game = game;
     }
 
     public long getLastRefresh() {

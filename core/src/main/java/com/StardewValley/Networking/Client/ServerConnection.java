@@ -54,6 +54,12 @@ public class ServerConnection extends Connection {
                 return true;
             }
         }
+        if(message.getType().equals(ConnectionMessage.Type.update)) {
+            if(message.getFromBody("update").equals("update_game")) {
+                controller.updateGame(message);
+                return true;
+            }
+        }
         return false;
 
     }
