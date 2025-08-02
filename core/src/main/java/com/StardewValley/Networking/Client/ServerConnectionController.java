@@ -2,6 +2,7 @@ package com.StardewValley.Networking.Client;
 
 import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.GameDetails;
+import com.StardewValley.Networking.Common.Reaction;
 
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -73,6 +74,15 @@ public class ServerConnectionController {
     }
 
     public void updateGame(ConnectionMessage message) {
-        data.gameDetails = ConnectionMessage.gameDetailsFromJson(message.getFromBody("json"));
+        GameDetails oldGame = data.gameDetails;
+        GameDetails newGame = ConnectionMessage.gameDetailsFromJson(message.getFromBody("json"));
+        for(String member : oldGame.getPlayers().keySet()) {
+            Reaction oldReaction = oldGame.getPlayerByUsername(member).reaction;
+            Reaction newReaction = newGame.getPlayerByUsername(member).reaction;
+            if(!oldReaction.text.equals(newReaction.text) && !newReaction.text.isEmpty()) {
+                newReaction.time = System.currentTimeMillis();
+            }
+        }
+        data.gameDetails = newGame;
     }
 }

@@ -33,6 +33,8 @@ public class GameDetails {
         this.gameId = gameId;
     }
 
+    public GameDetails() {}
+
     public void sendGameDetails() {
         String json = ConnectionMessage.gameDetailsToJson(this);
         ConnectionMessage update = new ConnectionMessage(new HashMap<>() {{

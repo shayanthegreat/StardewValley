@@ -29,6 +29,8 @@ public class Lobby {
         this.isVisible = isVisible;
     }
 
+    public Lobby() {}
+
     public static String generateRandomCode() {
         String CHAR_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%*!?";
         int CODE_LENGTH = 8;

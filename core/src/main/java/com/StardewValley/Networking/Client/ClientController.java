@@ -4,6 +4,7 @@ import com.StardewValley.Models.App;
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.Lobby;
+import com.StardewValley.Networking.Common.Reaction;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -167,6 +168,23 @@ public class ClientController {
         } else {
             return response.getFromBody("error");
         }
+    }
 
+    public boolean setReaction(String text) {
+        if(!Reaction.isValid(text)) {
+            return false;
+        }
+        Reaction reaction = new Reaction(text, System.currentTimeMillis());
+        data.selfDetails.reaction = reaction;
+        data.gameDetails.getPlayerByUsername(App.getInstance().getCurrentUser().getUsername()).reaction = reaction;
+        return true;
+    }
+
+    public boolean setDefaultReaction(String text) {
+        if(!Reaction.isValid(text)) {
+            return false;
+        }
+        Reaction.addDefault(text);
+        return true;
     }
 }
