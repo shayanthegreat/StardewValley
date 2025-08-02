@@ -1,9 +1,8 @@
 package com.StardewValley.Networking.Client;
 
-import com.StardewValley.Networking.Common.ConnectionMessage;
-import com.StardewValley.Networking.Common.GameDetails;
-import com.StardewValley.Networking.Common.Reaction;
+import com.StardewValley.Networking.Common.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,6 +48,9 @@ public class ServerConnectionController {
 
     public void gameStarted(ConnectionMessage message) {
         GameDetails game = ConnectionMessage.gameDetailsFromJson(message.getFromBody("game_details"));
+        ArrayList<String> usernames = message.getFromBody("usernames");
+        Chat chat = new Chat(usernames);
+        game.setChat(chat);
         data.gameDetails = game;
         data.isInGame = true;
 
@@ -84,5 +86,9 @@ public class ServerConnectionController {
             }
         }
         data.gameDetails = newGame;
+
+        ArrayList<ChatMessage> newMessages = ConnectionMessage.newMessagesFromJson(message.getFromBody("new_messages"));
+        data.gameDetails.setChat(oldGame.getChat());
+        data.gameDetails.getChat().updateNewMessages(newMessages);
     }
 }

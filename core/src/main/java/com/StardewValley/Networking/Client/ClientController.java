@@ -187,4 +187,15 @@ public class ClientController {
         Reaction.addDefault(text);
         return true;
     }
+
+    public void sendChatMessage(String text, String receiver) {
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
+            put("command", "send_chat_message");
+            put("text", text);
+            put("sender", App.getInstance().getCurrentUser().getUsername());
+            put("receiver", receiver);
+        }}, ConnectionMessage.Type.command);
+
+        connection.sendMessage(message);
+    }
 }

@@ -45,7 +45,7 @@ public class ClientData {
         ConnectionMessage update = new ConnectionMessage(new HashMap<>() {{
             put("update", "update_self");
             put("json", json);
-            put("game-code", gameDetails.getGameId());
+            put("game_code", gameDetails.getGameId());
         }}, ConnectionMessage.Type.update);
         connection.sendMessage(update);
     }

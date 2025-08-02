@@ -4,6 +4,7 @@ import com.StardewValley.Models.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -54,6 +55,14 @@ public class ConnectionMessage {
 
     public static synchronized PlayerDetails playerDetailsFromJson(String json) {
         return gson.fromJson(json, PlayerDetails.class);
+    }
+
+    public static synchronized String newMessagesToJson(ArrayList<ChatMessage> newMessages) {
+        return gson.toJson(newMessages);
+    }
+
+    public static synchronized ArrayList<ChatMessage> newMessagesFromJson(String json) {
+        return gson.fromJson(json, ArrayList.class);
     }
 
     private Type type;

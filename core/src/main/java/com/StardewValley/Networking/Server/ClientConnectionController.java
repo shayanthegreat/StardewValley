@@ -203,6 +203,7 @@ public class ClientConnectionController {
             ConnectionMessage information = new ConnectionMessage(new HashMap<>() {{
                 put("information", "start_game");
                 put("game_details", json);
+                put("usernames", lobby.getMembers());
             }}, ConnectionMessage.Type.inform);
 
             connection.sendMessage(information);
@@ -230,6 +231,13 @@ public class ClientConnectionController {
         if(game.isRunning()){
             game.putPlayerByUsername(username, newSelf);
         }
+    }
+
+    public void sendChatMessage(ConnectionMessage message) {
+        String text = message.getFromBody("text");
+        String sender = message.getFromBody("sender");
+        String receiver = message.getFromBody("receiver");
+        connection.getGame().getChat().registerNewMessage(text, sender, receiver);
     }
 }
 
