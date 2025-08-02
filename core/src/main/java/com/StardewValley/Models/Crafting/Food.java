@@ -34,6 +34,11 @@ public class Food extends Item implements Serializable {
     }
 
     @Override
+    public boolean isEdible() {
+        return true;
+    }
+
+    @Override
     public String getName() {
         return recipe.getProductName();
     }

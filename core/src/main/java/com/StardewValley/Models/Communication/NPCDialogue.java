@@ -7,6 +7,7 @@ import com.StardewValley.Models.Time;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class NPCDialogue implements Serializable {
     private ArrayList<String> Dialogues;
@@ -113,6 +114,10 @@ public class NPCDialogue implements Serializable {
         int hour = time.getHour();
         Season season = time.getSeason();
 
+        if(friendShipLevel == 0){
+            return null;
+        }
+
         if (hour >= 5 && hour < 12 && season == Season.spring && weather == Weather.sunny) {
             if (friendShipLevel == 3) return Dialogues.get(0);
             if (friendShipLevel == 2) return Dialogues.get(1);
@@ -140,5 +145,8 @@ public class NPCDialogue implements Serializable {
         if (friendShipLevel == 2) return Dialogues.get(13);
         return Dialogues.get(14);
     }
+
+
+
 
 }

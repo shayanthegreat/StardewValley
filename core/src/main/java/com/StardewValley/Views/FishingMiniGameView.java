@@ -118,7 +118,6 @@ public class FishingMiniGameView implements Screen {
         exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Main.getInstance().getScreen().dispose();
                 Main.getInstance().setScreen(new GameView());
             }
         });
@@ -165,7 +164,7 @@ public class FishingMiniGameView implements Screen {
     public void show() {
         centerX = Gdx.graphics.getWidth() / 2f;
         centerY = Gdx.graphics.getHeight() / 2f;
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         table = new Table();
 
@@ -203,8 +202,8 @@ public class FishingMiniGameView implements Screen {
 
         if (catchMeter.isFull()) {
             GameController.getInstance().fishing(catchMeter.isPerfect);
-            Main.getInstance().getScreen().dispose();
-            Main.getInstance().setScreen(new GameView());
+            GameView gameView = new GameView();
+            Main.getInstance().setScreen(gameView);
         }
     }
 
@@ -227,6 +226,7 @@ public class FishingMiniGameView implements Screen {
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+        stage.dispose();
     }
 
 }

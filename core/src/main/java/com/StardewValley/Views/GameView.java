@@ -7,7 +7,6 @@ import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.AnimalType;
-import com.StardewValley.Models.Enums.FarmBuildings;
 import com.StardewValley.Models.Map.Lake;
 import com.StardewValley.Models.Map.Map;
 import com.StardewValley.Models.Map.Position;
@@ -24,16 +23,28 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 
 import static com.StardewValley.Controllers.Camera.TILE_SIZE;
 
-public class GameView implements Screen , InputProcessor {
-    private Stage stage;
+public class GameView implements Screen , InputProcessor{
+    private  Stage stage;
     private PopUpManager popUpMenu;
     private ToolPopUp toolPopUp;
     private SeedPopUp seedPopUp;
     private AnimalPopUp animalPopUp;
+    private BackPackPopUp backPackPopUp;
+    private RefrigeratorPopUp refrigeratorPopUp;
+    private GiftingNPCPopUp giftingNPCPopUp;
+
+
+
+
+
+
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
@@ -70,8 +81,11 @@ public class GameView implements Screen , InputProcessor {
             Main.getInstance().getScreen().dispose();
             Main.getInstance().setScreen(new FishingMiniGameView(GameAssetManager.getInstance().getSkin()));
        }
-        else if(i == Input.Keys.ESCAPE){
-            popUpMenu.show();
+        else if(i == Input.Keys.O){
+//            if(GameController.getInstance().handleScape()){
+                popUpMenu.show();
+//            }
+
         }
 
         else if(i == Input.Keys.T){
@@ -81,7 +95,6 @@ public class GameView implements Screen , InputProcessor {
             App.getInstance().getCurrentGame().getTime().nextDay();
         }
         else if(i == Input.Keys.X){
-            GameController.getInstance().buildBarn(FarmBuildings.Barn,40,40);
             GameController.getInstance().buyAnimal(AnimalType.cow,"abbas");
             GameController.getInstance().buyAnimal(AnimalType.pig,"ahmad");
             GameController.getInstance().buyAnimal(AnimalType.goat,"asd");
@@ -135,20 +148,20 @@ public class GameView implements Screen , InputProcessor {
         toolPopUp = new ToolPopUp(stage);
         seedPopUp = new SeedPopUp(stage);
         animalPopUp = new AnimalPopUp(stage);
+        backPackPopUp = new BackPackPopUp(stage);
+        refrigeratorPopUp = new RefrigeratorPopUp(stage);
+        giftingNPCPopUp = new GiftingNPCPopUp(stage);
         toolPopUp.show();
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-            // Step 1: Convert screen coordinates to world coordinates
             Vector3 worldCoordinates = Camera.getInstance().getCamera().unproject(new Vector3(screenX, screenY, 0));
 
-            // Step 2: Convert world coordinates to tile coordinates
             int tileX = (int)(worldCoordinates.x / TILE_SIZE);
             int tileY = (int)(worldCoordinates.y / TILE_SIZE);
 
-            // Optional: if you want to do something with the tile position
             Position clickedPosition = new Position(tileX, tileY);
 
             Map map = App.getInstance().getCurrentGame().getMap();
@@ -168,11 +181,30 @@ public class GameView implements Screen , InputProcessor {
             }
         }
 
-        if(button == Input.Buttons.RIGHT){
-            animalPopUp.show();
+        if (button == Input.Buttons.RIGHT) {
+            GameController.getInstance().handleScape();
+            Vector3 worldCoordinates = Camera.getInstance().getCamera().unproject(new Vector3(screenX, screenY, 0));
+            int tileX = (int)(worldCoordinates.x / TILE_SIZE);
+            int tileY = (int)(worldCoordinates.y / TILE_SIZE);
+            Position clickedPosition = new Position(tileX, tileY);
+
+            if (refrigeratorPopUp.isClicked(tileX, tileY)) {
+                refrigeratorPopUp.show();
+            }
+            else if(App.getInstance().getCurrentGame().getCurrentPlayer().isInHouse()){
+                backPackPopUp.show();
+            }
+            else if(giftingNPCPopUp.isClicked(clickedPosition)){
+                giftingNPCPopUp.show();
+            }
+            else {
+                animalPopUp.show();
+            }
         }
+
         return false;
     }
+
 
     @Override
     public boolean touchUp(int i, int i1, int i2, int i3) {
@@ -195,9 +227,10 @@ public class GameView implements Screen , InputProcessor {
     }
 
     @Override
-    public boolean scrolled(float v, float v1) {
+    public boolean scrolled(float amountX, float amountY) {
         return false;
     }
+
 
     @Override
     public void render(float v) {
@@ -211,6 +244,7 @@ public class GameView implements Screen , InputProcessor {
         PlayerController.getInstance().update();
         GameController.getInstance().update(Gdx.graphics.getDeltaTime());
         AnimalController.getInstance().update();
+        NPCController.getInstance().update();
 
         LightningEffect lightning = GameController.getInstance().getLightningEffect();
         if (lightning != null) {
@@ -260,5 +294,24 @@ public class GameView implements Screen , InputProcessor {
     @Override
     public void dispose() {
 
+    }
+
+
+    public static void showError(String error) {
+        final Dialog dialog = new Dialog("!!!", GameAssetManager.getInstance().getSkin()) {
+            @Override
+            protected void result(Object object) {
+            }
+        };
+
+        dialog.text(error);
+        dialog.button("OK");
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                dialog.hide();
+            }
+        }, 5);
     }
 }

@@ -17,6 +17,7 @@ public class Main extends Game {
     private static Main main;
     private OrthographicCamera camera;
 
+
     private Main() {
     }
     public static Main getInstance() {

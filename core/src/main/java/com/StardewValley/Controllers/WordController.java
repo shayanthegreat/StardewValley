@@ -3,6 +3,7 @@ package com.StardewValley.Controllers;
 import com.StardewValley.Main;
 import com.StardewValley.Models.Animal.AnimalProduct;
 import com.StardewValley.Models.Animal.Barn;
+import com.StardewValley.Models.Animal.Coop;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Enums.Weather;
 import com.StardewValley.Models.Farming.Plant;
@@ -155,7 +156,13 @@ public class WordController {
 
                 if( building instanceof House house){
                     if(i==house.getOrigin().x + 3 && j==house.getOrigin().y + 3){
-                        camera.print(GameAssetManager.getInstance().HOUSE, house.getOrigin().x,house.getOrigin().y,4,4);
+                        if(App.getInstance().getCurrentGame().getCurrentPlayer().isInHouse()){
+                            camera.print(GameAssetManager.getInstance().IN_HOUSE, house.getOrigin().x,house.getOrigin().y,4,4);
+                            camera.print(GameAssetManager.getInstance().REFRIGERATOR,i-3,j-3,1,1);
+                        }
+                        else{
+                            camera.print(GameAssetManager.getInstance().HOUSE, house.getOrigin().x,house.getOrigin().y,4,4);
+                        }
                     }
                 }
 
@@ -191,6 +198,10 @@ public class WordController {
 
                 else if(tileObject instanceof Barn barn){
                     camera.print(GameAssetManager.getInstance().BARN, barn.getPlacedTile().getPosition().x,barn.getPlacedTile().getPosition().y,2,2);
+                }
+
+                else if(tileObject instanceof Coop coop){
+                    camera.print(GameAssetManager.getInstance().COOP,coop.getPlacedTile().getPosition().x,coop.getPlacedTile().getPosition().y,2,2);
                 }
 
 

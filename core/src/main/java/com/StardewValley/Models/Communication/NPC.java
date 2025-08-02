@@ -1,18 +1,17 @@
 package com.StardewValley.Models.Communication;
 
+import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.AnimalProduct;
 import com.StardewValley.Models.Animal.AnimalProductType;
-import com.StardewValley.Models.App;
 import com.StardewValley.Models.Crafting.CookingRecipe;
 import com.StardewValley.Models.Crafting.Food;
 import com.StardewValley.Models.Crafting.Material;
 import com.StardewValley.Models.Crafting.MaterialType;
 import com.StardewValley.Models.Farming.Crop;
 import com.StardewValley.Models.Farming.CropType;
-import com.StardewValley.Models.Game;
-import com.StardewValley.Models.Item;
+import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Map.TileObject;
-import com.StardewValley.Models.Player;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +22,8 @@ public class NPC extends TileObject implements Serializable {
     private String job;
     private ArrayList<Item> favoriteItems = new ArrayList<>();
     private NPCDialogue dialogue;
+    private Texture texture;
+    private Position position;
     //private NPCFriendship friendship;
     private NPCQuest quest;
     public NPC(String name) {
@@ -33,6 +34,8 @@ public class NPC extends TileObject implements Serializable {
                 favoriteItems.add(new AnimalProduct(AnimalProductType.wool));
                 favoriteItems.add(new Food(CookingRecipe.pumpkinPie));
                 favoriteItems.add(new Food(CookingRecipe.pizza));
+                this.position = new Position(120, 133);
+                this.texture = GameAssetManager.getInstance().JAS;
                 break;
             }
             case "Abigail":{
@@ -41,6 +44,8 @@ public class NPC extends TileObject implements Serializable {
                 favoriteItems.add(new Material(MaterialType.stone));
                 favoriteItems.add(new Material(MaterialType.ironOre));
                 favoriteItems.add(new Material(MaterialType.coffee));
+                this.position = new Position(124, 133);
+                this.texture = GameAssetManager.getInstance().JODI;
                 break;
             }
             case "Harvey":{
@@ -49,6 +54,8 @@ public class NPC extends TileObject implements Serializable {
                 favoriteItems.add(new Material(MaterialType.coffee));
                 favoriteItems.add(new Material(MaterialType.pickle));
                 favoriteItems.add(new Material(MaterialType.wine));
+                this.position = new Position(128, 133);
+                this.texture = GameAssetManager.getInstance().KENT;
                 break;
             }
             case "Lia":{
@@ -56,6 +63,8 @@ public class NPC extends TileObject implements Serializable {
                 this.job = "Chef";
                 favoriteItems.add(new Crop(CropType.grape));
                 favoriteItems.add(new Material(MaterialType.wine));
+                this.position = new Position(132, 133);
+                this.texture = GameAssetManager.getInstance().LEO;
                 break;
             }
             case "Robin":{
@@ -64,6 +73,8 @@ public class NPC extends TileObject implements Serializable {
                 favoriteItems.add(new Food(CookingRecipe.pizza));
                 favoriteItems.add(new Material(MaterialType.wood));
                 favoriteItems.add(new Material(MaterialType.ironBar));
+                this.position = new Position(136, 133);
+                this.texture = GameAssetManager.getInstance().LEAH;
                 break;
             }
         }
@@ -113,6 +124,14 @@ public class NPC extends TileObject implements Serializable {
             }
         }
         return dialogue.GetDialogue(game.getTodayWeather(), game.getTime(), level);
+    }
+
+    public Texture getTexture(){
+        return texture;
+    }
+
+    public Position getPosition(){
+        return position;
     }
 
 

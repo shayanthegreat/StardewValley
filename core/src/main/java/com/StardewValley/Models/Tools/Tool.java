@@ -305,6 +305,11 @@ public class Tool extends Item implements Serializable {
     }
 
     @Override
+    public boolean isEdible() {
+        return false;
+    }
+
+    @Override
     public String getName() {
         return toolType.getName();
     }

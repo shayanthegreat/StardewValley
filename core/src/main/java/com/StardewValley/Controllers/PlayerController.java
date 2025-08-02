@@ -27,6 +27,7 @@ public class PlayerController {
         movePlayer();
         petting();
         feeding();
+        check();
     }
 
 
@@ -36,6 +37,18 @@ public class PlayerController {
             instance = new PlayerController();
         }
         return instance;
+    }
+
+    private void check(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        House house = App.getInstance().getCurrentGame().getCurrentPlayer().getFarm().getHouse();
+        if(player.getPosition().x >= house.getOrigin().x && player.getPosition().x <= house.getOrigin().x+3 &&
+            player.getPosition().y >= house.getOrigin().y && player.getPosition().y <= house.getOrigin().y+2){
+            player.setInHouse(true);
+        }
+        else {
+            player.setInHouse(false);
+        }
     }
 
     public void movePlayer(){

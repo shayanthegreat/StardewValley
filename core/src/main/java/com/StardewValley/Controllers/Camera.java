@@ -119,6 +119,14 @@ public class Camera {
         return camera.viewportHeight;
     }
 
+    public void setZoom(float zoom, float centerX, float centerY) {
+        this.zoom = Math.max(0.3f, Math.min(zoom, 3f));
+        getCamera().zoom = this.zoom;  // <-- THIS was missing
+        update(centerX, centerY);
+    }
+
+
+
 
 
 }

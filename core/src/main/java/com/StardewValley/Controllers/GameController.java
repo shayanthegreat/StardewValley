@@ -4,9 +4,9 @@ import com.StardewValley.Main;
 import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.*;
 import com.StardewValley.Models.Communication.FriendShip;
+import com.StardewValley.Models.Communication.NPC;
 import com.StardewValley.Models.Crafting.Material;
 import com.StardewValley.Models.Crafting.MaterialType;
-import com.StardewValley.Models.Enums.FarmBuildings;
 import com.StardewValley.Models.Enums.Season;
 import com.StardewValley.Models.Enums.SkillType;
 import com.StardewValley.Models.Farming.Plant;
@@ -162,13 +162,13 @@ public class GameController implements Controller {
         App app = App.getInstance();
         Game game = app.getCurrentGame();
         Player player = app.getCurrentGame().getCurrentPlayer();
-        if(!player.getBackPack().checkItem(new Material(MaterialType.wood),15)){
-            return;
-        }
-        player.getBackPack().removeItem(new Material(MaterialType.wood),15);
-        if(player.getMoney() < 40){
-            return;
-        }
+//        if(!player.getBackPack().checkItem(new Material(MaterialType.wood),15)){
+//            return;
+//        }
+//        player.getBackPack().removeItem(new Material(MaterialType.wood),15);
+//        if(player.getMoney() < 40){
+//            return;
+//        }
         player.decreaseMoney(40);
         Farm farm = App.getInstance().getCurrentGame().getCurrentPlayer().getFarm();
         farm.getGreenHouse().build();
@@ -179,10 +179,11 @@ public class GameController implements Controller {
         Game game = app.getCurrentGame();
         Player player = app.getCurrentGame().getCurrentPlayer();
         player.decreaseEnergy(8);
-        boolean isLegendary = false;
-        if(isPerfect)
-            isLegendary = true;
+        boolean isLegendary = isPerfect;
         FishType type = generateRandomFish(game.getTime().getSeason(), isLegendary);
+        if(type == null){
+            Gdx.app.exit();
+        }
         Fish fish = new Fish(type);
         int count = fish.getFishingCount(game.getTodayWeather(), player.getSkill(SkillType.fishing).getLevel());
         String quality = fish.getFishingQuality(game.getTodayWeather(),player.getSkill(SkillType.fishing).getLevel(),"Training");
@@ -346,7 +347,7 @@ public class GameController implements Controller {
         return null;
     }
 
-    public void buildBarn(FarmBuildings buildings, int x, int y) {
+    public void buildBarn( int x, int y) {
         App app = App.getInstance();
         Player player = app.getCurrentGame().getCurrentPlayer();
 //        if(player.getCurrentStore()==null || !player.getCurrentStore().getOwnerName().equals("Robin")){
@@ -390,27 +391,67 @@ public class GameController implements Controller {
 //        if(!player.getBackPack().checkItem(new Material(MaterialType.wood),350) || !player.getBackPack().checkItem(new Material(MaterialType.stone),150)){
 //            return;
 //        }
-        if (buildings == FarmBuildings.Barn) {
-            Barn barn = new Barn();
-            player.getFarm().setBarn(barn);
-            tile.setObject(barn);
-            tile1.setObject(barn);
-            tile2.setObject(barn);
-            tile3.setObject(barn);
-            barn.setPlacedTile(tile);
+        Barn barn = new Barn();
+        player.getFarm().setBarn(barn);
+        tile.setObject(barn);
+        tile1.setObject(barn);
+        tile2.setObject(barn);
+        tile3.setObject(barn);
+        barn.setPlacedTile(tile);
 
+    }
+
+    public void buildCoop(int x , int y){
+        App app = App.getInstance();
+        Player player = app.getCurrentGame().getCurrentPlayer();
+//        if(player.getCurrentStore()==null || !player.getCurrentStore().getOwnerName().equals("Robin")){
+//            return;
+//        }
+        Position position = new Position(x, y);
+        Position position1 = new Position(x+1,y);
+        Position position2 = new Position(x, y+1);
+        Position position3 = new Position(x+1, y+1);
+        if(player.getFarm().getCoop() != null){
+            return;
         }
-        else if (buildings == FarmBuildings.Coop) {
-            Coop coop = new Coop();
-            player.getFarm().setCoop(coop);
-            tile.setObject(coop);
-            tile1.setObject(coop);
-            tile2.setObject(coop);
-            tile3.setObject(coop);
-            coop.setPlacedTile(tile);
-
+        if (player.getFarm().getTile(position) == null) {
+            return;
         }
-
+        if (player.getFarm().getTile(position1) == null) {
+            return;
+        }
+        if (player.getFarm().getTile(position2) == null) {
+            return;
+        }
+        if (player.getFarm().getTile(position3) == null) {
+            return;
+        }
+        Tile tile = player.getFarm().getTile(position);
+        if (!tile.isTotallyEmpty()) {
+            return;
+        }
+        Tile tile1 = player.getFarm().getTile(position1);
+        Tile tile2 = player.getFarm().getTile(position2);
+        Tile tile3 = player.getFarm().getTile(position3);
+        if(!tile1.isTotallyEmpty()){
+            return;
+        }
+        if(!tile2.isTotallyEmpty()){
+            return;
+        }
+        if(!tile3.isTotallyEmpty()){
+            return;
+        }
+//        if(!player.getBackPack().checkItem(new Material(MaterialType.wood),350) || !player.getBackPack().checkItem(new Material(MaterialType.stone),150)){
+//            return;
+//        }
+        Coop coop = new Coop();
+        player.getFarm().setCoop(coop);
+        tile.setObject(coop);
+        tile1.setObject(coop);
+        tile2.setObject(coop);
+        tile3.setObject(coop);
+        coop.setPlacedTile(tile);
     }
 
     public void buyAnimal(AnimalType animalType1,String animalName){
@@ -459,6 +500,21 @@ public class GameController implements Controller {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         Position playerPos = player.getPosition();
 
+        if(player.isChoosingBarn()){
+            player.setChoosingBarn(false);
+            buildBarn(position.x, position.y);
+        }
+        else if(player.isChoosingCoop()){
+            player.setChoosingCoop(false);
+            buildCoop(position.x, position.y);
+        }
+
+        for (NPC npc : player.getNpcs()) {
+            if(position.equals(npc.getPosition())){
+                NPCController.getInstance().printDialog(npc);
+            }
+        }
+
         if(isNear(position)){
             if(player.getCurrentTool() != null){
                 GameMessage gameMessage = player.getCurrentTool().use(position);
@@ -476,6 +532,19 @@ public class GameController implements Controller {
         tile.setContainsPlant(true);
         plant.setPlacedTile(tile);
         App.getInstance().getCurrentGame().getCurrentPlayer().getBackPack().removeItem(seed, 1);
+    }
+
+    public boolean handleScape(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(player.isChoosingBarn()){
+            player.setChoosingBarn(false);
+            return false;
+        }
+        else if(player.isChoosingCoop()){
+            player.setChoosingCoop(false);
+            return false;
+        }
+        return true;
     }
 
 }
