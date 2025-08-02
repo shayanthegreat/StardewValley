@@ -4,6 +4,7 @@ import com.StardewValley.Models.App;
 import com.StardewValley.Models.Crafting.Refrigerator;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Item;
+import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Tools.BackPack;
 import com.StardewValley.Models.UIUtils;
 import com.badlogic.gdx.graphics.Color;
@@ -174,4 +175,13 @@ public class FridgePopUp {
     public Window getWindow() {
         return window;
     }
+
+    public boolean isClicked(int x, int y) {
+        Position position = App.getInstance().getCurrentGame().getCurrentPlayer().getFarm().getHouse().getOrigin();
+        if(x == position.x && y == position.y) {
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -6,6 +6,7 @@ import com.StardewValley.Controllers.PlayerController;
 import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.*;
+import com.StardewValley.Models.Animal.AnimalType;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.Store.Store;
 import com.badlogic.gdx.Gdx;
@@ -35,12 +36,12 @@ public class GameView implements Screen , InputProcessor {
     private ToolPopUp toolPopUp;
     private SeedPopUp seedPopUp;
     private AnimalPopUp animalPopUp;
-    private BackPackPopUp backPackPopUp;
-    private RefrigeratorPopUp refrigeratorPopUp;
+//    private BackPackPopUp backPackPopUp;
+//    private RefrigeratorPopUp refrigeratorPopUp;
     private GiftingNPCPopUp giftingNPCPopUp;
     private StorePopUp storePopUp;
     private CookingPopUp cookingPopUp;
-//    private FridgePopUp fridgePopUp;
+    private FridgePopUp fridgePopUp;
     private CraftingPopUp craftingPopUp;
 
     @Override
@@ -155,16 +156,16 @@ public class GameView implements Screen , InputProcessor {
         toolPopUp = new ToolPopUp(stage);
         seedPopUp = new SeedPopUp(stage);
         animalPopUp = new AnimalPopUp(stage);
-        backPackPopUp = new BackPackPopUp(stage);
-        refrigeratorPopUp = new RefrigeratorPopUp(stage);
+//        backPackPopUp = new BackPackPopUp(stage);
+//        refrigeratorPopUp = new RefrigeratorPopUp(stage);
         giftingNPCPopUp = new GiftingNPCPopUp(stage);
         toolPopUp.show();
         storePopUp = new StorePopUp(stage);
         storePopUp.hide();
         cookingPopUp = new CookingPopUp(stage);
         cookingPopUp.hide();
-//        fridgePopUp = new FridgePopUp(stage);
-//        fridgePopUp.hide();
+        fridgePopUp = new FridgePopUp(stage);
+        fridgePopUp.hide();
         craftingPopUp = new CraftingPopUp(stage);
         craftingPopUp.hide();
     }
@@ -216,11 +217,11 @@ public class GameView implements Screen , InputProcessor {
             int tileY = (int)(worldCoordinates.y / TILE_SIZE);
             Position clickedPosition = new Position(tileX, tileY);
 
-            if (refrigeratorPopUp.isClicked(tileX, tileY)) {
-                refrigeratorPopUp.show();
+            if (fridgePopUp.isClicked(tileX, tileY)) {
+                fridgePopUp.show();
             }
             else if(App.getInstance().getCurrentGame().getCurrentPlayer().isInHouse()){
-                backPackPopUp.show();
+                popUpMenu.show();
             }
             else if(giftingNPCPopUp.isClicked(clickedPosition)){
                 giftingNPCPopUp.show();
