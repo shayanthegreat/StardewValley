@@ -20,7 +20,10 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 
@@ -31,10 +34,15 @@ public class GameView implements Screen , InputProcessor {
     private PopUpManager popUpMenu;
     private ToolPopUp toolPopUp;
     private SeedPopUp seedPopUp;
+    private AnimalPopUp animalPopUp;
+    private BackPackPopUp backPackPopUp;
+    private RefrigeratorPopUp refrigeratorPopUp;
+    private GiftingNPCPopUp giftingNPCPopUp;
     private StorePopUp storePopUp;
     private CookingPopUp cookingPopUp;
-    private FridgePopUp fridgePopUp;
+//    private FridgePopUp fridgePopUp;
     private CraftingPopUp craftingPopUp;
+
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
@@ -85,22 +93,20 @@ public class GameView implements Screen , InputProcessor {
             cookingPopUp.show();
         }
         else if(i == Input.Keys.Q){
-            fridgePopUp.show();
+//            fridgePopUp.show();
         }
         else if(i == Input.Keys.B){
             craftingPopUp.show();
         }
-//        else if(i == Input.Keys.X){
-//            GameController.getInstance().buildBarn(FarmBuildings.Barn,40,40);
-//            GameController.getInstance().buyAnimal(AnimalType.cow,"abbas");
-//            GameController.getInstance().buyAnimal(AnimalType.pig,"abbas");
-//            GameController.getInstance().buyAnimal(AnimalType.goat,"abbas");
-//            GameController.getInstance().buyAnimal(AnimalType.sheep,"abbas");
-//        }
+        else if(i == Input.Keys.X){
+            GameController.getInstance().buyAnimal(AnimalType.cow,"abbas");
+            GameController.getInstance().buyAnimal(AnimalType.pig,"ahmad");
+            GameController.getInstance().buyAnimal(AnimalType.goat,"asd");
+            GameController.getInstance().buyAnimal(AnimalType.sheep,"asss");
+        }
         else if(i == Input.Keys.Z){
             App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool(null);
         }
-
         return false;
     }
 
@@ -148,13 +154,17 @@ public class GameView implements Screen , InputProcessor {
         popUpMenu = PopUpManager.set(stage);
         toolPopUp = new ToolPopUp(stage);
         seedPopUp = new SeedPopUp(stage);
+        animalPopUp = new AnimalPopUp(stage);
+        backPackPopUp = new BackPackPopUp(stage);
+        refrigeratorPopUp = new RefrigeratorPopUp(stage);
+        giftingNPCPopUp = new GiftingNPCPopUp(stage);
         toolPopUp.show();
         storePopUp = new StorePopUp(stage);
         storePopUp.hide();
         cookingPopUp = new CookingPopUp(stage);
         cookingPopUp.hide();
-        fridgePopUp = new FridgePopUp(stage);
-        fridgePopUp.hide();
+//        fridgePopUp = new FridgePopUp(stage);
+//        fridgePopUp.hide();
         craftingPopUp = new CraftingPopUp(stage);
         craftingPopUp.hide();
     }
@@ -172,9 +182,6 @@ public class GameView implements Screen , InputProcessor {
             // Optional: if you want to do something with the tile position
             Position clickedPosition = new Position(tileX, tileY);
 
-//            if(storePopUp.isVisible()){
-//                return false;
-//            }
             Map map = App.getInstance().getCurrentGame().getMap();
             Tile tile = map.getTile(clickedPosition);
             if(tile == null){
@@ -201,6 +208,28 @@ public class GameView implements Screen , InputProcessor {
                 GameController.getInstance().handleTileClick(clickedPosition, stage);
             }
         }
+
+        if (button == Input.Buttons.RIGHT) {
+            GameController.getInstance().handleScape();
+            Vector3 worldCoordinates = Camera.getInstance().getCamera().unproject(new Vector3(screenX, screenY, 0));
+            int tileX = (int)(worldCoordinates.x / TILE_SIZE);
+            int tileY = (int)(worldCoordinates.y / TILE_SIZE);
+            Position clickedPosition = new Position(tileX, tileY);
+
+            if (refrigeratorPopUp.isClicked(tileX, tileY)) {
+                refrigeratorPopUp.show();
+            }
+            else if(App.getInstance().getCurrentGame().getCurrentPlayer().isInHouse()){
+                backPackPopUp.show();
+            }
+            else if(giftingNPCPopUp.isClicked(clickedPosition)){
+                giftingNPCPopUp.show();
+            }
+            else {
+                animalPopUp.show();
+            }
+        }
+
         return false;
     }
 
@@ -241,6 +270,7 @@ public class GameView implements Screen , InputProcessor {
         PlayerController.getInstance().update();
         GameController.getInstance().update(Gdx.graphics.getDeltaTime());
         AnimalController.getInstance().update();
+        NPCController.getInstance().update();
 
         LightningEffect lightning = GameController.getInstance().getLightningEffect();
         if (lightning != null) {
@@ -262,6 +292,7 @@ public class GameView implements Screen , InputProcessor {
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();
         WordController.getInstance().drawDarknessOverlay();
+
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
@@ -289,5 +320,23 @@ public class GameView implements Screen , InputProcessor {
     @Override
     public void dispose() {
 
+    }
+
+    public static void showError(String error) {
+        final Dialog dialog = new Dialog("!!!", GameAssetManager.getInstance().getSkin()) {
+            @Override
+            protected void result(Object object) {
+            }
+        };
+
+        dialog.text(error);
+        dialog.button("OK");
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                dialog.hide();
+            }
+        }, 5);
     }
 }

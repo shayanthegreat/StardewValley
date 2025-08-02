@@ -74,7 +74,7 @@ public class PopUpMenu {
         return tab;
     }
 
-    private Image createCloseTabImage(Texture texture) {
+    Image createCloseTabImage(Texture texture) {
         Image closeTab = new Image(texture);
         closeTab.addListener(new ClickListener() {
             @Override

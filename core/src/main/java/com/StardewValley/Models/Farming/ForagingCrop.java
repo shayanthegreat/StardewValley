@@ -38,6 +38,11 @@ public class ForagingCrop extends Item implements Serializable {
 
     }
 
+    @Override
+    public boolean isEdible() {
+        return false;
+    }
+
     public Texture getTexture() {
         return type.getTexture();
     }

@@ -7,9 +7,9 @@ import java.io.Serializable;
 
 public enum AnimalProductType implements Serializable {
     milk("milk",125, true, GameAssetManager.getInstance().MILK),
-    bigMilk("big milk",190, true, GameAssetManager.getInstance().MILK),
+    bigMilk("big milk",190, true, GameAssetManager.getInstance().LARGE_MILK),
     goatMilk("goat milk",225, true, GameAssetManager.getInstance().GOAT_MILK),
-    bigGoatMilk("big goat milk",345, true, GameAssetManager.getInstance().GOAT_MILK),
+    bigGoatMilk("big goat milk",345, true, GameAssetManager.getInstance().LARGE_GOAT_MILK),
     wool("wool",250, false, GameAssetManager.getInstance().WOOL),
     truffle("truffle",625, false, GameAssetManager.getInstance().TRUFFLE),
     egg("egg",50, true, GameAssetManager.getInstance().EGG),

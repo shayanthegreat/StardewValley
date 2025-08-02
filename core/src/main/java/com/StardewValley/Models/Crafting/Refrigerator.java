@@ -45,7 +45,13 @@ public class Refrigerator implements Serializable {
     }
 
     public void putItem(Item item,int amount) {
-        this.items.put(item,amount);
+        if(checkItemByName(item.getName())) {
+            int oldAmount=items.get(item);
+            items.put(item,oldAmount+amount);
+        }
+        else {
+            this.items.put(item,amount);
+        }
     }
 
     public boolean doesItemExist(Item item) {

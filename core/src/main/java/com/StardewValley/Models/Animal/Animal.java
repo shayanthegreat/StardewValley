@@ -24,6 +24,8 @@ public class Animal  implements Serializable {
     private Time lastProducingTime;
     private boolean isCollected;
     private AnimalProduct currentProduct;
+    private boolean isWalking;
+    private Position targetPosition;
 
 
     public Animal(AnimalType type, Player owner, String name) {
@@ -31,7 +33,8 @@ public class Animal  implements Serializable {
         this.owner = owner;
         this.name = name;
         this.isOutside = false;
-        this.isCollected=true;
+        this.isCollected=false;
+        this.isWalking = false;
 //        this.lastPetingTime = App.getInstance().getCurrentGame().getTime();
     }
 
@@ -110,6 +113,9 @@ public class Animal  implements Serializable {
         if(lastFeedingTime == null){
             return false;
         }
+        if(isCollected){
+            return false;
+        }
         if(lastFeedingTime.getSeason() == game.getTime().getSeason()){
             if(lastFeedingTime.getDay() - game.getTime().getDay()==-1){
                 return true;
@@ -119,9 +125,6 @@ public class Animal  implements Serializable {
             if(lastFeedingTime.getDay()==28 && game.getTime().getDay()==1){
                 return true;
             }
-        }
-        else if(!isCollected){
-            return true;
         }
         return false;
     }
@@ -190,6 +193,22 @@ public class Animal  implements Serializable {
             }
         }
         return false;
+    }
+
+    public void setIsWalking(boolean isWalking) {
+        this.isWalking = isWalking;
+    }
+
+    public boolean isWalking() {
+        return isWalking;
+    }
+
+    public void setTargetPosition(Position targetPosition) {
+        this.targetPosition = targetPosition;
+    }
+
+    public Position getTargetPosition() {
+        return targetPosition;
     }
 
 }

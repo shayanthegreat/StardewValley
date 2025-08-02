@@ -91,7 +91,7 @@ public enum AvatarType {
     }
 
     public Animation feedingAnimation() {
-        Animation<TextureRegion> animation = new Animation<>(0.3f,textureRegion[13][1],textureRegion[13][0] );
+        Animation<TextureRegion> animation = new Animation<>(0.6f,textureRegion[13][1],textureRegion[13][0] );
         animation.setPlayMode(Animation.PlayMode.NORMAL);
         return animation;
     }

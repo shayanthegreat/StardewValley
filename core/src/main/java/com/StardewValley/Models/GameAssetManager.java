@@ -2,6 +2,7 @@ package com.StardewValley.Models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -2451,6 +2452,14 @@ public class GameAssetManager {
         }
     }
 
+    public Animation<TextureRegion> COW_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Cow White1.png")),new TextureRegion(new Texture("AnimalAnimations/Cow White2.png")),new TextureRegion(new Texture("AnimalAnimations/Cow White3.png")),new TextureRegion(new Texture("AnimalAnimations/Cow White4.png")));
+
+    public Animation<TextureRegion> GOAT_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Goat1.png")),new TextureRegion(new Texture("AnimalAnimations/Goat2.png")),new TextureRegion(new Texture("AnimalAnimations/Goat3.png")),new TextureRegion(new Texture("AnimalAnimations/Goat4.png")));
+
+    public Animation<TextureRegion> PIG_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Pig1.png")),new TextureRegion(new Texture("AnimalAnimations/Pig2.png")),new TextureRegion(new Texture("AnimalAnimations/Pig3.png")),new TextureRegion(new Texture("AnimalAnimations/Pig4.png")));
+
+    public Animation<TextureRegion> SHEEP_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Sheep1.png")),new TextureRegion(new Texture("AnimalAnimations/Sheep2.png")),new TextureRegion(new Texture("AnimalAnimations/Sheep3.png")),new TextureRegion(new Texture("AnimalAnimations/Sheep4.png")));
+
     public Texture ABIGAIL_PORTRAIT = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Abigail.png");
 
     public Texture GATE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fence/Gate.png");
@@ -2469,9 +2478,13 @@ public class GameAssetManager {
 
     public Texture BUILT_GREENHOUSE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Greenhouse/greenhouse.png");
 
+    public Texture IN_HOUSE = new Texture("House/ChatGPT Image Jul 27, 2025, 04_30_27 PM.png");
+
     public Texture SAM_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Sam.png");
 
     public Texture HARVEY_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Harvey.png");
+
+    public Texture DIALOG = new Texture("ChatGPT Image Jul 29, 2025, 04_38_08 PM.png");
 
     public Skin getSkin() {
         return skin;

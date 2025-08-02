@@ -36,6 +36,11 @@ public class Crop extends Item implements Serializable {
     }
 
     @Override
+    public boolean isEdible() {
+        return this.type.isEdible();
+    }
+
+    @Override
     public String getName() {
         return type.getName();
     }
