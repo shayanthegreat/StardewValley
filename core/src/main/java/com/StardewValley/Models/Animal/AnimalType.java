@@ -1,30 +1,39 @@
 package com.StardewValley.Models.Animal;
 
+import com.StardewValley.Models.GameAssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public enum AnimalType implements Serializable {
-    cow(false,1500,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.milk) , new AnimalProduct(AnimalProductType.bigMilk))),4),
-    goat(false,4000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.goatMilk),new AnimalProduct(AnimalProductType.bigGoatMilk))),8),
-    sheep(false,8000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.wool))),12),
-    pig(false,16000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.truffle))),8),
-    chicken(true,800,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.egg),new AnimalProduct(AnimalProductType.bigEgg))),4),
-    duck(true,1200,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.duckEgg),new AnimalProduct(AnimalProductType.duckFeather))),8),
-    rabbit(true,8000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.rabbitWool),new AnimalProduct(AnimalProductType.rabbitFoot))),12),
-    dinosaur(true,14000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.dinosaurEgg))),8),
+    cow(false,1500,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.milk) , new AnimalProduct(AnimalProductType.bigMilk))),4,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/cow.png"), GameAssetManager.getInstance().COW_WALK),
+    goat(false,4000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.goatMilk),new AnimalProduct(AnimalProductType.bigGoatMilk))),8,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Goat.png"),GameAssetManager.getInstance().GOAT_WALK),
+    sheep(false,8000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.wool))),12,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Sheep.png"),GameAssetManager.getInstance().SHEEP_WALK),
+    pig(false,16000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.truffle))),8,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Pig.png"),GameAssetManager.getInstance().PIG_WALK),
+    chicken(true,800,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.egg),new AnimalProduct(AnimalProductType.bigEgg))),4,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Chicken_Statue.png"),null),
+    duck(true,1200,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.duckEgg),new AnimalProduct(AnimalProductType.duckFeather))),8,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Duck.png"),null),
+    rabbit(true,8000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.rabbitWool),new AnimalProduct(AnimalProductType.rabbitFoot))),12,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Rabbit.png"),null),
+    dinosaur(true,14000,new ArrayList<AnimalProduct>(List.of(new AnimalProduct(AnimalProductType.dinosaurEgg))),8,new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Animals/Dinosaur.png"),null),
     ;
     private int capacity;
     private int cost;
     private int daysTillProduct;
     private ArrayList<AnimalProduct> products;
     private boolean isInCage;
+    private Texture texture;
+    private Animation<TextureRegion> walkingAnimation;
 
-    AnimalType(boolean isInCage,int cost,ArrayList<AnimalProduct> products,int capacity) {
+    AnimalType(boolean isInCage,int cost,ArrayList<AnimalProduct> products,int capacity,Texture texture,Animation<TextureRegion> walkingAnimation) {
         this.isInCage = isInCage;
         this.cost = cost;
         this.products = products;
         this.capacity = capacity;
+        this.texture = texture;
+        this.walkingAnimation = walkingAnimation;
     }
 
     public int getCapacity() {
@@ -57,5 +66,13 @@ public enum AnimalType implements Serializable {
 
     public int getCost() {
         return cost;
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public Animation<TextureRegion> getAnimation() {
+        return walkingAnimation;
     }
 }

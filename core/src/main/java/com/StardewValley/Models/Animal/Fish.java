@@ -10,6 +10,7 @@ import com.StardewValley.Models.Map.Tile;
 import com.StardewValley.Models.Player;
 import com.StardewValley.Models.Tools.LevelInfo;
 import com.StardewValley.Models.Tools.Tool;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -75,6 +76,12 @@ public class Fish extends Item implements Serializable {
     public void delete() {
 
     }
+
+    @Override
+    public boolean isEdible() {
+        return true;
+    }
+
     public String getFishingQuality(Weather weather, int skillLevel, String levelName) {
         App app = App.getInstance();
         Game game=app.getCurrentGame();
@@ -119,5 +126,10 @@ public class Fish extends Item implements Serializable {
     @Override
     public int getPrice() {
         return (int) (quality.getPriceRatio() * type.getBasePrice());
+    }
+
+    @Override
+    public Texture getTexture() {
+        return type.getTexture();
     }
 }

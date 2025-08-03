@@ -15,8 +15,8 @@ public class Refrigerator implements Serializable {
     }
 
     public void pickItem(Item item,int amount) {
-        App app=App.getInstance();
-        Player player=app.getCurrentGame().getCurrentPlayer();
+        App app = App.getInstance();
+        Player player = app.getCurrentGame().getCurrentPlayer();
         player.getBackPack().addItem(item,amount);
         this.items.remove(item,amount);
     }
@@ -39,9 +39,19 @@ public class Refrigerator implements Serializable {
         return null;
     }
 
+    public void addItem(Item item,int amount) {
+        Integer oldValue = this.items.getOrDefault(item,0);
+        this.items.put(item,oldValue+amount);
+    }
 
     public void putItem(Item item,int amount) {
-        this.items.put(item,amount);
+        if(checkItemByName(item.getName())) {
+            int oldAmount=items.get(item);
+            items.put(item,oldAmount+amount);
+        }
+        else {
+            this.items.put(item,amount);
+        }
     }
 
     public boolean doesItemExist(Item item) {
@@ -59,12 +69,15 @@ public class Refrigerator implements Serializable {
         return items.get(item) >= count;
     }
 
-    public void removeItem(Item item, int count) {
+    public boolean removeItem(Item item, int count) {
         if (checkItem(item, count)) {
             items.put(item, items.get(item) - count);
             if (items.get(item) == 0) {
                 items.remove(item);
             }
+            App.getInstance().getCurrentGame().getCurrentPlayer().getBackPack().addItem(item,count);
+            return true;
         }
+        return false;
     }
 }

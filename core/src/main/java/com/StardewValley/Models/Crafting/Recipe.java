@@ -1,6 +1,7 @@
 package com.StardewValley.Models.Crafting;
 
 import com.StardewValley.Models.Item;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -10,4 +11,5 @@ public interface Recipe {
     public String getProductName();
     public HashMap<Item, Integer> getIngredients();
     public int getPrice();
+    public Texture getTexture();
 }

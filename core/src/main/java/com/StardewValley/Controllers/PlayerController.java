@@ -1,11 +1,14 @@
 package com.StardewValley.Controllers;
 
+import com.StardewValley.Models.Animal.Animal;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Game;
-import com.StardewValley.Models.Map.Direction;
-import com.StardewValley.Models.Map.Position;
+import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.Player;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class PlayerController {
     private static PlayerController instance ;
@@ -13,10 +16,18 @@ public class PlayerController {
     private boolean goingDown = false;
     private boolean goingLeft = false;
     private boolean goingRight = false;
+    private Direction playerDirection = Direction.center;
+    private Animation<TextureRegion> animation;
+    private long pettingStartTime = 0;
+    private boolean petting = false;
+    private boolean feeding = false;
 
 
     public void update(){
         movePlayer();
+        petting();
+        feeding();
+        check();
     }
 
 
@@ -28,54 +39,126 @@ public class PlayerController {
         return instance;
     }
 
+    private void check(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        House house = App.getInstance().getCurrentGame().getCurrentPlayer().getFarm().getHouse();
+        if(player.getPosition().x >= house.getOrigin().x && player.getPosition().x <= house.getOrigin().x+3 &&
+            player.getPosition().y >= house.getOrigin().y && player.getPosition().y <= house.getOrigin().y+2){
+            player.setInHouse(true);
+        }
+        else {
+            player.setInHouse(false);
+        }
+    }
+
     public void movePlayer(){
         Game game = App.getInstance().getCurrentGame();
         Player player = game.getCurrentPlayer();
+        if(petting)  return;
         if(goingUp && !goingLeft && !goingRight){
-            player.setPosition(new Position(player.getPosition().x,player.getPosition().y+1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.up);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+            playerDirection = Direction.up;
+            getAnimation(Direction.up);
+            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
+            move(0,1);
         }
         else if(goingDown && !goingLeft && !goingRight){
-            player.setPosition(new Position(player.getPosition().x,player.getPosition().y-1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.down);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+            playerDirection = Direction.down;
+            getAnimation(Direction.down);
+            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
+            move(0,-1);
         }
         else if(goingLeft && !goingUp && !goingDown){
-            player.setPosition(new Position(player.getPosition().x-1,player.getPosition().y));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.left);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+            playerDirection = Direction.left;
+            getAnimation(Direction.left);
+            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
+            move(-1,0);
         }
         else if(goingRight && !goingDown && !goingUp){
-            player.setPosition(new Position(player.getPosition().x+1,player.getPosition().y));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.right);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+            playerDirection = Direction.right;
+            getAnimation(Direction.right);
+            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
+            move(1,0);
         }
         else if(goingUp && goingLeft){
-            player.setPosition(new Position(player.getPosition().x-1,player.getPosition().y+1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.upLeft);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+            playerDirection = Direction.up;
+            getAnimation(Direction.upLeft);
+            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
+            move(-1,1);
         }
         else if(goingUp && goingRight){
-            player.setPosition(new Position(player.getPosition().x+1,player.getPosition().y+1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.upRight);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+            playerDirection = Direction.up;
+            getAnimation(Direction.upRight);
+            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
+            move(1,1);
         }
         else if(goingDown && goingLeft){
-            player.setPosition(new Position(player.getPosition().x-1,player.getPosition().y-1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.downLeft);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+            playerDirection = Direction.down;
+            getAnimation(Direction.downLeft);
+            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
+            move(-1,-1);
         }
         else if(goingDown && goingRight){
-            player.setPosition(new Position(player.getPosition().x+1,player.getPosition().y-1));
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.downRight);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+            playerDirection = Direction.right;
+            getAnimation(Direction.downRight);
+            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
+            move(1,-1);
         }
         else {
-            Animation animation = player.getAvatarType().walkingAnimation(Direction.center);
-            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,2,2);
+            animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().TiredAnimation(playerDirection);
+            Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
         }
     }
+
+    private void petting(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(petting){
+            if(TimeUtils.millis() - pettingStartTime > 3000){
+                petting = false;
+                return;
+            }
+            Camera.getInstance().print(player.getAvatarType().pettingAnimation(),player.getPosition().x,player.getPosition().y,1,1);
+        }
+    }
+
+    private void feeding(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(feeding){
+            if(TimeUtils.millis() - pettingStartTime > 3000){
+                feeding = false;
+                return;
+            }
+            Camera.getInstance().print(player.getAvatarType().feedingAnimation(),player.getPosition().x,player.getPosition().y,1,1);
+        }
+    }
+
+    private void move(int dx , int dy){
+        Game game = App.getInstance().getCurrentGame();
+        Player player = game.getCurrentPlayer();
+
+        if(player.isFainted())
+            return;
+
+        Tile tile = game.getMap().getTile(new Position(player.getPosition().x + dx,player.getPosition().y + dy ));
+
+
+        if(tile != null && (tile.getBuilding() == null || (tile.getBuilding() instanceof House)) && tile.getObject() == null ){
+            player.setPosition(new Position(player.getPosition().x +dx,player.getPosition().y + dy));
+            player.decreaseEnergy(0.3f);
+            if(player.getEnergy().amount == 0){
+                player.setFainted(true);
+            }
+        }
+    }
+
+    private void getAnimation(Direction direction){
+        if(App.getInstance().getCurrentGame().getCurrentPlayer().isFainted()){
+           animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().faintAnimation(direction);
+        }
+        else{
+            animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().walkingAnimation(direction);
+        }
+    }
+
 
     public void setGoingUp(boolean goingUp){
         this.goingUp = goingUp;
@@ -88,5 +171,34 @@ public class PlayerController {
     }
     public void setGoingRight(boolean goingRight){
         this.goingRight = goingRight;
+    }
+
+    public Building whatIsClose(){
+        for(int i=-1;i<2;i++){
+            for(int j=-1;j<2;j++){
+                if(i==0 && j==0)continue;
+                Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+                Farm farm = player.getFarm();
+                Building building = farm.getTile(new Position(player.getPosition().x + i,player.getPosition().y + j)).getBuilding();
+                if(building != null){
+                    return building;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void startPetting(Animal animal){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        player.setPosition(new Position(animal.getPosition().x-1,animal.getPosition().y));
+        pettingStartTime = TimeUtils.millis();
+        petting = true;
+    }
+
+    public void startFeeding(Animal animal){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        player.setPosition(new Position(animal.getPosition().x+1,animal.getPosition().y));
+        feeding = true;
+        pettingStartTime = TimeUtils.millis();
     }
 }

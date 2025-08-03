@@ -15,7 +15,7 @@ public class PopUpMenu {
     protected ImageButton trashCan;
     protected Texture slot;
     protected Table tabs;
-    private ImageButton closeButton;  // Close button
+    protected ImageButton closeButton;  // Close button
 
     public enum TabType {
         INVENTORY, SKILL, SOCIAL, MAP, CRAFTING, COOKING
@@ -39,23 +39,8 @@ public class PopUpMenu {
         popupWindow.setColor(Color.LIGHT_GRAY);
         popupWindow.pad(10);
 
-        // Create close button using EXIT_BUTTON texture
-        Texture exitTexture = GameAssetManager.getInstance().EXIT_BUTTON;
-        ImageButton.ImageButtonStyle closeStyle = new ImageButton.ImageButtonStyle();
-        closeStyle.imageUp = new Image(exitTexture).getDrawable();
-        closeButton = new ImageButton(closeStyle);
-        closeButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                hide();
-                PopUpManager.getInstance(stage).hide();
-            }
-        });
-
-        // Add close button to window's title bar area (top right)
-        // Window supports adding buttons to title bar with addActor()
-        popupWindow.getTitleTable().add(closeButton).size(30, 30).right().padRight(5);
-
+        // Title bar close button
+        // Tab row
         tabs.clear();
         tabs.top().left();
         tabs.defaults().size(70, 70).padRight(4);
@@ -66,6 +51,9 @@ public class PopUpMenu {
         tabs.add(createTabImage(GameAssetManager.getInstance().MAP_TAB, TabType.MAP));
         tabs.add(createTabImage(GameAssetManager.getInstance().CRAFTING_TAB, TabType.CRAFTING));
         tabs.add(createTabImage(GameAssetManager.getInstance().COOKING_TAB, TabType.COOKING));
+
+        // Add Close icon to the end of tabs
+        tabs.add(createCloseTabImage(GameAssetManager.getInstance().EXIT_BUTTON));
 
         popupWindow.add(tabs).row();
         popupWindow.pack();
@@ -84,6 +72,18 @@ public class PopUpMenu {
             }
         });
         return tab;
+    }
+
+    Image createCloseTabImage(Texture texture) {
+        Image closeTab = new Image(texture);
+        closeTab.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                hide();
+                PopUpManager.getInstance(stage).hide();
+            }
+        });
+        return closeTab;
     }
 
     protected void onTabClicked(TabType type) {
@@ -106,8 +106,8 @@ public class PopUpMenu {
     protected void updateWindowPosition() {
         if (stage != null && popupWindow != null) {
             popupWindow.setPosition(
-                    (stage.getWidth() - popupWindow.getWidth()) / 2,
-                    (stage.getHeight() - popupWindow.getHeight()) / 2 + 200
+                (stage.getWidth() - popupWindow.getWidth()) / 2,
+                (stage.getHeight() - popupWindow.getHeight()) / 2 + 200
             );
         }
     }

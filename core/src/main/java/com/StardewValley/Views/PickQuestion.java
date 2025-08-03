@@ -1,6 +1,7 @@
 package com.StardewValley.Views;
 
 import com.StardewValley.Controllers.RegistrationController;
+import com.StardewValley.Controllers.RegistrationController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.Enums.Question;
 import com.badlogic.gdx.Gdx;
@@ -60,8 +61,6 @@ public class PickQuestion extends MenuView {
     @Override
     public void render(float v) {
         ScreenUtils.clear(0,0,0,1);
-        Main.getInstance().getBatch().begin();
-        Main.getInstance().getBatch().end();
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

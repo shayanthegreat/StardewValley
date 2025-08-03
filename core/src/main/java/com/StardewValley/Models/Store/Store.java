@@ -45,6 +45,10 @@ public class Store extends Building implements Serializable {
                 this.items.add(new StoreItem(new Material(MaterialType.ironOre), 150, 2000, null, 150));
                 this.items.add(new StoreItem(new Material(MaterialType.goldOre), 400, 2000, null, 400));
                 this.items.add(new StoreItem(new Material(MaterialType.coal), 150, 2000, null, 150));
+                this.items.add(new StoreItem(new Material(MaterialType.sugar), 150, 2000, null, 150));
+                this.items.add(new StoreItem(new Material(MaterialType.fiber), 150, 2000, null, 150));
+                this.items.add(new StoreItem(new Material(MaterialType.oil), 150, 2000, null, 150));
+
                 break;
             }
             case "Robin":{
@@ -52,6 +56,10 @@ public class Store extends Building implements Serializable {
                 this.closingTime = 18;
                 this.items.add(new StoreItem(new Material(MaterialType.wood), 10, 2000, null, 10));
                 this.items.add(new StoreItem(new Material(MaterialType.stone), 20, 2000, null, 20));
+                this.items.add(new StoreItem(new Material(MaterialType.coffee), 20, 2000, null, 20));
+                this.items.add(new StoreItem(new Material(MaterialType.oil), 20, 2000, null, 20));
+                this.items.add(new StoreItem(new Material(MaterialType.cheese), 20, 2000, null, 20));
+
                 break;
             }
             case "Pierre":{
@@ -601,4 +609,7 @@ public class Store extends Building implements Serializable {
         return false;
     }
 
+    public ArrayList<StoreRecipes> getRecipes() {
+        return recipes;
+    }
 }

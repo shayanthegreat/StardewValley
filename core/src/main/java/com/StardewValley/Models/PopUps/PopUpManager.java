@@ -18,6 +18,10 @@ public class PopUpManager {
         return instance;
     }
 
+    public static PopUpManager set(Stage stage){
+        instance = new PopUpManager(stage);
+        return instance;
+    }
 
     private Stage stage;
     private Window popupWindow;
@@ -113,6 +117,7 @@ public class PopUpManager {
     }
 
     public void showSkillTab() {
+        skillPopUp.refresh();
         inventoryPopUp.hide();
         skillPopUp.show();
         socialPopUp.hide();
@@ -121,12 +126,17 @@ public class PopUpManager {
     }
 
     public void showSocialTab() {
+        socialPopUp.refresh();
         socialPopUp.show();
         inventoryPopUp.hide();
         skillPopUp.hide();
         popupWindow.setVisible(true);
         inventoryPopUp.refresh();
 
+    }
+
+    public boolean isVisible() {
+        return popupWindow.isVisible();
     }
 
     public InventoryPopUp getInventoryPopUp() {

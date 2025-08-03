@@ -21,8 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.io.Serializable;
 
-import static com.StardewValley.Models.Enums.SkillType.foraging;
-import static com.StardewValley.Models.Enums.SkillType.mining;
+import static com.StardewValley.Models.Enums.SkillType.*;
 
 public class Tool extends Item implements Serializable {
     private final ToolType toolType;
@@ -199,6 +198,8 @@ public class Tool extends Item implements Serializable {
                         return new GameMessage(null, "You don't have enough capacity in backpack");
                     }
                     backPack.addItem(new Crop(plant.getType().getCrop()), amount);
+                    App.getInstance().getCurrentGame().getCurrentPlayer().getSkill(farming).addAmount(20);
+                    System.out.println(App.getInstance().getCurrentGame().getCurrentPlayer().getSkill(farming).getLevel());
                     return new GameMessage(null, "You got some fruit! (" + amount + "x)");
                 }
             }
@@ -277,14 +278,15 @@ public class Tool extends Item implements Serializable {
                     if (item instanceof Material) {
                         if (((Material) item).getType() == MaterialType.stone) {
                             App.getInstance().getCurrentGame().getCurrentPlayer().getSkill(mining).addAmount(10);
-                            if (App.getInstance().getCurrentGame().getCurrentPlayer().getSkill(mining).getLevel() == 2) {
-                                backPack.addItem(item, 10);
-                            }
+                            backPack.addItem(item, 1);
+                            tile.setObject(null);
                         }
                         return new GameMessage(null, "You collected some stone!");
                     }
                     if (item instanceof ForagingCrop || item instanceof Seed) {
                         App.getInstance().getCurrentGame().getCurrentPlayer().getSkill(foraging).addAmount(10);
+                        backPack.addItem(item, 1);
+                        tile.setObject(null);
                     }
                     return new GameMessage(null, "You collected some " + item.getName() + " !");
                 }
@@ -301,6 +303,11 @@ public class Tool extends Item implements Serializable {
     @Override
     public void delete() {
 
+    }
+
+    @Override
+    public boolean isEdible() {
+        return false;
     }
 
     @Override

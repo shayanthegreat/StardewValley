@@ -116,7 +116,7 @@ public class BackPack implements Serializable {
     }
 
     public int getItemCount(Item item) {
-        return items.get(item);
+        return items.getOrDefault(item, 0);
     }
 
 

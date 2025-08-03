@@ -74,6 +74,7 @@ public abstract class Item extends TileObject implements Serializable {
     public abstract void use();
     public abstract void drop(Tile tile);
     public abstract void delete();
+    public abstract boolean isEdible();
     public String getName() {
         return name;
     }

@@ -2,6 +2,7 @@ package com.StardewValley.Models;
 
 import com.StardewValley.Models.Enums.Question;
 import com.StardewValley.Networking.Common.Lobby;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class User implements Serializable {
     private String answer;
     private transient Game currentGame;
     private ArrayList<Integer> gamesMoney;
-    private String avatarPath;
+    private transient Texture avatarTexture;
 
     private transient Lobby lobby = null;
 
@@ -29,6 +30,7 @@ public class User implements Serializable {
         this.gamesMoney = new ArrayList<>();
         this.question = Question.first;
         this.answer = "none";
+        this.avatarTexture = GameAssetManager.getInstance().ABIGAIL_PORTRAIT;
     }
 
 //    constructor for SQLite database
@@ -139,4 +141,12 @@ public class User implements Serializable {
     public void setLobby(Lobby lobby) {
         this.lobby = lobby;
     }
+    public void setAvatarTexture(Texture avatarTexture) {
+        this.avatarTexture = avatarTexture;
+    }
+
+    public Texture getAvatarTexture() {
+        return avatarTexture;
+    }
+
 }

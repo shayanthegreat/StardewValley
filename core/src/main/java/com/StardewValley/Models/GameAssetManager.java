@@ -2,6 +2,7 @@ package com.StardewValley.Models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -32,7 +33,7 @@ public class GameAssetManager {
 
 
     //
-    public final Texture BARN = new Texture("Farm_Buildings/Barn.png");
+//    public final Texture BARN = new Texture("Farm_Buildings/Barn.png");
     public final Texture BIG_BARN = new Texture("Farm_Buildings/Big_Barn.png");
     public final Texture DELUXE_BARN = new Texture("Farm_Buildings/Deluxe_Barn.png");
     public final Texture COOP = new Texture("Farm_Buildings/Coop.png");
@@ -40,7 +41,7 @@ public class GameAssetManager {
     public final Texture DELUXE_COOP = new Texture("Farm_Buildings/Deluxe_Coop.png");
     public final Texture WELL = new Texture("Farm_Buildings/Well.png");
     public final Texture SHIPPINGBIN = new Texture("Farm_Buildings/Shipping_Bin_Anim.png");
-    public final Texture HOUSE = new Texture("Cottage/House_(tier_3).png");
+//    public final Texture HOUSE = new Texture("Cottage/House_(tier_3).png");
     public final Texture COTTAGE_INSIDE = new Texture("Cottage/Cottage_Inside.png");
     public final Texture BROKEN_GREENHOUSE = new Texture("Greenhouse/Broken_Greenhouse.png");
     public final Texture WATER = new Texture("Flooring/water.png");
@@ -49,7 +50,7 @@ public class GameAssetManager {
     public final Texture GREEN_FLOOR = new Texture("Flooring/Flooring_28.png");
     public final Texture PATH_FLOOR = new Texture("Flooring/Flooring_52.png");
     public final Texture STONE_FENCE = new Texture("Fence/Stone_Fence.png");
-    public final Texture GATE = new Texture("Fence/Gate.png");
+//    public final Texture GATE = new Texture("Fence/Gate.png");
     public final Texture PLOWED_FLOOR = new Texture("Flooring/Flooring_21.png");
     public final Texture SNOWED_FLOOR = new Texture("Flooring/Flooring_54.png");
     public final Texture FLOWER = new Texture("Crafting/Tub_o%27_Flowers.png");
@@ -593,7 +594,7 @@ public class GameAssetManager {
     public final Texture FIBER = new Texture("Crafting/Fiber.png");
     public final Texture FIBER_SEEDS = new Texture("Crafting/Fiber_Seeds.png");
     public final Texture FIRE_QUARTZ = new Texture("Crafting/Fire_Quartz.png");
-    public final Texture FISH = new Texture("Crafting/Fish.png");
+//    public final Texture FISH = new Texture("Crafting/Fish.png");
     public final Texture FROZEN_TEAR = new Texture("Crafting/Frozen_Tear.png");
     public final Texture GARLIC = new Texture("Crafting/Garlic.png");
     public final Texture GINGER = new Texture("Crafting/Ginger.png");
@@ -2420,15 +2421,25 @@ public class GameAssetManager {
     public final Texture WOOD_CLUB = new Texture("Weapon/Wood_Club.png");
     public final Texture WOOD_MALLET = new Texture("Weapon/Wood_Mallet.png");
     public final Texture WOODEN_BLADE = new Texture("Weapon/Wooden_Blade.png");
-
+    public final Texture STORES = new Texture("Stores.png");
     // ALI
 
     public Skin skin = new Skin(Gdx.files.internal("skin/flat-earth-ui.json"));
     public Skin SKIN = new Skin(Gdx.files.internal("skin/flat-earth-ui.json"));
 
-    public Texture GRASS_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_44.png");
+    public Texture SUMMER_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_44.png");
+
+    public Texture SPRING_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_50.png");
+
+    public Texture WINTER_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_54.png");
+
+    public Texture FALL_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_21.png");
 
     public Texture STONE_FLOORING = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_52.png");
+
+    public Texture LAKE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Flooring/Flooring_26.png");
+
+    public Texture FENCE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fence/Wood_Fence.png");
 
     public Texture ABIGAIL = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/sprites/Abigail.png");
 
@@ -2440,6 +2451,40 @@ public class GameAssetManager {
             ClOCK_MANNERS[i] = new TextureRegion(CLOCK_ALL, 80 + i % 4 * 13, i / 4 * 9, 13, 9);
         }
     }
+
+    public Animation<TextureRegion> COW_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Cow White1.png")),new TextureRegion(new Texture("AnimalAnimations/Cow White2.png")),new TextureRegion(new Texture("AnimalAnimations/Cow White3.png")),new TextureRegion(new Texture("AnimalAnimations/Cow White4.png")));
+
+    public Animation<TextureRegion> GOAT_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Goat1.png")),new TextureRegion(new Texture("AnimalAnimations/Goat2.png")),new TextureRegion(new Texture("AnimalAnimations/Goat3.png")),new TextureRegion(new Texture("AnimalAnimations/Goat4.png")));
+
+    public Animation<TextureRegion> PIG_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Pig1.png")),new TextureRegion(new Texture("AnimalAnimations/Pig2.png")),new TextureRegion(new Texture("AnimalAnimations/Pig3.png")),new TextureRegion(new Texture("AnimalAnimations/Pig4.png")));
+
+    public Animation<TextureRegion> SHEEP_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Sheep1.png")),new TextureRegion(new Texture("AnimalAnimations/Sheep2.png")),new TextureRegion(new Texture("AnimalAnimations/Sheep3.png")),new TextureRegion(new Texture("AnimalAnimations/Sheep4.png")));
+
+    public Texture ABIGAIL_PORTRAIT = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Abigail.png");
+
+    public Texture GATE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fence/Gate.png");
+
+    public Texture HOUSE = new Texture("House/House.png");
+
+    public Texture GREEN_HOUSE = new Texture("HouseBuildings/greenHouse.png");
+
+    public Texture FISH = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fish/Anchovy.png");
+
+    public Texture FISH2 = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fish/Angler.png");
+
+    public Texture FISH3 = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fish/Red_Mullet.png");
+
+    public Texture BARN = new Texture("Barn/Barn.png");
+
+    public Texture BUILT_GREENHOUSE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Greenhouse/greenhouse.png");
+
+    public Texture IN_HOUSE = new Texture("House/ChatGPT Image Jul 27, 2025, 04_30_27 PM.png");
+
+    public Texture SAM_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Sam.png");
+
+    public Texture HARVEY_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Harvey.png");
+
+    public Texture DIALOG = new Texture("ChatGPT Image Jul 29, 2025, 04_38_08 PM.png");
 
     public Skin getSkin() {
         return skin;

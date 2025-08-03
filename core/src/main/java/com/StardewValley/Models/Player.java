@@ -1,12 +1,12 @@
 package com.StardewValley.Models;
 
+import com.StardewValley.Models.Animal.Fish;
+import com.StardewValley.Models.Animal.FishType;
 import com.StardewValley.Models.Communication.FriendShip;
 import com.StardewValley.Models.Communication.NPC;
 import com.StardewValley.Models.Communication.NPCFriendship;
 import com.StardewValley.Models.Communication.NPCQuest;
-import com.StardewValley.Models.Crafting.Buff;
-import com.StardewValley.Models.Crafting.CookingRecipe;
-import com.StardewValley.Models.Crafting.CraftingRecipe;
+import com.StardewValley.Models.Crafting.*;
 import com.StardewValley.Models.Enums.AvatarType;
 import com.StardewValley.Models.Enums.SkillType;
 import com.StardewValley.Models.Farming.Seed;
@@ -43,15 +43,19 @@ public class Player implements Serializable {
     private ArrayList<NPCFriendship> NPCFriendships;
     private ArrayList<NPCQuest> NPCQuests;
     private AvatarType avatarType;
+    private boolean isChoosingBarn;
+    private boolean isChoosingCoop;
+    private boolean isInHouse;
 
 
     public Player(User user, Farm farm) {
-        this.money = 100;
+        this.money = 1000000;
         this.user = user;
         this.farm = farm;
         this.position = new Position(farm.getTopLeft().x + 50, farm.getTopLeft().y + 50);
         this.energy = new Energy();
         backPack = new BackPack();
+        backPack.addItem(new Material(MaterialType.bouquet),3);
         Tool scythe = new Tool(ToolType.scythe);
         WateringCan wateringCan = new WateringCan(ToolType.wateringCan);
         Tool axe = new Tool(ToolType.axe);
@@ -62,6 +66,8 @@ public class Player implements Serializable {
         backPack.addItem(axe, 1);
         backPack.addItem(hoe, 1);
         backPack.addItem(shear, 1);
+        backPack.addItem(new Tool(ToolType.pickaxe), 1);
+//        backPack.addItem(new Fish(FishType.flounder),1);
         // add this bullshit to backpack
         backPack.addItem(new Seed(SeedType.carrot), 8);
         trashCan = new TrashCan();
@@ -102,6 +108,9 @@ public class Player implements Serializable {
         this.NPCQuests.add(new NPCQuest(new NPC("Harvey")));
         this.NPCQuests.add(new NPCQuest(new NPC("Lia")));
         this.NPCQuests.add(new NPCQuest(new NPC("Robin")));
+        this.isChoosingBarn = false;
+        this.isChoosingCoop = false;
+        this.isInHouse = false;
     }
 
     public ArrayList<FriendShip> getFriendShips() {
@@ -136,7 +145,7 @@ public class Player implements Serializable {
             this.energy.addEnergy(amount);
     }
 
-    public void decreaseEnergy(int amount) {
+    public void decreaseEnergy(float amount) {
         this.energy.decreaseEnergy(amount);
     }
 
@@ -191,7 +200,7 @@ public class Player implements Serializable {
     public void applyBuff(Buff buff) {
         App app = App.getInstance();
         Game game = app.getCurrentGame();
-        Time time = game.getTime();
+        Time time = new Time(game.getTime());
         switch (buff.getSkillType()){
             case farming :{
                 lastBuffTime[0] = Time.addHour(time,buff.getHours());
@@ -321,5 +330,29 @@ public class Player implements Serializable {
 
     public AvatarType getAvatarType() {
         return avatarType;
+    }
+
+    public boolean isChoosingBarn(){
+        return isChoosingBarn;
+    }
+
+    public void setChoosingBarn(Boolean b){
+        isChoosingBarn = b;
+    }
+
+    public boolean isChoosingCoop(){
+        return isChoosingCoop;
+    }
+
+    public void setChoosingCoop(boolean b){
+        isChoosingCoop = b;
+    }
+
+    public void setInHouse(boolean inHouse) {
+        this.isInHouse = inHouse;
+    }
+
+    public boolean isInHouse() {
+        return isInHouse;
     }
 }
