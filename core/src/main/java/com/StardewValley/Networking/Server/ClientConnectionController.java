@@ -239,6 +239,26 @@ public class ClientConnectionController {
         String receiver = message.getFromBody("receiver");
         connection.getGame().getChat().registerNewMessage(text, sender, receiver);
     }
+
+    public void storeItemBought(ConnectionMessage message) {
+        String store = message.getFromBody("store");
+        String item = message.getFromBody("item");
+        int count = message.getIntFromBody("count");
+
+        ConnectionMessage inform = new ConnectionMessage(new HashMap<>() {{
+            put("information", "store_item_bought");
+            put("store", store);
+            put("item", item);
+            put("count", count);
+        }}, ConnectionMessage.Type.inform);
+
+        for(ClientConnection conn : connection.getGame().getConnections()) {
+            if(conn == connection) {
+                continue;
+            }
+            conn.sendMessage(inform);
+        }
+    }
 }
 
 

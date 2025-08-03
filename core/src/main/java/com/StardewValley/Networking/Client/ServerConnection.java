@@ -53,6 +53,10 @@ public class ServerConnection extends Connection {
                 controller.updateOnlineUsers(message);
                 return true;
             }
+            if (message.getFromBody("information").equals("store_item_bought")) {
+                controller.updateStoreItems(message);
+                return true;
+            }
         }
         if(message.getType().equals(ConnectionMessage.Type.update)) {
             if(message.getFromBody("update").equals("update_game")) {

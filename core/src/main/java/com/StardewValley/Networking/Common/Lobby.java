@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Lobby {
-    private final String name;
-    private final String code;
+    private String name;
+    private String code;
     private String adminUsername;
-    private final ArrayList<String> members;
+    private ArrayList<String> members;
     private Long lastJoin;
-    private final boolean isPrivate;
-    private final String password;
-    private final boolean isVisible;
+    private boolean isPrivate;
+    private String password;
+    private boolean isVisible;
 
     public Lobby(String name, String adminUsername, boolean isPrivate, String password, boolean isVisible) {
         this.name = name;

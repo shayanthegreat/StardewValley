@@ -91,4 +91,12 @@ public class ServerConnectionController {
         data.gameDetails.setChat(oldGame.getChat());
         data.gameDetails.getChat().updateNewMessages(newMessages);
     }
+
+    public void updateStoreItems(ConnectionMessage message) {
+        String store = message.getFromBody("store");
+        String item = message.getFromBody("item");
+        int count = message.getIntFromBody("count");
+
+//        TODO: reduce the quantity of the item from the store
+    }
 }

@@ -77,7 +77,7 @@ public class ClientController {
         connection.sendMessage(message);
     }
 
-    public void informLogout(String username) {
+    public void informLogout() {
         ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
             put("information", "inform_logout");
         }}, ConnectionMessage.Type.inform);
@@ -97,6 +97,11 @@ public class ClientController {
         for (String json : lobbiesJson) {
             data.lobbies.add(ConnectionMessage.lobbyFromJson(json));
         }
+        for (Lobby lobby : data.lobbies) {
+            if (lobby.getCode().equals(data.lobbyCode)) {
+                App.getInstance().getCurrentUser().setLobby(lobby);
+            }
+        }
     }
 
     public boolean createLobby(String name, boolean isPrivate, String password, boolean isVisible) {
@@ -114,11 +119,7 @@ public class ClientController {
 
         if (response.getFromBody("response").equals("ok")) {
             refreshLobbies();
-            for (Lobby lobby : data.lobbies) {
-                if (lobby.getName().equals(name)) {
-                    App.getInstance().getCurrentUser().setLobby(lobby);
-                }
-            }
+
             return true;
         }
         return false;
@@ -194,6 +195,17 @@ public class ClientController {
             put("text", text);
             put("sender", App.getInstance().getCurrentUser().getUsername());
             put("receiver", receiver);
+        }}, ConnectionMessage.Type.command);
+
+        connection.sendMessage(message);
+    }
+
+    public void storeItemBought(String storeName, String itemName, int count) {
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
+            put("command", "store_item_bought");
+            put("store", storeName);
+            put("item", itemName);
+            put("count", count);
         }}, ConnectionMessage.Type.command);
 
         connection.sendMessage(message);
