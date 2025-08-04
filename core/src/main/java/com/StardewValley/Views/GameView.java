@@ -43,7 +43,6 @@ public class GameView implements Screen , InputProcessor {
     private CookingPopUp cookingPopUp;
     private FridgePopUp fridgePopUp;
     private CraftingPopUp craftingPopUp;
-
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
