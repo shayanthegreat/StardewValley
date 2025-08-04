@@ -115,7 +115,7 @@ public class NPCDialogue implements Serializable {
         Season season = time.getSeason();
 
         if(friendShipLevel == 0){
-            return null;
+            return "Lets Become Friends Do some Quests to reach friendship level 1!.";
         }
 
         if (hour >= 5 && hour < 12 && season == Season.spring && weather == Weather.sunny) {
