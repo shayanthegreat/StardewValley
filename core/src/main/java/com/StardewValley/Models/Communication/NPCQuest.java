@@ -25,6 +25,7 @@ public class NPCQuest implements Serializable {
     private ArrayList<Pair<Item, Integer> > requests;
     private ArrayList<Pair<Item, Integer> > rewards;
     private ArrayList<Player> doneQuests = new ArrayList<>();
+    private ArrayList<Boolean> receivedQuests = new ArrayList<>();
     private NPC npc;
     private int activeQuest;
     private boolean isDone = false;
@@ -137,4 +138,15 @@ public class NPCQuest implements Serializable {
         return doneQuests;
     }
 
+    public ArrayList<Boolean> getReceivedQuests() {
+        return receivedQuests;
+    }
+
+    public boolean CanReceive(){
+        if(receivedQuests.size() == activeQuest){
+            receivedQuests.add(true);
+            return true;
+        }
+        return false;
+    }
 }

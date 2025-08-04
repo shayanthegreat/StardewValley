@@ -78,9 +78,9 @@ public class NPCQuestPopUp {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (selectedQuest != null && !selectedQuest.isDone()) {
-                    boolean result = true;
+                    boolean result = selectedQuest.CanReceive();
                     refresh(npc);
-                    UIUtils.showTopMessage(stage, skin, result ? "Quest received!" : "Quest failed!");
+                    UIUtils.showTopMessage(stage, skin, result ? "Quest received!" : "Quest is not active or was received before!");
                 }
             }
         });
@@ -142,7 +142,12 @@ public class NPCQuestPopUp {
             String status = currentQuest.getDoneQuests().size() > i
                 ? "DONE BY " + currentQuest.getDoneQuests().get(i).getUser().getUsername()
                 : "NOT DONE";
-
+            if(currentQuest.getReceivedQuests().size() > i){
+                status += "  received";
+            }
+            else{
+                status += "  not received";
+            }
             Label questLabel = new Label(text + " - " + status, GameAssetManager.getInstance().SKIN);
             questLabel.setWrap(true);
             questLabel.addListener(new ClickListener() {
