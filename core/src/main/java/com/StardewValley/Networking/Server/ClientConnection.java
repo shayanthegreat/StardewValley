@@ -38,7 +38,7 @@ public class ClientConnection extends Connection {
             return false;
         }
         ServerMain.addConnection(this);
-        return false;
+        return true;
     }
 
     @Override

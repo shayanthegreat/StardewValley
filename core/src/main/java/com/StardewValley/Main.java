@@ -1,6 +1,7 @@
 package com.StardewValley;
 
 import com.StardewValley.Models.GameAssetManager;
+import com.StardewValley.Networking.Client.ClientController;
 import com.StardewValley.Views.FishingMiniGameView;
 import com.StardewValley.Views.MainMenu;
 import com.StardewValley.Views.ProfileMenu;
@@ -12,6 +13,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.net.ServerSocket;
+import java.util.Scanner;
+
 public class Main extends Game {
     private SpriteBatch batch;
     private static Main main;
@@ -22,6 +26,21 @@ public class Main extends Game {
     }
     public static Main getInstance() {
         if (main == null) {
+            try {
+                Scanner sc = new Scanner(System.in);
+                System.out.print("Enter Ip: ");
+                String selfIp = sc.nextLine();
+                System.out.print("Enter Port: ");
+                int selfPort = Integer.parseInt(sc.nextLine());
+                System.out.print("Enter Server IP: ");
+                String serverIp = sc.nextLine();
+                System.out.print("Enter Server Port: ");
+                int serverPort = Integer.parseInt(sc.nextLine());
+                ClientController.getInstance().initConnection(selfIp, selfPort, serverIp, serverPort);
+            } catch (Exception e) {
+                System.err.println("Could not start the server");
+                e.printStackTrace();
+            }
             main = new Main();
         }
         return main;

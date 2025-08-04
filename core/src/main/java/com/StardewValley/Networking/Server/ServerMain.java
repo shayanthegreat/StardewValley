@@ -29,7 +29,9 @@ public class ServerMain {
         UserDAO.initializeDatabase();
         try {
             Scanner sc = new Scanner(System.in);
+            System.out.print("Enter IP Address: ");
             ip = sc.nextLine();
+            System.out.print("Enter Port: ");
             port = Integer.parseInt(sc.nextLine());
             serverSocket = new ServerSocket(port);
         } catch (Exception e) {
@@ -168,7 +170,6 @@ public class ServerMain {
     public static void removeConnection(ClientConnection connection) {
         if (connection != null) {
             connections.remove(connection);
-            connection.end();
         }
     }
 

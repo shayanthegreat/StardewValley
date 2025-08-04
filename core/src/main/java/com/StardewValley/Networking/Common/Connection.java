@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Connection extends Thread {
-    public static final int TIMEOUT = 2000;
+    public static final int TIMEOUT = 5000;
 
     protected final DataInputStream dataInputStream;
     protected final DataOutputStream dataOutputStream;

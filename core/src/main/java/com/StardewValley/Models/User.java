@@ -18,6 +18,7 @@ public class User implements Serializable {
     private transient Game currentGame;
     private ArrayList<Integer> gamesMoney;
     private transient Texture avatarTexture;
+    private String avatarPath;
 
     private transient Lobby lobby = null;
 
@@ -44,6 +45,7 @@ public class User implements Serializable {
         this.answer = answer;
         this.gamesMoney = gamesMoney;
         this.avatarPath = avatarPath;
+        this.avatarTexture = GameAssetManager.getInstance().ABIGAIL_PORTRAIT;
     }
 
     public String getNickname() {

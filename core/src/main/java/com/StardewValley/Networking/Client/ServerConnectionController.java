@@ -49,6 +49,7 @@ public class ServerConnectionController {
     public void gameStarted(ConnectionMessage message) {
         GameDetails game = ConnectionMessage.gameDetailsFromJson(message.getFromBody("game_details"));
         ArrayList<String> usernames = message.getFromBody("usernames");
+        int mapId = message.getIntFromBody("map_id");
         Chat chat = new Chat(usernames);
         game.setChat(chat);
         data.gameDetails = game;

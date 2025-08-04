@@ -158,9 +158,10 @@ public class ClientController {
         }
     }
 
-    public String startGame() {
+    public String startGame(int mapId) {
         ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
             put("command", "start_game");
+            put("map_id", mapId);
         }}, ConnectionMessage.Type.command);
 
         ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);

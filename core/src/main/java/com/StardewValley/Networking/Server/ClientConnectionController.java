@@ -163,6 +163,7 @@ public class ClientConnectionController {
     }
 
     public void startGame(ConnectionMessage message) {
+        int mapId = message.getIntFromBody("map_id");
         String error = "";
         String code = connection.getLobbyCode();
         Lobby lobby = ServerMain.getLobbyByCode(connection.getLobbyCode());
@@ -204,6 +205,7 @@ public class ClientConnectionController {
                 put("information", "start_game");
                 put("game_details", json);
                 put("usernames", lobby.getMembers());
+                put("map_id", mapId);
             }}, ConnectionMessage.Type.inform);
 
             connection.sendMessage(information);
