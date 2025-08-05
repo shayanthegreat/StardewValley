@@ -21,18 +21,27 @@ public class ClientData {
         return instance;
     }
 
-    public ServerConnection connection;
-    public ArrayList<Lobby> lobbies;
+    public ServerConnection connection ;
+    public ArrayList<Lobby> lobbies = new ArrayList<>();
     public String lobbyCode;
-    public ArrayList<String> onlineUsers;
+    public ArrayList<String> onlineUsers = new ArrayList<>();
     public boolean isInGame = false;
-    public GameDetails gameDetails;
-    public PlayerDetails selfDetails;
+    public GameDetails gameDetails = new GameDetails();
+    public PlayerDetails selfDetails = new PlayerDetails();
 //    send selfDetails to server, receive gameDetails from server
 
     public Lobby getLobby(String lobbyCode) {
         for (Lobby lobby : lobbies) {
             if (lobby.getCode().equals(lobbyCode)) {
+                return lobby;
+            }
+        }
+        return null;
+    }
+
+    public Lobby getLobbyByName(String lobbyName) {
+        for (Lobby lobby : lobbies) {
+            if (lobby.getName().equals(lobbyName)) {
                 return lobby;
             }
         }

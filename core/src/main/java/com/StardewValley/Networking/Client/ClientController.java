@@ -211,4 +211,26 @@ public class ClientController {
 
         connection.sendMessage(message);
     }
+
+    public void removeLastUser(){
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
+            put("command", "remove_last_user");
+        }}, ConnectionMessage.Type.command);
+
+        connection.sendMessage(message);
+    }
+
+    public User getLastUser() {
+        ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
+            put("command", "get_last_user");
+        }}, ConnectionMessage.Type.command);
+
+        ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
+
+        if (response.getFromBody("response").equals("not_found")) {
+            return null;
+        }
+        return ConnectionMessage.userFromJson(response.getFromBody("user"));
+
+    }
 }

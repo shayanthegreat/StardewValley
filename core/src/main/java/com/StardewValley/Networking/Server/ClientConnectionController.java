@@ -6,6 +6,7 @@ import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
 import com.StardewValley.Networking.Common.PlayerDetails;
+import com.badlogic.gdx.Gdx;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -260,6 +261,26 @@ public class ClientConnectionController {
             }
             conn.sendMessage(inform);
         }
+    }
+
+    public void removeLastUser() {
+        UserDAO.removeLastInsertedUser();
+    }
+
+    public void getLastUser() {
+        User user = UserDAO.getLastUser();
+        ConnectionMessage response;
+        if (user == null) {
+            response = new ConnectionMessage(new HashMap<>() {{
+                put("response", "not_found");
+            }}, ConnectionMessage.Type.response);
+        } else {
+            response = new ConnectionMessage(new HashMap<>() {{
+                put("response", "ok");
+                put("user", ConnectionMessage.userToJson(user));
+            }}, ConnectionMessage.Type.response);
+        }
+        connection.sendMessage(response);
     }
 }
 

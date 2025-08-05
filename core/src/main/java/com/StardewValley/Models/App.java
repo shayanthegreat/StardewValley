@@ -1,6 +1,7 @@
 package com.StardewValley.Models;
 
 import com.StardewValley.Models.Enums.Menu;
+import com.StardewValley.Networking.Client.ClientController;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class App implements Serializable {
         return instance;
     }
 
-    private final ArrayList<User> users = new ArrayList<>();
+//    private final ArrayList<User> users = new ArrayList<>();
     private final ArrayList<Game> games = new ArrayList<>();
     private Menu currentMenu = Menu.RegistrationMenu;
     private User currentUser = new User("ali","Ali@@13","ali","adsd","sdasasd");
@@ -70,38 +71,38 @@ public class App implements Serializable {
         this.stayLoggedIn = stayLoggedIn;
     }
 
-    public ArrayList<User> getUsers() {
-        return users;
-    }
+//    public ArrayList<User> getUsers() {
+//        return users;
+//    }
 
     public ArrayList<Game> getGames() {
         return games;
     }
 
-    public void addUser(User user) {
-        users.add(user);
-    }
+//    public void addUser(User user) {
+//        users.add(user);
+//    }
 
-    public void removeUser(User user) {
-        users.remove(user);
-    }
+//    public void removeUser(User user) {
+//        users.remove(user);
+//    }
 
-    public User getUserByUsername(String username) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
-        }
-        return null;
-    }
+//    public User getUserByUsername(String username) {
+//        for (User user : users) {
+//            if (user.getUsername().equals(username)) {
+//                return user;
+//            }
+//        }
+//        return null;
+//    }
 
-    public void removeLastUser() {
-        users.removeLast();
-    }
+//    public void removeLastUser() {
+//        users.removeLast();
+//    }
 
-    public User getLastUser() {
-        return users.getLast();
-    }
+//    public User getLastUser() {
+//        return users.getLast();
+//    }
 
     public void addGame(Game game) {
         games.add(game);

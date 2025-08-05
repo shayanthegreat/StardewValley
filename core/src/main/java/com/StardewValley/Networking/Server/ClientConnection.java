@@ -87,6 +87,14 @@ public class ClientConnection extends Connection {
                 controller.storeItemBought(message);
                 return true;
             }
+            if(message.getFromBody("command").equals("remove_last_user")) {
+                controller.removeLastUser();
+                return true;
+            }
+            if(message.getFromBody("command").equals("get_last_user")) {
+                controller.getLastUser();
+                return true;
+            }
 
         }
         if (message.getType().equals(ConnectionMessage.Type.inform)) {
