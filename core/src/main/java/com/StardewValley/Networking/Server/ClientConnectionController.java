@@ -1,14 +1,19 @@
 package com.StardewValley.Networking.Server;
 
 import com.StardewValley.Models.User;
-import com.StardewValley.Networking.Client.ServerConnection;
 import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
 import com.StardewValley.Networking.Common.PlayerDetails;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -230,7 +235,7 @@ public class ClientConnectionController {
         PlayerDetails newSelf = ConnectionMessage.playerDetailsFromJson(json);
         String username = newSelf.username;
         GameDetails game = connection.getGame();
-        if(game.isRunning()){
+        if (game.isRunning()) {
             game.putPlayerByUsername(username, newSelf);
         }
     }
@@ -254,12 +259,68 @@ public class ClientConnectionController {
             put("count", count);
         }}, ConnectionMessage.Type.inform);
 
-        for(ClientConnection conn : connection.getGame().getConnections()) {
-            if(conn == connection) {
+        for (ClientConnection conn : connection.getGame().getConnections()) {
+            if (conn == connection) {
                 continue;
             }
             conn.sendMessage(inform);
         }
+    }
+
+    public void getNpcDialogue(ConnectionMessage message) {
+        String npcName = message.getFromBody("npc");
+        String job = message.getFromBody("job");
+        int timeOfDay = message.getIntFromBody("timeOfDay");
+        String season = message.getFromBody("season");
+        String weather = message.getFromBody("weather");
+        int friendshipLevel = message.getIntFromBody("friendshipLevel");
+        List<String> recentTalks = message.getFromBody("recentTalks");
+        List<String> favoriteItems = message.getFromBody("favoriteItems");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("You are an NPC in a game.\n");
+        sb.append("Your name is ").append(npcName).append(", and you work as a ").append(job).append(".\n");
+        sb.append("It is ").append(timeOfDay).append(" in ").append(season).append(" and the weather is ").append(weather).append(".\n");
+        sb.append("Your friendship level with the player is ").append(friendshipLevel).append("/5.\n");
+        sb.append("Your favorite items are: ").append(String.join(", ", favoriteItems)).append(".\n");
+        sb.append("Here are the last things that you told the player:\n");
+
+        for (int i = 0; i < recentTalks.size(); i++) {
+            sb.append((i + 1)).append(". ").append(recentTalks.get(i)).append("\n");
+        }
+
+        sb.append("Now you say one short sentence (under 50 characters) to player based on the described features.\nmake it feel natural, and give it a touch of your mood(happy, sad, sleepy, mad, ...). avoid being too robotic");
+        String prompt = sb.toString();
+        String dialogue;
+
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+
+            String requestBody = "{\n" +
+                "  \"model\": \"phi\",\n" +
+                "  \"prompt\": \"" + prompt.replace("\"", "\\\"").replace("\n", "\\n") + "\"\n" +
+                "}";
+
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:11434/api/generate"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))
+                .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            dialogue = response.body();
+        } catch (Exception e) {
+            dialogue = "";
+        }
+
+        String finalDialogue = dialogue;
+        ConnectionMessage response = new ConnectionMessage(new HashMap<>() {{
+            put("response", (finalDialogue.isEmpty() ? "error" : "ok"));
+            put("dialogue", finalDialogue);
+        }}, ConnectionMessage.Type.response);
+
+        connection.sendMessage(response);
     }
 }
 

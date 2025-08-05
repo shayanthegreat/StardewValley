@@ -191,6 +191,9 @@ public class Game implements Serializable {
             nextDay();
         }
         time.nextHour();
+        for(NPC npc : npcs) {
+            npc.refreshDialogue();
+        }
     }
 
     public Time getTime() {

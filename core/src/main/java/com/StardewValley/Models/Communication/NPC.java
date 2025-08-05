@@ -11,6 +11,7 @@ import com.StardewValley.Models.Farming.Crop;
 import com.StardewValley.Models.Farming.CropType;
 import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Map.TileObject;
+import com.StardewValley.Networking.Client.ClientController;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
@@ -21,7 +22,9 @@ public class NPC extends TileObject implements Serializable {
     private String name;
     private String job;
     private ArrayList<Item> favoriteItems = new ArrayList<>();
-    private NPCDialogue dialogue;
+    private ArrayList<String> recentTalks = new ArrayList<>();
+    private String dialogue;
+//    private NPCDialogue dialogue;
     private Texture texture;
     private Position position;
     //private NPCFriendship friendship;
@@ -78,7 +81,7 @@ public class NPC extends TileObject implements Serializable {
                 break;
             }
         }
-        this.dialogue = new NPCDialogue(this);
+//        this.dialogue = new NPCDialogue(this);
         this.quest = new NPCQuest(this);
     }
 
@@ -115,15 +118,39 @@ public class NPC extends TileObject implements Serializable {
     }
 
     public String getDialogue() {
+        if(dialogue == null || dialogue.isEmpty()){
+            return null;
+        }
+        return dialogue;
+    }
+
+    public void refreshDialogue(){
         Game game = App.getInstance().getCurrentGame();
         Player player = game.getCurrentPlayer();
+
+        String npcName = this.name;
+        String job = this.job;
+        int timeOfDay = game.getTime().getHour();
+        String season = game.getTime().getSeason().name().toLowerCase();
+        String weather = game.getTodayWeather().name().toLowerCase();
         int level = 0;
         for (NPCFriendship npcFriendship : player.getNPCFriendships()) {
             if (npcFriendship.getNpc().equals(this)) {
                 level = npcFriendship.getLevel();
             }
         }
-        return dialogue.GetDialogue(game.getTodayWeather(), game.getTime(), level);
+        if(recentTalks.size() > 5) {
+            recentTalks.remove(0);
+        }
+        ArrayList<String> favoriteItems = new ArrayList<>();
+        for(Item item : this.favoriteItems) {
+            favoriteItems.add(item.getName());
+        }
+        String newDialogue = ClientController.getInstance().getNpcDialogue(npcName, job, timeOfDay, season, weather, level, recentTalks, favoriteItems);
+        if(newDialogue != null && !newDialogue.isEmpty()){
+            dialogue = newDialogue;
+            recentTalks.add(newDialogue);
+        }
     }
 
     public Texture getTexture(){
