@@ -1,5 +1,6 @@
 package com.StardewValley.Views;
 
+import com.StardewValley.Main;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Interactions.Commands.RegistrationCommand;
 import com.StardewValley.Networking.Client.ClientController;
@@ -172,7 +173,11 @@ public class LobbyView implements Screen {
                             @Override
                             protected void result(Object object) {
                                 boolean accepted = (Boolean) object;
-                                ClientController.getInstance().joinLobby(codeField.getText());
+                                if(accepted){
+                                    ClientController.getInstance().joinLobby(codeField.getText());
+                                    Main.getInstance().getScreen().dispose();
+                                    Main.getInstance().setScreen(new InLobbyView());
+                                }
                             }
                         };
                         dialog.add(codeField);
@@ -207,7 +212,12 @@ public class LobbyView implements Screen {
                     @Override
                     protected void result(Object object) {
                         boolean accepted = (Boolean) object;
-                        ClientController.getInstance().joinLobby(codeField.getText());
+                        if(accepted){
+                            ClientController.getInstance().joinLobby(codeField.getText());
+                            Main.getInstance().getScreen().dispose();
+                            Main.getInstance().setScreen(new InLobbyView());
+                        }
+
                     }
                 };
                 dialog.add(codeField);
@@ -257,6 +267,7 @@ public class LobbyView implements Screen {
             buildOnlineUsersTable();
             updateTimer = 0;
         }
+
     }
 
     @Override public void resize(int width, int height) {

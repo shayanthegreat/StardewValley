@@ -29,8 +29,8 @@ public class User implements Serializable {
         this.email = email;
         this.gender = gender;
         this.gamesMoney = new ArrayList<>();
-        this.question = Question.first;
         this.answer = "none";
+        this.question = Question.first;
         this.avatarTexture = GameAssetManager.getInstance().ABIGAIL_PORTRAIT;
     }
 

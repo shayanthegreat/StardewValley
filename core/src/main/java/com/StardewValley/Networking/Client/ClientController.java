@@ -1,5 +1,6 @@
 package com.StardewValley.Networking.Client;
 
+import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.ConnectionMessage;
@@ -166,6 +167,14 @@ public class ClientController {
 
         ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
         if (response.getFromBody("response").equals("ok")) {
+            ArrayList<String> usernames = response.getFromBody("usernames");
+
+            User[] users = new User[usernames.size()];
+            for (int i = 0; i < usernames.size(); i++) {
+                users[i] = new User(usernames.get(i),"","","",""); // This method should return User from local cache or DB
+            }
+
+            GameController.getInstance().createGameWithUsersAndMaps(users, mapId);
             return "game started successfully";
         } else {
             return response.getFromBody("error");

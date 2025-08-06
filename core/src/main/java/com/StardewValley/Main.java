@@ -46,12 +46,13 @@ public class Main extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        this.setScreen(new RegistrationMenu(GameAssetManager.getInstance().getSkin()));//new MainMenu(GameAssetManager.getInstance().getSkin()));//new GameMenu(GameAssetManager.getInstance().getSkin()));//new RegistrationMenu(GameAssetManager.getInstance().getSkin()));
+        this.setScreen(new LobbyView());//new RegistrationMenu(GameAssetManager.getInstance().getSkin()));//new MainMenu(GameAssetManager.getInstance().getSkin()));//new GameMenu(GameAssetManager.getInstance().getSkin()));//new RegistrationMenu(GameAssetManager.getInstance().getSkin()));
     }
 
     @Override
     public void render() {
         super.render();
+
     }
 
     @Override

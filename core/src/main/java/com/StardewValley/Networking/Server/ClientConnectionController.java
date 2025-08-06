@@ -173,6 +173,7 @@ public class ClientConnectionController {
         } else if (!lobby.getAdminUsername().equals(connection.getUsername())) {
             error = "you are not the admin of the lobby";
         } else if (lobby.getMembers().size() <= 1) {
+            Gdx.app.exit();
             error = "there must be at least two members";
         }
 

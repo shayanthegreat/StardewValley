@@ -1,5 +1,6 @@
 package com.StardewValley.Views;
 
+import com.StardewValley.Main;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Networking.Client.ClientController;
 import com.StardewValley.Networking.Client.ClientData;
@@ -8,18 +9,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class InLobbyView implements Screen {
 
     private TextButton leaveButton;
     private TextButton startGameButton;
+    private SelectBox<Integer> mapSelectBox;
     private Table memberTable;
     private Table rootTable;
     private Stage stage;
@@ -41,27 +41,33 @@ public class InLobbyView implements Screen {
         startGameButton = new TextButton("Start Game", skin);
         leaveButton = new TextButton("Leave Lobby", skin);
 
+        // Map ID selector
+        mapSelectBox = new SelectBox<>(skin);
+        mapSelectBox.setItems(1, 2, 3, 4);
+        mapSelectBox.setSelected(1); // Default map ID
+
         // Add click listeners
         startGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // TODO: Implement game start logic
-                System.out.println("Start Game Clicked");
-                // Example: ClientController.getInstance().startGame(mapId);
+                int selectedMapId = mapSelectBox.getSelected();
+                ClientController.getInstance().startGame(1);
+                Main.getInstance().getScreen().dispose();
+                Main.getInstance().setScreen(new GameView());
             }
         });
 
         leaveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // TODO: Implement leave lobby logic
-                System.out.println("Leave Lobby Clicked");
-                // Example: ClientController.getInstance().leaveLobby();
+                ClientController.getInstance().leaveLobby();
             }
         });
 
-        // Buttons table
+        // Buttons + Map Select table
         Table buttonTable = new Table();
+        buttonTable.add(new Label("Select Map:", skin)).padBottom(5).row();
+        buttonTable.add(mapSelectBox).padBottom(15).row();
         buttonTable.add(startGameButton).pad(10).row();
         buttonTable.add(leaveButton).pad(10);
 
@@ -92,6 +98,7 @@ public class InLobbyView implements Screen {
 
     @Override
     public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0, 1);
         stage.act(delta);
         stage.draw();
     }
@@ -114,6 +121,5 @@ public class InLobbyView implements Screen {
 
     @Override
     public void dispose() {
-
     }
 }
