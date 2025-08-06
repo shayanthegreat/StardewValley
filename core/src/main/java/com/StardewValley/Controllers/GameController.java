@@ -518,9 +518,11 @@ public class GameController implements Controller {
         }
 
         if(isNear(position)){
-            if(player.getCurrentTool() != null){
+            if(player.getCurrentTool() != null && !PopUpManager.instance.isVisible()){
                 GameMessage gameMessage = player.getCurrentTool().use(position);
                 System.out.println(gameMessage.message());
+//                GameView currentView = (GameView) Main.getInstance().getScreen();
+//                currentView.triggerToolUseAnimation();
             }
         }
 

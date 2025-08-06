@@ -1,48 +1,41 @@
 package com.StardewValley.Views;
 
 import com.StardewValley.Controllers.*;
-import com.StardewValley.Controllers.Camera;
-import com.StardewValley.Controllers.PlayerController;
-import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.AnimalType;
-import com.StardewValley.Models.Map.*;
-import com.StardewValley.Models.Store.Store;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
-import com.StardewValley.Models.App;
 import com.StardewValley.Models.Game;
-import com.StardewValley.Models.Player;
+import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.PopUps.*;
+import com.StardewValley.Models.Store.Store;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 
-import java.util.ArrayList;
-
 import static com.StardewValley.Controllers.Camera.TILE_SIZE;
 
-public class GameView implements Screen , InputProcessor {
+public class GameView implements Screen, InputProcessor {
     private Stage stage;
     private PopUpManager popUpMenu;
     private ToolPopUp toolPopUp;
     private SeedPopUp seedPopUp;
     private AnimalPopUp animalPopUp;
-//    private BackPackPopUp backPackPopUp;
-//    private RefrigeratorPopUp refrigeratorPopUp;
     private GiftingNPCPopUp giftingNPCPopUp;
     private StorePopUp storePopUp;
     private CookingPopUp cookingPopUp;
     private FridgePopUp fridgePopUp;
     private CraftingPopUp craftingPopUp;
+
+    // Tool rotation animation state
+    private boolean isToolAnimating = false;
+    private float toolAnimationTime = 0f;
+    private float toolAnimationDuration = 0.3f; // seconds
+    private float toolMaxRotation = 45f;
+
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
@@ -104,9 +97,7 @@ public class GameView implements Screen , InputProcessor {
             GameController.getInstance().buyAnimal(AnimalType.goat,"asd");
             GameController.getInstance().buyAnimal(AnimalType.sheep,"asss");
         }
-        else if(i == Input.Keys.Z){
-            App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool(null);
-        }
+        else if (i == Input.Keys.Z) App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool(null);
         return false;
     }
 
@@ -147,18 +138,15 @@ public class GameView implements Screen , InputProcessor {
     public void show() {
         stage = new Stage();
         InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(this);  // your GameView InputProcessor first
-        multiplexer.addProcessor(stage); // stage input second for UI drag/drop
+        multiplexer.addProcessor(this);
+        multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
-//        popUpMenu = PopUpManager.getInstance(stage);
+
         popUpMenu = PopUpManager.set(stage);
         toolPopUp = new ToolPopUp(stage);
         seedPopUp = new SeedPopUp(stage);
         animalPopUp = new AnimalPopUp(stage);
-//        backPackPopUp = new BackPackPopUp(stage);
-//        refrigeratorPopUp = new RefrigeratorPopUp(stage);
         giftingNPCPopUp = new GiftingNPCPopUp(stage);
-        toolPopUp.show();
         storePopUp = new StorePopUp(stage);
         storePopUp.hide();
         cookingPopUp = new CookingPopUp(stage);
@@ -167,20 +155,21 @@ public class GameView implements Screen , InputProcessor {
         fridgePopUp.hide();
         craftingPopUp = new CraftingPopUp(stage);
         craftingPopUp.hide();
+        toolPopUp.show();
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-            // Step 1: Convert screen coordinates to world coordinates
             Vector3 worldCoordinates = Camera.getInstance().getCamera().unproject(new Vector3(screenX, screenY, 0));
-
-            // Step 2: Convert world coordinates to tile coordinates
-            int tileX = (int)(worldCoordinates.x / TILE_SIZE);
-            int tileY = (int)(worldCoordinates.y / TILE_SIZE);
-
-            // Optional: if you want to do something with the tile position
+            int tileX = (int) (worldCoordinates.x / TILE_SIZE);
+            int tileY = (int) (worldCoordinates.y / TILE_SIZE);
             Position clickedPosition = new Position(tileX, tileY);
+
+            if (App.getInstance().getCurrentGame().getCurrentPlayer().getCurrentTool() != null) {
+                isToolAnimating = true;
+                toolAnimationTime = 0f;
+            }
 
             Map map = App.getInstance().getCurrentGame().getMap();
             Tile tile = map.getTile(clickedPosition);
@@ -190,21 +179,17 @@ public class GameView implements Screen , InputProcessor {
             Building building = tile.getBuilding();
             if(tile.isPlowed() && !tile.containsPlant()){
                 seedPopUp.setTargetPosition(clickedPosition);
-                seedPopUp.setOnSeedSelected((seed, position) -> {
-                    GameController.getInstance().plant(seed, position);
-                });
+                seedPopUp.setOnSeedSelected((seed, position) -> GameController.getInstance().plant(seed, position));
                 seedPopUp.show();
-            }
-            else if(building instanceof Store){
-                NPCVillage npcVillages = App.getInstance().getCurrentGame().getMap().getNpcVillage();
+            } else if (tile.getBuilding() instanceof Store) {
+                NPCVillage npcVillages = map.getNpcVillage();
                 for (int i = 0; i < npcVillages.getStorePositions().size(); i++) {
-                    if(npcVillages.getStorePositions().get(i).equals(clickedPosition)){
-                        storePopUp.refresh(App.getInstance().getCurrentGame().getMap().getNpcVillage().getStores().get(i));
+                    if (npcVillages.getStorePositions().get(i).equals(clickedPosition)) {
+                        storePopUp.refresh(npcVillages.getStores().get(i));
                         storePopUp.show();
                     }
                 }
-            }
-            else{
+            } else {
                 GameController.getInstance().handleTileClick(clickedPosition, stage);
             }
         }
@@ -219,10 +204,10 @@ public class GameView implements Screen , InputProcessor {
             if (fridgePopUp.isClicked(tileX, tileY)) {
                 fridgePopUp.show();
             }
-            else if(App.getInstance().getCurrentGame().getCurrentPlayer().isInHouse()){
+            else if (App.getInstance().getCurrentGame().getCurrentPlayer().isInHouse()){
                 popUpMenu.show();
             }
-            else if(giftingNPCPopUp.isClicked(clickedPosition)){
+            else if (giftingNPCPopUp.isClicked(clickedPosition)){
                 giftingNPCPopUp.show();
             }
             else {
@@ -233,39 +218,21 @@ public class GameView implements Screen , InputProcessor {
         return false;
     }
 
-    @Override
-    public boolean touchUp(int i, int i1, int i2, int i3) {
-        return false;
-    }
+    @Override public boolean touchUp(int i, int i1, int i2, int i3) { return false; }
+    @Override public boolean touchCancelled(int i, int i1, int i2, int i3) { return false; }
+    @Override public boolean touchDragged(int i, int i1, int i2) { return false; }
+    @Override public boolean mouseMoved(int i, int i1) { return false; }
+    @Override public boolean scrolled(float v, float v1) { return false; }
 
     @Override
-    public boolean touchCancelled(int i, int i1, int i2, int i3) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int i, int i1, int i2) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int i, int i1) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(float v, float v1) {
-        return false;
-    }
-
-    @Override
-    public void render(float v) {
-        ScreenUtils.clear(0,0,0,1);
+    public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0, 1);
         Game game = App.getInstance().getCurrentGame();
         Player player = game.getCurrentPlayer();
         Camera.getInstance().update(player.getPosition().x, player.getPosition().y);
+
         Main.getInstance().getBatch().begin();
-//        All To print
+
         WordController.getInstance().update();
         PlayerController.getInstance().update();
         GameController.getInstance().update(Gdx.graphics.getDeltaTime());
@@ -279,64 +246,57 @@ public class GameView implements Screen , InputProcessor {
                 GameController.getInstance().getLightningY());
         }
 
-//        All To print
         if (player.getCurrentTool() != null) {
             Texture toolTexture = player.getCurrentTool().getTexture();
-            float toolDrawX = player.getPosition().x + 1.5f; // offset right by 1 tile
-            float toolDrawY = player.getPosition().y;       // same vertical position (adjust if needed)
+            float toolDrawX = player.getPosition().x + 1.5f;
+            float toolDrawY = player.getPosition().y;
+            float rotation = 0f;
 
-            // Adjust scaling/size as needed; here we draw 1x1 tile size
-            Camera.getInstance().print(toolTexture, App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().x+1, App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().y, 1, 1);
-//            (toolTexture, toolDrawX * TILE_SIZE, toolDrawY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            if (isToolAnimating) {
+                toolAnimationTime += delta;
+                float progress = toolAnimationTime / toolAnimationDuration;
+                if (progress < 0.5f) rotation = toolMaxRotation * (progress / 0.5f);
+                else if (progress < 1f) rotation = toolMaxRotation * (1f - (progress - 0.5f) / 0.5f);
+                else {
+                    isToolAnimating = false;
+                    toolAnimationTime = 0f;
+                }
+            }
+
+            Main.getInstance().getBatch().draw(
+                toolTexture,
+                toolDrawX * TILE_SIZE, toolDrawY * TILE_SIZE,
+                TILE_SIZE / 2f, TILE_SIZE / 2f,
+                TILE_SIZE, TILE_SIZE,
+                1f, 1f,
+                rotation,
+                0, 0,
+                toolTexture.getWidth(), toolTexture.getHeight(),
+                false, false
+            );
         }
+
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();
         WordController.getInstance().drawDarknessOverlay();
-
-        stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.act(Math.min(delta, 1 / 30f));
         stage.draw();
     }
 
-    @Override
-    public void resize(int i, int i1) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
+    @Override public void resize(int i, int i1) {}
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+    @Override public void dispose() {}
 
     public static void showError(String error) {
         final Dialog dialog = new Dialog("!!!", GameAssetManager.getInstance().getSkin()) {
-            @Override
-            protected void result(Object object) {
-            }
+            @Override protected void result(Object object) {}
         };
-
         dialog.text(error);
         dialog.button("OK");
-
         Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                dialog.hide();
-            }
+            @Override public void run() { dialog.hide(); }
         }, 5);
     }
 }

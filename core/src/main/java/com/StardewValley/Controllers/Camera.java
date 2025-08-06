@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
@@ -124,6 +125,30 @@ public class Camera {
         getCamera().zoom = this.zoom;  // <-- THIS was missing
         update(centerX, centerY);
     }
+
+    public void print(Sprite sprite, int tileX, int tileY, float width, float height) {
+        float pixelX = tileX * TILE_SIZE;
+        float pixelY = tileY * TILE_SIZE;
+
+        float pixelWidth = width * TILE_SIZE;
+        float pixelHeight = height * TILE_SIZE;
+
+        sprite.setBounds(pixelX, pixelY, pixelWidth, pixelHeight);
+
+        Rectangle view = new Rectangle(
+            camera.position.x - camera.viewportWidth / 2,
+            camera.position.y - camera.viewportHeight / 2,
+            camera.viewportWidth,
+            camera.viewportHeight
+        );
+
+        Rectangle spriteRect = new Rectangle(pixelX, pixelY, pixelWidth, pixelHeight);
+
+        if (view.overlaps(spriteRect)) {
+            sprite.draw(batch);
+        }
+    }
+
 
 
 
