@@ -129,6 +129,7 @@ public class ClientConnection extends Connection {
             setOtherSidePort(response.getIntFromBody("client_port"));
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
