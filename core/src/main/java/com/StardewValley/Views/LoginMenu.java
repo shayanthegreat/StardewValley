@@ -2,6 +2,7 @@ package com.StardewValley.Views;
 
 import com.StardewValley.Controllers.RegistrationController;
 
+import com.StardewValley.Main;
 import com.StardewValley.Models.Interactions.Commands.RegistrationCommand;
 import com.StardewValley.Models.Interactions.Messages.RegistrationMessage;
 import com.badlogic.gdx.Gdx;
@@ -86,6 +87,7 @@ public class LoginMenu extends MenuView {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.login(Username.getText(), Password.getText(), stayLoggedIn.isChecked());
+
             }
         });
 

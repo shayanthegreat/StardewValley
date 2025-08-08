@@ -47,10 +47,15 @@ public class ServerMain {
             while (it.hasNext()) {
                 ClientConnection connection = it.next();
                 if (connection.refreshStatus()) {
+                    System.out.println(connection.getUsername() + " has refreshed");
                     connection.setLastRefresh(System.currentTimeMillis());
-                } else if (System.currentTimeMillis() - connection.getLastRefresh() > 2 * 60 * 1000) {
+                } else if (System.currentTimeMillis() - connection.getLastRefresh() > 30 * 1000 || connection.isAlive()) {
+                    System.out.println("connection ended: " + connection.getUsername());
                     connection.end();
                     continue;
+                }
+                if(!connection.getUsername().isEmpty()) {
+                    System.out.println(connection.getUsername() + ":::::");
                 }
                 if (!connection.getUsername().isEmpty() && !connection.isInGame()) {
                     String info = connection.getUsername();
@@ -68,9 +73,10 @@ public class ServerMain {
             ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
                 put("information", "online_users");
                 put("online_users", onlineUsers);
-            }}, ConnectionMessage.Type.response);
+            }}, ConnectionMessage.Type.inform);
 
             for (ClientConnection connection : onlineConnections) {
+                System.out.println(connection.getUsername());
                 connection.sendMessage(message);
             }
         };
@@ -86,7 +92,7 @@ public class ServerMain {
         };
 
         scheduler.scheduleAtFixedRate(refreshStatus, 10, 3, TimeUnit.SECONDS);
-        scheduler.scheduleAtFixedRate(refreshStatus, 10, 3, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(checkLobbies, 10, 3, TimeUnit.SECONDS);
 
 
         try {

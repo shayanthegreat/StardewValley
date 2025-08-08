@@ -236,11 +236,11 @@ public class WordController {
 
             }
         }
-        for (Player p : App.getInstance().getCurrentGame().getPlayers()) {
-            int x = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posX;
-            int y = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posY;
-            camera.print(p.getUser().getAvatarTexture(), x,y,1,1);
-        }
+//        for (Player p : App.getInstance().getCurrentGame().getPlayers()) {
+//            int x = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posX;
+//            int y = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posY;
+//            camera.print(p.getUser().getAvatarTexture(), x,y,1,1);
+//        }
 
     }
 

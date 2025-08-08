@@ -87,6 +87,11 @@ public class ConnectionMessage {
         return (int) ((double) ((Double) body.get(fieldName)));
     }
 
+
+    public HashMap<String, Object> getBody() {
+        return body;
+    }
+
     public enum Type {
         command,
         response,

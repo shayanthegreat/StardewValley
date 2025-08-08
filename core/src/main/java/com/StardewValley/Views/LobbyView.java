@@ -30,6 +30,7 @@ public class LobbyView implements Screen {
     private TextButton searchButton;
     private TextButton createLobbyButton;
     private Label searchResultLabel;
+    private TextButton refreshButton;
 
     private float updateTimer = 0;
 
@@ -59,6 +60,14 @@ public class LobbyView implements Screen {
                     searchResultLabel.setText("Lobby not found");
                     searchedLobbyTable.clear();
                 }
+            }
+        });
+
+        refreshButton = new TextButton("Refresh", skin);
+        refreshButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                ClientController.getInstance().refreshLobbies();
             }
         });
 
@@ -105,6 +114,8 @@ public class LobbyView implements Screen {
                         boolean isPrivate = privateCheckBox.isChecked();
 
                         ClientController.getInstance().createLobby(name, isPrivate, password, visible);
+                        Main.getInstance().getScreen().dispose();
+                        Main.getInstance().setScreen(new InLobbyView());
                         dialog.hide();
                     }
                 });
@@ -153,6 +164,7 @@ public class LobbyView implements Screen {
         root.add(rightPanel).width(300).top();
         root.row();
         root.add(bottomPanel).colspan(2).expandX().fillX().padTop(20);
+        root.add(refreshButton).expandX().fillX().padTop(20);
 
         stage.addActor(root);
     }
@@ -174,7 +186,7 @@ public class LobbyView implements Screen {
                             protected void result(Object object) {
                                 boolean accepted = (Boolean) object;
                                 if(accepted){
-                                    ClientController.getInstance().joinLobby(codeField.getText());
+                                    ClientController.getInstance().joinLobby(lobby.getCode());
                                     Main.getInstance().getScreen().dispose();
                                     Main.getInstance().setScreen(new InLobbyView());
                                 }
@@ -213,7 +225,7 @@ public class LobbyView implements Screen {
                     protected void result(Object object) {
                         boolean accepted = (Boolean) object;
                         if(accepted){
-                            ClientController.getInstance().joinLobby(codeField.getText());
+                            ClientController.getInstance().joinLobby(lobby.getCode());
                             Main.getInstance().getScreen().dispose();
                             Main.getInstance().setScreen(new InLobbyView());
                         }
@@ -260,7 +272,7 @@ public class LobbyView implements Screen {
         stage.act(delta);
         stage.draw();
 
-        // Refresh tables every 1 second
+
         updateTimer += delta;
         if (updateTimer >= 1f) {
             buildVisibleLobbyTable();

@@ -7,6 +7,7 @@ import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
 import com.StardewValley.Networking.Common.PlayerDetails;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,9 +86,11 @@ public class ClientConnectionController {
         }
         Lobby lobby = new Lobby(name, connection.getUsername(), isPrivate, password, isVisible);
         ServerMain.addLobby(lobby);
+        connection.setLobbyCode(lobby.getCode());
 
         response = new ConnectionMessage(new HashMap<>() {{
             put("response", "ok");
+            put("code", lobby.getCode());
         }}, ConnectionMessage.Type.response);
 
         connection.sendMessage(response);
@@ -172,9 +175,8 @@ public class ClientConnectionController {
             error = "you are not in a lobby";
         } else if (!lobby.getAdminUsername().equals(connection.getUsername())) {
             error = "you are not the admin of the lobby";
-        } else if (lobby.getMembers().size() <= 1) {
-            Gdx.app.exit();
-            error = "there must be at least two members";
+//        } else if (lobby.getMembers().size() < 1) {
+//            error = "there must be at least two members";
         }
 
         ConnectionMessage response;
@@ -199,7 +201,13 @@ public class ClientConnectionController {
         ServerMain.addGame(gameDetails);
         String json = ConnectionMessage.gameDetailsToJson(gameDetails);
 
+        System.out.println(lobby.getMembers());
         ArrayList<ClientConnection> connections = new ArrayList<>();
+        ArrayList<String> avatarPaths = new ArrayList<>();
+        for(String member : lobby.getMembers()) {
+            User user = UserDAO.getUserByUsername(member);
+            avatarPaths.add(user.getAvatarPath());
+        }
         for (String member : lobby.getMembers()) {
             ClientConnection connection = ServerMain.getConnectionByUsername(member);
             connections.add(connection);
@@ -207,6 +215,7 @@ public class ClientConnectionController {
                 put("information", "start_game");
                 put("game_details", json);
                 put("usernames", lobby.getMembers());
+                put("avatar_paths", avatarPaths);
                 put("map_id", mapId);
             }}, ConnectionMessage.Type.inform);
 
@@ -223,7 +232,7 @@ public class ClientConnectionController {
             } else {
                 scheduler.shutdown();
             }
-        }, 5, 1, TimeUnit.SECONDS);
+        }, 10, 1, TimeUnit.SECONDS);
 //        TODO: do other stuff for game
     }
 

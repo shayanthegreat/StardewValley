@@ -10,6 +10,7 @@ import com.StardewValley.Models.Interactions.Messages.RegistrationMessage;
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Client.ClientController;
 import com.StardewValley.Networking.Client.ClientData;
+import com.StardewValley.Views.LobbyView;
 import com.StardewValley.Views.MainMenu;
 import com.StardewValley.Views.MenuView;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -184,13 +185,15 @@ public class RegistrationController implements UserInfoController , Controller{
     }
 
     public RegistrationMessage login(String username, String password, boolean stayLoggedIn) {
+
         App app = App.getInstance();
         User user = ClientController.getInstance().getUserFromDB(username);
         if (!isUsernameTaken(username)) {
             return new RegistrationMessage(null, "Wrong Username");
         }
         String codedPassword = sha256(password);
-        if (!user.getPassword().equals(codedPassword)) {
+        if (!user.getPassword().equals(password)) {
+            System.out.println("hello");
             return new RegistrationMessage(null, "Wrong Password");
         }
         if (stayLoggedIn) {
@@ -200,9 +203,8 @@ public class RegistrationController implements UserInfoController , Controller{
         }
 
         app.setCurrentUser(user);
-        app.setCurrentMenu(Menu.MainMenu);
         Main.getInstance().getScreen().dispose();
-        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
+        Main.getInstance().setScreen(new LobbyView());
         ClientController.getInstance().informLogin(username);
         return new RegistrationMessage(null, "You logged in successfully! you are now in main menu");
     }

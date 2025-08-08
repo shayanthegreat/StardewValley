@@ -1,6 +1,10 @@
 package com.StardewValley.Networking.Client;
 
+import com.StardewValley.Controllers.GameController;
+import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.*;
+import com.StardewValley.Views.InLobbyView;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,14 +51,24 @@ public class ServerConnectionController {
     }
 
     public void gameStarted(ConnectionMessage message) {
+        System.out.println(1);
         GameDetails game = ConnectionMessage.gameDetailsFromJson(message.getFromBody("game_details"));
         ArrayList<String> usernames = message.getFromBody("usernames");
+        ArrayList<String> avatarPaths = message.getFromBody("avatar_paths");
+        System.out.println(2);
         int mapId = message.getIntFromBody("map_id");
         Chat chat = new Chat(usernames);
         game.setChat(chat);
+        System.out.println(3);
         data.gameDetails = game;
         data.isInGame = true;
-
+        User[] users = new User[usernames.size()];
+        for (int i = 0; i < usernames.size(); i++) {
+            users[i] = new User(usernames.get(i),"","","","");
+//            users[i].setAvatarTexture(new Texture());
+        }
+        System.out.println(4);
+        GameController.getInstance().createGameWithUsersAndMaps(users, mapId);
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(() -> {
@@ -65,6 +79,8 @@ public class ServerConnectionController {
             }
         }, 5, 1, TimeUnit.SECONDS);
 //        TODO: do needed stuff
+
+
     }
 
     public void updateOnlineUsers(ConnectionMessage message) {

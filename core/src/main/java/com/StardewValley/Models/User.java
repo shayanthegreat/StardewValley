@@ -45,7 +45,7 @@ public class User implements Serializable {
         this.answer = answer;
         this.gamesMoney = gamesMoney;
         this.avatarPath = avatarPath;
-        this.avatarTexture = GameAssetManager.getInstance().ABIGAIL_PORTRAIT;
+//        this.avatarTexture = GameAssetManager.getInstance().ABIGAIL_PORTRAIT;
     }
 
     public String getNickname() {

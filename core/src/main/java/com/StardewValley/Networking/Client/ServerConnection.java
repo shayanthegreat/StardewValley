@@ -37,9 +37,13 @@ public class ServerConnection extends Connection {
     }
 
     @Override
-    protected boolean handleMessage(ConnectionMessage message) {
+    protected synchronized boolean handleMessage(ConnectionMessage message) {
+        System.out.println(message.getBody());
         if (message.getType().equals(ConnectionMessage.Type.command)) {
-
+            if (message.getFromBody("command").equals("status")) {
+                sendMessage(controller.status());
+                return true;
+            }
         } else if (message.getType().equals(ConnectionMessage.Type.inform)) {
             if (message.getFromBody("information").equals("lobby_termination")) {
                 controller.lobbyTerminated(message);

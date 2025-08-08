@@ -47,7 +47,9 @@ public class GameDetails {
             put("new_messages", chatJson);
         }}, ConnectionMessage.Type.update);
         for(ClientConnection connection : connections) {
-            connection.sendMessage(update);
+            if(connection.isAlive()) {
+                connection.sendMessage(update);
+            }
         }
     }
 

@@ -16,6 +16,8 @@ import com.StardewValley.Models.Farming.Seed;
 import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.PopUps.PopUpManager;
+import com.StardewValley.Views.GameView;
+import com.StardewValley.Views.InLobbyView;
 import com.StardewValley.Views.MenuView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -78,8 +80,10 @@ public class GameController implements Controller {
     }
 
     public GameMessage createGameWithUsersAndMaps(User[] users, int mapIDs) {
+        System.out.println("game started");
         ArrayList<Player> players = new ArrayList<>();
         ArrayList<Farm> farms = new ArrayList<>();
+
 
         for (int i = 0; i < users.length; i++) {
             Farm farm = new Farm(FarmMap.getFarmMap(mapIDs), i);
@@ -103,9 +107,15 @@ public class GameController implements Controller {
         app.setCurrentGame(game);
         app.setCurrentGameStarter(app.getCurrentUser());
 
+
         for (User user : users) {
             user.setCurrentGame(game);
         }
+        InLobbyView.setInGame(true);
+//        Gdx.app.postRunnable(() -> {
+//            Main.getInstance().setScreen(new GameView());
+//        });
+
         return new GameMessage(null,"You successfully created the game");
     }
 

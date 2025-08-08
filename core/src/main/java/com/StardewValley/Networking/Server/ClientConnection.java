@@ -49,7 +49,7 @@ public class ClientConnection extends Connection {
     }
 
     @Override
-    protected boolean handleMessage(ConnectionMessage message) {
+    protected synchronized boolean handleMessage(ConnectionMessage message) {
         if (message.getType().equals(ConnectionMessage.Type.command)) {
             if (message.getFromBody("command").equals("add_user")) {
                 controller.addUser(message);

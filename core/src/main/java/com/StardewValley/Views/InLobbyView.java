@@ -24,11 +24,14 @@ public class InLobbyView implements Screen {
     private Table rootTable;
     private Stage stage;
     private Skin skin;
+    private TextButton refreshLobbiesButton;
+    private static boolean isGameStarted = false;
 
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        Lobby currentLobby = ClientData.getInstance().getLobby(ClientData.getInstance().lobbyCode);
 
         skin = GameAssetManager.getInstance().getSkin();
 
@@ -40,6 +43,7 @@ public class InLobbyView implements Screen {
         // Buttons
         startGameButton = new TextButton("Start Game", skin);
         leaveButton = new TextButton("Leave Lobby", skin);
+        refreshLobbiesButton = new TextButton("Refresh", skin);
 
         // Map ID selector
         mapSelectBox = new SelectBox<>(skin);
@@ -51,9 +55,7 @@ public class InLobbyView implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 int selectedMapId = mapSelectBox.getSelected();
-                ClientController.getInstance().startGame(1);
-                Main.getInstance().getScreen().dispose();
-                Main.getInstance().setScreen(new GameView());
+                ClientController.getInstance().startGame(selectedMapId);
             }
         });
 
@@ -64,12 +66,20 @@ public class InLobbyView implements Screen {
             }
         });
 
+        refreshLobbiesButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ClientController.getInstance().refreshLobbies();
+            }
+        });
+
         // Buttons + Map Select table
         Table buttonTable = new Table();
         buttonTable.add(new Label("Select Map:", skin)).padBottom(5).row();
         buttonTable.add(mapSelectBox).padBottom(15).row();
         buttonTable.add(startGameButton).pad(10).row();
         buttonTable.add(leaveButton).pad(10);
+        buttonTable.add(refreshLobbiesButton).pad(10);
 
         // Member list
         memberTable = new Table(skin);
@@ -77,6 +87,7 @@ public class InLobbyView implements Screen {
         updateMemberList();
 
         // Layout
+        rootTable.add(new Label(currentLobby.getName() + "(" + currentLobby.getCode() + ")", skin)).padBottom(5).row();
         rootTable.add(new Label("Lobby Members:", skin)).left().top().padBottom(10).row();
         rootTable.add(memberTable).left().top().expandY().row();
         rootTable.add(buttonTable).bottom().right();
@@ -96,11 +107,23 @@ public class InLobbyView implements Screen {
         }
     }
 
+    public static void setInGame(boolean inGame) {
+        isGameStarted = inGame;
+    }
+
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
         stage.act(delta);
         stage.draw();
+        updateMemberList();
+        if(ClientData.getInstance().lobbyCode.isEmpty()){
+            Main.getInstance().getScreen().dispose();
+            Main.getInstance().setScreen(new LobbyView());
+        }
+        if(isGameStarted){
+            Main.getInstance().setScreen(new GameView());
+        }
     }
 
     @Override
@@ -121,5 +144,6 @@ public class InLobbyView implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
     }
 }
