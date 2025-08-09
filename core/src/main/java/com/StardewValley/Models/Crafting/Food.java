@@ -1,7 +1,9 @@
 package com.StardewValley.Models.Crafting;
 
+import com.StardewValley.Models.App;
 import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.Tile;
+import com.StardewValley.Models.Time;
 
 import java.io.Serializable;
 
@@ -51,5 +53,22 @@ public class Food extends Item implements Serializable {
     @Override
     public int getPrice() {
         return recipe.getPrice();
+    }
+
+    public void eat(){
+        App.getInstance().getCurrentGame().getCurrentPlayer().addEnergy(recipe.getEnergy());
+        Buff buff = recipe.getBuff();
+        Time[] lastBuffTime = App.getInstance().getCurrentGame().getCurrentPlayer().getLastBuffTime();
+        if(buff != null){
+            Time time = new Time(App.getInstance().getCurrentGame().getTime());
+            time.addHour(buff.getHours());
+            switch (buff.getSkillType()){
+                case farming -> lastBuffTime[0] = new Time(time);
+                case mining -> lastBuffTime[1] = new Time(time);
+                case foraging -> lastBuffTime[2] = new Time(time);
+                case fishing -> lastBuffTime[3] = new Time(time);
+            }
+        }
+        App.getInstance().getCurrentGame().getCurrentPlayer().setLastBuffTime(lastBuffTime);
     }
 }

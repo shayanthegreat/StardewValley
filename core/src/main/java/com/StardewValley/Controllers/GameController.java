@@ -5,6 +5,7 @@ import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.*;
 import com.StardewValley.Models.Communication.FriendShip;
 import com.StardewValley.Models.Communication.NPC;
+import com.StardewValley.Models.Crafting.Food;
 import com.StardewValley.Models.Crafting.Material;
 import com.StardewValley.Models.Crafting.MaterialType;
 import com.StardewValley.Models.Enums.FarmBuildings;
@@ -524,6 +525,19 @@ public class GameController implements Controller {
 //                GameView currentView = (GameView) Main.getInstance().getScreen();
 //                currentView.triggerToolUseAnimation();
             }
+            if(player.getCurrentTool() == null){
+                Map map = App.getInstance().getCurrentGame().getMap();
+                Tile tile = map.getTile(position);
+                if(tile != null){
+                    TileObject object = tile.getObject();
+                    if(object != null){
+                        if (object instanceof Food){
+                            ((Food) object).eat();
+                            player.getBackPack().removeItem((Item) object, 1);
+                        }
+                    }
+                }
+            }
         }
 
         Item item = PopUpManager.getInstance(stage).getInventoryPopUp().getSelectedItem();
@@ -532,7 +546,6 @@ public class GameController implements Controller {
             player.getBackPack().removeItem(item, 1);
             PopUpManager.getInstance(stage).getInventoryPopUp().refresh();
         }
-
     }
 
     public void plant(Seed seed, Position position) {

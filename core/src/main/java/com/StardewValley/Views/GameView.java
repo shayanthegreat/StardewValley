@@ -10,9 +10,15 @@ import com.StardewValley.Models.PopUps.*;
 import com.StardewValley.Models.Store.Store;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 
@@ -29,13 +35,12 @@ public class GameView implements Screen, InputProcessor {
     private CookingPopUp cookingPopUp;
     private FridgePopUp fridgePopUp;
     private CraftingPopUp craftingPopUp;
-
     // Tool rotation animation state
     private boolean isToolAnimating = false;
     private float toolAnimationTime = 0f;
     private float toolAnimationDuration = 0.3f; // seconds
     private float toolMaxRotation = 45f;
-
+    private Label activeBuffsLabel;
     @Override
     public boolean keyDown(int i) {
         if(i == Input.Keys.W){
@@ -278,6 +283,8 @@ public class GameView implements Screen, InputProcessor {
 
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();
+
+        showOrUpdateActiveBuffs();
         WordController.getInstance().drawDarknessOverlay();
         stage.act(Math.min(delta, 1 / 30f));
         stage.draw();
@@ -299,4 +306,37 @@ public class GameView implements Screen, InputProcessor {
             @Override public void run() { dialog.hide(); }
         }, 5);
     }
+
+
+    private void showOrUpdateActiveBuffs() {
+        StringBuilder sb = new StringBuilder();
+        Time[] lastBuffTime = App.getInstance().getCurrentGame().getCurrentPlayer().getLastBuffTime();
+
+        for (int i = 0; i < 4; i++) {
+            switch (i) {
+                case 0: sb.append("Farming Buff: "); break;
+                case 1: sb.append("Mining Buff: "); break;
+                case 2: sb.append("Foraging Buff: "); break;
+                case 3: sb.append("Fishing Buff: "); break;
+            }
+
+            if (Time.compareTime(App.getInstance().getCurrentGame().getTime(), lastBuffTime[i])) {
+                sb.append("Active!\n");
+            } else {
+                sb.append("Not Active!\n");
+            }
+        }
+
+        if (activeBuffsLabel == null) {
+            activeBuffsLabel = new Label(sb.toString(), GameAssetManager.getInstance().getSkin());
+            activeBuffsLabel.setFontScale(1.2f);
+            activeBuffsLabel.setAlignment(Align.left);
+            activeBuffsLabel.setPosition(50, stage.getHeight() - 100); // Top-left
+            stage.addActor(activeBuffsLabel);
+        } else {
+            activeBuffsLabel.setText(sb.toString());
+        }
+    }
+
+
 }
