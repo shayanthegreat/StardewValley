@@ -533,7 +533,7 @@ public class GameController implements Controller {
                     if(object != null){
                         if (object instanceof Food){
                             ((Food) object).eat();
-                            player.getBackPack().removeItem((Item) object, 1);
+                            tile.setObject(null);
                         }
                     }
                 }

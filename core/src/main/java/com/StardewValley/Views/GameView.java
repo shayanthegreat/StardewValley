@@ -35,6 +35,7 @@ public class GameView implements Screen, InputProcessor {
     private CookingPopUp cookingPopUp;
     private FridgePopUp fridgePopUp;
     private CraftingPopUp craftingPopUp;
+    private ArtPopUp artPopUp;
     // Tool rotation animation state
     private boolean isToolAnimating = false;
     private float toolAnimationTime = 0f;
@@ -103,6 +104,9 @@ public class GameView implements Screen, InputProcessor {
             GameController.getInstance().buyAnimal(AnimalType.sheep,"asss");
         }
         else if (i == Input.Keys.Z) App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool(null);
+        else if(i == Input.Keys.V){
+            artPopUp.show();
+        }
         return false;
     }
 
@@ -161,6 +165,8 @@ public class GameView implements Screen, InputProcessor {
         craftingPopUp = new CraftingPopUp(stage);
         craftingPopUp.hide();
         toolPopUp.show();
+        artPopUp = new ArtPopUp(stage);
+        artPopUp.hide();
     }
 
     @Override
