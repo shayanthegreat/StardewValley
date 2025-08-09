@@ -21,17 +21,12 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
-
-import java.util.ArrayList;
 
 import static com.StardewValley.Controllers.Camera.TILE_SIZE;
 
@@ -45,14 +40,21 @@ public class GameView implements Screen , InputProcessor {
 //    private RefrigeratorPopUp refrigeratorPopUp;
     private GiftingNPCPopUp giftingNPCPopUp;
     private StorePopUp storePopUp;
-    private Reaction  reactionPopUp;
+    private ReactionPopUp reactionPopUp;
     private CookingPopUp cookingPopUp;
     private FridgePopUp fridgePopUp;
     private CraftingPopUp craftingPopUp;
     private TextButton reaction;
+    public static boolean isTyping = false;
+    private TextButton scoreBoard;
+    private TextButton chat;
+    private InitialChatPopUp initialChatPopUp;
 
     @Override
     public boolean keyDown(int i) {
+        if(isTyping){
+            return false;
+        }
         if(i == Input.Keys.W){
             PlayerController.getInstance().setGoingUp(true);
         }
@@ -156,19 +158,42 @@ public class GameView implements Screen , InputProcessor {
         stage = new Stage();
         reaction = new TextButton("React", GameAssetManager.getInstance().getSkin());
         reaction.setSize(120, 50);
-        reaction.setPosition(Gdx.graphics.getWidth() - reaction.getWidth() - 10, 20);
+        reaction.setPosition(Gdx.graphics.getWidth() - reaction.getWidth() - 10, 30);
         reaction.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 reactionPopUp.show();
+                isTyping = true;
             }
         });
         stage.addActor(reaction);
+
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(this);
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
 //        popUpMenu = PopUpManager.getInstance(stage);
+        scoreBoard = new TextButton("Score Board", GameAssetManager.getInstance().getSkin());
+        scoreBoard.setSize(120, 50);
+        scoreBoard.setPosition(Gdx.graphics.getWidth() - reaction.getWidth() - 10, 100);
+        scoreBoard.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Main.getInstance().setScreen(new ScoreBoardView());
+            }
+        });
+        stage.addActor(scoreBoard);
+
+        chat = new TextButton("Chat", GameAssetManager.getInstance().getSkin());
+        chat.setSize(120, 50);
+        chat.setPosition(30, 170);
+        chat.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                initialChatPopUp.show();
+            }
+        });
+        stage.addActor(chat);
         popUpMenu = PopUpManager.set(stage);
         toolPopUp = new ToolPopUp(stage);
         seedPopUp = new SeedPopUp(stage);
@@ -185,7 +210,9 @@ public class GameView implements Screen , InputProcessor {
         fridgePopUp.hide();
         craftingPopUp = new CraftingPopUp(stage);
         craftingPopUp.hide();
-        reactionPopUp = new Reaction(stage);
+        reactionPopUp = new ReactionPopUp(stage);
+        initialChatPopUp = new InitialChatPopUp(stage);
+        initialChatPopUp.hide();
     }
 
     @Override

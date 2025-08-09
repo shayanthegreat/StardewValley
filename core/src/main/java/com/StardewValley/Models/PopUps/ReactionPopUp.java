@@ -1,19 +1,26 @@
 package com.StardewValley.Models.PopUps;
 
 import com.StardewValley.Models.GameAssetManager;
+import com.StardewValley.Networking.Client.ClientController;
+import com.StardewValley.Networking.Common.Reaction;
+import com.StardewValley.Views.GameView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class Reaction extends PopUpMenu {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ReactionPopUp extends PopUpMenu {
 
     private TextField inputField;
     private TextButton[] buttons;
 
-    public Reaction(Stage stage) {
+    public ReactionPopUp(Stage stage) {
         super(stage);
         createPopupMenu();
     }
@@ -39,17 +46,27 @@ public class Reaction extends PopUpMenu {
 
         // 5 Buttons with TODOs
         buttons = new TextButton[5];
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             final int index = i;
-            buttons[i] = new TextButton("Button " + (i + 1), skin);
+            buttons[i] = new TextButton(com.StardewValley.Networking.Common.Reaction.getDefaults().get(i), skin);
             buttons[i].addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // TODO: Action for Button (index + 1)
+                    ClientController.getInstance().setReaction(com.StardewValley.Networking.Common.Reaction.getDefaults().get(index));
                 }
             });
             mainTable.add(buttons[i]).width(200).row();
         }
+
+        buttons[4] = new TextButton("Send", skin);
+        buttons[4].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(checkInput(inputField.getText()))
+                    ClientController.getInstance().setReaction(inputField.getText());
+            }
+        });
+        mainTable.add(buttons[4]).width(200).row();
 
         // Close Tab
         tabs.clear();
@@ -77,5 +94,31 @@ public class Reaction extends PopUpMenu {
     public void show() {
         updateWindowPosition();
         super.show();
+    }
+
+    Image createCloseTabImage(Texture texture) {
+        Image closeTab = new Image(texture);
+        closeTab.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                hide();
+                PopUpManager.getInstance(stage).hide();
+                GameView.isTyping = false;
+            }
+        });
+        return closeTab;
+    }
+
+    private boolean checkInput(String text) {
+        Pattern pattern = Pattern.compile("/set default (?<reaction>.+?)");
+        Matcher matcher = pattern.matcher(text);
+
+        if (matcher.matches()) {
+            String reaction = matcher.group("reaction");
+            Reaction.addDefault(reaction);
+            return false;
+        }
+        return true;
+
     }
 }

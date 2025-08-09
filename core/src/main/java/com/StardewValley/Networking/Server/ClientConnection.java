@@ -110,6 +110,7 @@ public class ClientConnection extends Connection {
         if(message.getType().equals(ConnectionMessage.Type.update)) {
             if(message.getFromBody("update").equals("update_self")) {
                 controller.updateSelf(message);
+                return true;
             }
         }
         return false;
