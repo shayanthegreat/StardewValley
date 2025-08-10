@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.Timer;
 import static com.StardewValley.Controllers.Camera.TILE_SIZE;
 
 public class GameView implements Screen , InputProcessor {
-    private Stage stage;
+    private static Stage stage;
     private PopUpManager popUpMenu;
     private ToolPopUp toolPopUp;
     private SeedPopUp seedPopUp;
@@ -213,6 +213,7 @@ public class GameView implements Screen , InputProcessor {
         reactionPopUp = new ReactionPopUp(stage);
         initialChatPopUp = new InitialChatPopUp(stage);
         initialChatPopUp.hide();
+
     }
 
     @Override
@@ -384,5 +385,9 @@ public class GameView implements Screen , InputProcessor {
                 dialog.hide();
             }
         }, 5);
+    }
+
+    public static Stage getStage() {
+        return stage;
     }
 }

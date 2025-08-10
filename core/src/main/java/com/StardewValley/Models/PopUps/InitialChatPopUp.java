@@ -45,20 +45,22 @@ public class InitialChatPopUp extends PopUpMenu {
         allButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // TODO: Handle click for "All"
+                ChatScreen chatScreen = new ChatScreen(GameView.getStage(),"all");
+                chatScreen.show();
             }
         });
         mainTable.add(allButton).row();
 
 
-        List<String> playerNames = List.of("abbas","goooz");
+        Set<String> playerNames = ClientData.getInstance().gameDetails.getPlayers().keySet();
 
         for (String playerName : playerNames) {
             TextButton playerButton = new TextButton(playerName, skin);
             playerButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // TODO: Handle click for player: playerName
+                    ChatScreen chatScreen = new ChatScreen(GameView.getStage(),playerName);
+                    chatScreen.show();
                 }
             });
             mainTable.add(playerButton).row();
