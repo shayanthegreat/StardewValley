@@ -232,13 +232,14 @@ public class ClientConnectionController {
             } else {
                 scheduler.shutdown();
             }
-        }, 10, 1, TimeUnit.SECONDS);
+        }, 5, 1, TimeUnit.SECONDS);
 //        TODO: do other stuff for game
     }
 
     public void updateSelf(ConnectionMessage message) {
         String json = message.getFromBody("json");
         PlayerDetails newSelf = ConnectionMessage.playerDetailsFromJson(json);
+        newSelf.username = connection.getUsername();
         String username = newSelf.username;
         GameDetails game = connection.getGame();
         if(game.isRunning()){

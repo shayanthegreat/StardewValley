@@ -24,12 +24,9 @@ public class ServerConnection extends Connection {
     @Override
     public boolean initialHandshake() {
         try {
-            socket.setSoTimeout(TIMEOUT);
-
-            dataInputStream.readUTF();
+            readMessage();
             sendMessage(controller.status());
 
-            socket.setSoTimeout(0);
             return true;
         } catch (Exception e) {
             return false;

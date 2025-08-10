@@ -40,19 +40,12 @@ public class ServerConnectionController {
 
     public void lobbyTerminated(ConnectionMessage message) {
         data.lobbyCode = "";
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ClientController.getInstance().refreshLobbies();
     }
 
     public void gameStarted(ConnectionMessage message) {
         System.out.println(1);
         GameDetails game = ConnectionMessage.gameDetailsFromJson(message.getFromBody("game_details"));
+        System.out.println((String) message.getFromBody("game_details"));
         ArrayList<String> usernames = message.getFromBody("usernames");
         ArrayList<String> avatarPaths = message.getFromBody("avatar_paths");
         System.out.println(2);
@@ -65,6 +58,7 @@ public class ServerConnectionController {
         User[] users = new User[usernames.size()];
         for (int i = 0; i < usernames.size(); i++) {
             users[i] = new User(usernames.get(i),"","","","");
+//            TODO: set avatars
 //            users[i].setAvatarTexture(new Texture());
         }
         System.out.println(4);
@@ -77,9 +71,7 @@ public class ServerConnectionController {
             } else {
                 scheduler.shutdown();
             }
-        }, 5, 1, TimeUnit.SECONDS);
-//        TODO: do needed stuff
-
+        }, 3, 1, TimeUnit.SECONDS);
 
     }
 
@@ -97,7 +89,15 @@ public class ServerConnectionController {
         GameDetails newGame = ConnectionMessage.gameDetailsFromJson(message.getFromBody("json"));
         for(String member : oldGame.getPlayers().keySet()) {
             Reaction oldReaction = oldGame.getPlayerByUsername(member).reaction;
+            if(oldReaction == null) {
+                oldReaction = new Reaction("");
+                System.out.println("brrrr");
+            }
             Reaction newReaction = newGame.getPlayerByUsername(member).reaction;
+            if(newReaction == null) {
+                newReaction = new Reaction("");
+                System.out.println("brrrr");
+            }
             if(!oldReaction.text.equals(newReaction.text) && !newReaction.text.isEmpty()) {
                 newReaction.time = System.currentTimeMillis();
             }
