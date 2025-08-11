@@ -27,7 +27,7 @@ public class ClientData {
     public ArrayList<String> onlineUsers = new ArrayList<>();
     public boolean isInGame = false;
     public GameDetails gameDetails = new GameDetails();
-    public PlayerDetails selfDetails = new PlayerDetails();
+    public PlayerDetails selfDetails;
 //    send selfDetails to server, receive gameDetails from server
 
     public Lobby getLobby(String lobbyCode) {

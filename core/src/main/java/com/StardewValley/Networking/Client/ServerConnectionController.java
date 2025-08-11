@@ -1,6 +1,7 @@
 package com.StardewValley.Networking.Client;
 
 import com.StardewValley.Controllers.GameController;
+import com.StardewValley.Models.App;
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.*;
 import com.StardewValley.Views.InLobbyView;
@@ -52,7 +53,7 @@ public class ServerConnectionController {
         int mapId = message.getIntFromBody("map_id");
         Chat chat = new Chat(usernames);
         game.setChat(chat);
-        System.out.println(3);
+        data.selfDetails = new PlayerDetails(App.getInstance().getCurrentUser().getUsername());
         data.gameDetails = game;
         data.isInGame = true;
         User[] users = new User[usernames.size()];
@@ -61,7 +62,6 @@ public class ServerConnectionController {
 //            TODO: set avatars
 //            users[i].setAvatarTexture(new Texture());
         }
-        System.out.println(4);
         GameController.getInstance().createGameWithUsersAndMaps(users, mapId);
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();

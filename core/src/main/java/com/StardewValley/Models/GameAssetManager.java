@@ -1,5 +1,6 @@
 package com.StardewValley.Models;
 
+import com.StardewValley.Views.EmojiSupport;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -10,6 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class GameAssetManager {
     private static GameAssetManager gameAssetManager = new GameAssetManager();
+    private GameAssetManager() {
+        emojiSupport= new EmojiSupport();
+        emojiSupport.Load(Gdx.files.internal("emojis25.atlas"));
+        emojiSupport.AddEmojisToFont(skin.getFont("font"));
+    }
     public static GameAssetManager getInstance() {
         if (gameAssetManager == null) {
             gameAssetManager = new GameAssetManager();
@@ -17,6 +23,7 @@ public class GameAssetManager {
         return gameAssetManager;
     }
     public final Texture CLOCK_ALL = new Texture("Clock/Clock_All.png");
+    private EmojiSupport emojiSupport = new EmojiSupport();
 //    public final Skin SKIN = new Skin(Gdx.files.internal("skin/craftacular-ui.json"));
     public final BitmapFont MAIN_FONT = new BitmapFont();
     public final TextureRegion CLOCK_MAIN = new TextureRegion(CLOCK_ALL, 0, 0, 72, 59);
@@ -2488,5 +2495,9 @@ public class GameAssetManager {
 
     public Skin getSkin() {
         return skin;
+    }
+
+    public EmojiSupport getEmojiSupport(){
+        return this.emojiSupport;
     }
 }

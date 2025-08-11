@@ -48,7 +48,7 @@ public class ReactionPopUp extends PopUpMenu {
         buttons = new TextButton[5];
         for (int i = 0; i < 4; i++) {
             final int index = i;
-            buttons[i] = new TextButton(com.StardewValley.Networking.Common.Reaction.getDefaults().get(i), skin);
+            buttons[i] = new TextButton(GameAssetManager.getInstance().getEmojiSupport().FilterEmojis(Reaction.getDefaults().get(i)), skin);
             buttons[i].addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {

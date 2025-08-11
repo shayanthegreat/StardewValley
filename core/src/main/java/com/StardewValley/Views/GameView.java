@@ -49,6 +49,7 @@ public class GameView implements Screen , InputProcessor {
     private TextButton scoreBoard;
     private TextButton chat;
     private InitialChatPopUp initialChatPopUp;
+    private FriendshipPopUp friendshipPopUp;
 
     @Override
     public boolean keyDown(int i) {
@@ -75,8 +76,12 @@ public class GameView implements Screen , InputProcessor {
             GameController.getInstance().cheatTime();
         }
 
-        else if(i == Input.Keys.F){
+        else if(i == Input.Keys.X){
             GameController.getInstance().cheatSeason();
+        }
+
+        else if(i == Input.Keys.F){
+            friendshipPopUp.show();
         }
 
         else if(i == Input.Keys.R) {
@@ -213,6 +218,8 @@ public class GameView implements Screen , InputProcessor {
         reactionPopUp = new ReactionPopUp(stage);
         initialChatPopUp = new InitialChatPopUp(stage);
         initialChatPopUp.hide();
+        friendshipPopUp = new FriendshipPopUp(stage);
+        friendshipPopUp.hide();
 
     }
 

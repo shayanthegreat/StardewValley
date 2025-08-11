@@ -193,7 +193,6 @@ public class RegistrationController implements UserInfoController , Controller{
         }
         String codedPassword = sha256(password);
         if (!user.getPassword().equals(password)) {
-            System.out.println("hello");
             return new RegistrationMessage(null, "Wrong Password");
         }
         if (stayLoggedIn) {

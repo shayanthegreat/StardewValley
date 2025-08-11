@@ -1,6 +1,7 @@
 package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
+import com.StardewValley.Models.GameAssetManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -113,11 +114,10 @@ public class Camera {
             camera.viewportHeight
         );
 
-        // For simplicity, assume text fits in one tile
         Rectangle tileRect = new Rectangle(pixelX, pixelY, TILE_SIZE, TILE_SIZE);
 
         if (view.overlaps(tileRect)) {
-            font.draw(batch, text, pixelX, pixelY + TILE_SIZE); // y + TILE_SIZE so text is above tile
+            font.draw(batch, GameAssetManager.getInstance().getEmojiSupport().FilterEmojis(text), pixelX, pixelY + TILE_SIZE);
         }
     }
 

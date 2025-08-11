@@ -86,7 +86,7 @@ public class LoginMenu extends MenuView {
         login.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.login(Username.getText(), Password.getText(), stayLoggedIn.isChecked());
+                controller.showError(controller.login(Username.getText(), Password.getText(), stayLoggedIn.isChecked()).message(), stage, skin);
 
             }
         });
