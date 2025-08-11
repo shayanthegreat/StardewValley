@@ -1,5 +1,6 @@
 package com.StardewValley.Models.Crafting;
 
+import com.StardewValley.Controllers.PlayerController;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.Tile;
@@ -58,6 +59,7 @@ public class Food extends Item implements Serializable {
     public void eat(){
         App.getInstance().getCurrentGame().getCurrentPlayer().addEnergy(recipe.getEnergy());
         Buff buff = recipe.getBuff();
+        PlayerController.getInstance().startEating();
         Time[] lastBuffTime = App.getInstance().getCurrentGame().getCurrentPlayer().getLastBuffTime();
         if(buff != null){
             Time time = new Time(App.getInstance().getCurrentGame().getTime());

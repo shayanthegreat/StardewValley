@@ -21,12 +21,13 @@ public class PlayerController {
     private long pettingStartTime = 0;
     private boolean petting = false;
     private boolean feeding = false;
-
+    private boolean eating = false;
 
     public void update(){
         movePlayer();
         petting();
         feeding();
+        eating();
         check();
     }
 
@@ -131,6 +132,17 @@ public class PlayerController {
         }
     }
 
+    private void eating(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(eating){
+            if(TimeUtils.millis() - pettingStartTime > 3000){
+                eating = false;
+                return;
+            }
+            Camera.getInstance().print(player.getAvatarType().eatingAnimation(),player.getPosition().x,player.getPosition().y,1,1);
+        }
+    }
+
     private void move(int dx , int dy){
         Game game = App.getInstance().getCurrentGame();
         Player player = game.getCurrentPlayer();
@@ -199,6 +211,11 @@ public class PlayerController {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         player.setPosition(new Position(animal.getPosition().x+1,animal.getPosition().y));
         feeding = true;
+        pettingStartTime = TimeUtils.millis();
+    }
+
+    public void startEating(){
+        eating = true;
         pettingStartTime = TimeUtils.millis();
     }
 }
