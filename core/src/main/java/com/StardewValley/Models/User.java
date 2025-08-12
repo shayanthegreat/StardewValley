@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class User implements Serializable {
     private String username;
@@ -19,6 +20,7 @@ public class User implements Serializable {
     private ArrayList<Integer> gamesMoney;
     private transient Texture avatarTexture;
     private String avatarPath;
+    private transient Player player;
 
     private transient Lobby lobby = null;
 
@@ -31,7 +33,22 @@ public class User implements Serializable {
         this.gamesMoney = new ArrayList<>();
         this.answer = "none";
         this.question = Question.first;
-        this.avatarTexture = GameAssetManager.getInstance().ABIGAIL_PORTRAIT;
+        Random rand = new Random();
+        int randNum = rand.nextInt(3);
+        switch (randNum) {
+            case 0:
+                this.avatarPath = GameAssetManager.getInstance().ABIGAIL_PATH;
+                break;
+            case 1:
+                this.avatarPath = GameAssetManager.getInstance().HARVEY_PATH;
+                break;
+            case 2:
+                this.avatarPath = GameAssetManager.getInstance().SAM_PATH;
+                break;
+            default:
+                this.avatarPath = GameAssetManager.getInstance().ABIGAIL_PATH;
+                break;
+        }
     }
 
 //    constructor for SQLite database
@@ -148,7 +165,14 @@ public class User implements Serializable {
     }
 
     public Texture getAvatarTexture() {
-        return avatarTexture;
+        return new Texture(this.avatarPath);
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 }

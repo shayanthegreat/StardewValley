@@ -58,6 +58,9 @@ public class ServerConnection extends Connection {
                 controller.updateStoreItems(message);
                 return true;
             }
+            if(message.getFromBody("information").equals("gift_send")) {
+                controller.addGift(message);
+            }
         }
         if(message.getType().equals(ConnectionMessage.Type.update)) {
             if(message.getFromBody("update").equals("update_game")) {

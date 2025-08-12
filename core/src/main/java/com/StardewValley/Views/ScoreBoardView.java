@@ -7,9 +7,10 @@ import com.StardewValley.Networking.Common.PlayerDetails;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -30,33 +31,43 @@ public class ScoreBoardView implements Screen {
     public void show() {
         stage = new Stage(new ScreenViewport());
         skin = GameAssetManager.getInstance().getSkin();
-
         Gdx.input.setInputProcessor(stage);
 
         players = new ArrayList<>(ClientData.getInstance().gameDetails.getPlayers().values());
 
+        // Create SortBox once
         sortBox = new SelectBox<>(skin);
         sortBox.setItems("Gold", "Quest Count", "Skill Sum");
-        sortBox.addListener(event -> {
-            updateSort();
-            return false;
+        sortBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                updateSort();
+            }
         });
+
+        // Create Back Button once
         backButton = new TextButton("Back", skin);
         backButton.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event , float x, float y) {
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 Main.getInstance().setScreen(new GameView());
             }
         });
 
+        // Create table layout
         table = new Table();
         table.setFillParent(true);
+        table.top();
 
-        table.top().add(new Label("Scoreboard", skin)).pad(10).row();
+        // Static header elements
+        table.add(new Label("Scoreboard", skin)).pad(10).row();
         table.add(sortBox).pad(10).row();
-        table.add(backButton).pad(10).row();
 
+        // Fill player list
         updateTable();
+
+        // Add back button
+        table.add(backButton).pad(10).row();
 
         stage.addActor(table);
     }
@@ -78,15 +89,26 @@ public class ScoreBoardView implements Screen {
     }
 
     private void updateTable() {
+        // Remove all player rows first
+        // Preserve header (first 2 rows) and back button
         table.clearChildren();
-        table.top().add(new Label("Scoreboard", skin)).pad(10).row();
+        table.top();
+
+        // Header
+        table.add(new Label("Scoreboard", skin)).pad(10).row();
         table.add(sortBox).pad(10).row();
 
+        // Player list
         for (PlayerDetails p : players) {
-            table.add(new Label(p.username + " | Gold: " + p.gold +
-                " | Quests: " + p.questCount +
-                " | Skills: " + p.skillSum, skin)).left().pad(5).row();
+            table.add(new Label(
+                p.username + " | Gold: " + p.gold +
+                    " | Quests: " + p.questCount +
+                    " | Skills: " + p.skillSum, skin
+            )).left().pad(5).row();
         }
+
+        // Back button
+        table.add(backButton).pad(10).row();
     }
 
     @Override
@@ -97,9 +119,14 @@ public class ScoreBoardView implements Screen {
         stage.draw();
     }
 
-    @Override public void resize(int width, int height) { stage.getViewport().update(width, height, true); }
+    @Override public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
-    @Override public void dispose() { stage.dispose(); skin.dispose(); }
+    @Override public void dispose() {
+        stage.dispose();
+        skin.dispose();
+    }
 }

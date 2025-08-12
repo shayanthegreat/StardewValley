@@ -1,8 +1,7 @@
 package com.StardewValley.Networking.Client;
 
 import com.StardewValley.Controllers.GameController;
-import com.StardewValley.Models.App;
-import com.StardewValley.Models.User;
+import com.StardewValley.Models.*;
 import com.StardewValley.Networking.Common.*;
 import com.StardewValley.Views.InLobbyView;
 import com.badlogic.gdx.graphics.Texture;
@@ -60,7 +59,7 @@ public class ServerConnectionController {
         for (int i = 0; i < usernames.size(); i++) {
             users[i] = new User(usernames.get(i),"","","","");
 //            TODO: set avatars
-//            users[i].setAvatarTexture(new Texture());
+            users[i].setAvatarTexture(GameAssetManager.getInstance().SAM_TEXTURE);
         }
         GameController.getInstance().createGameWithUsersAndMaps(users, mapId);
 
@@ -115,5 +114,13 @@ public class ServerConnectionController {
         int count = message.getIntFromBody("count");
 
 //        TODO: reduce the quantity of the item from the store
+    }
+
+    public void addGift(ConnectionMessage message) {
+        String sender = message.getFromBody("sender");
+        String item = message.getFromBody("item");
+        Item item1 = Item.getItemByName(item);
+        Player player = App.getInstance().getCurrentUser().getPlayer();
+        player.getBackPack().addItem(item1,1);
     }
 }

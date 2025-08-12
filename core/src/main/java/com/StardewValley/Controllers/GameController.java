@@ -84,10 +84,13 @@ public class GameController implements Controller {
         ArrayList<Player> players = new ArrayList<>();
         ArrayList<Farm> farms = new ArrayList<>();
 
-
+        User user1 = null;
         for (int i = 0; i < users.length; i++) {
             Farm farm = new Farm(FarmMap.getFarmMap(mapIDs), i);
             Player player = new Player(users[i], farm);
+            if(users[i].getUsername().equals(App.getInstance().getCurrentUser().getUsername())) {
+                user1 = users[i];
+            }
             farms.add(farm);
             players.add(player);
         }
@@ -106,6 +109,7 @@ public class GameController implements Controller {
         app.addGame(game);
         app.setCurrentGame(game);
         app.setCurrentGameStarter(app.getCurrentUser());
+        game.setCurrentPlayer(user1.getPlayer());
 
 
         for (User user : users) {

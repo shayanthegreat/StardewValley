@@ -235,4 +235,15 @@ public class ClientController {
         return ConnectionMessage.userFromJson(response.getFromBody("user"));
 
     }
+
+    public void sendGift(String itemName , String receiverUsername , String senderUsername ) {
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
+            put("command", "gift_send");
+            put("item", itemName);
+            put("receiver", receiverUsername);
+            put("sender", senderUsername);
+        }}, ConnectionMessage.Type.command);
+
+        connection.sendMessage(message);
+    }
 }

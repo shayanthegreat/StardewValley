@@ -111,6 +111,7 @@ public class Player implements Serializable {
         this.isChoosingBarn = false;
         this.isChoosingCoop = false;
         this.isInHouse = false;
+        user.setPlayer(this);
     }
 
     public ArrayList<FriendShip> getFriendShips() {

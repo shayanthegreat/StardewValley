@@ -96,6 +96,9 @@ public class ClientConnection extends Connection {
                 controller.getLastUser();
                 return true;
             }
+            if(message.getFromBody("command").equals("gift_send")) {
+                controller.sendGift(message);
+            }
 
         }
         if (message.getType().equals(ConnectionMessage.Type.inform)) {

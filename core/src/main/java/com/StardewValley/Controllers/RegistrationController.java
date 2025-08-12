@@ -13,6 +13,7 @@ import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Views.LobbyView;
 import com.StardewValley.Views.MainMenu;
 import com.StardewValley.Views.MenuView;
+import com.StardewValley.Views.ProfileMenu;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -141,8 +142,10 @@ public class RegistrationController implements UserInfoController , Controller{
     public RegistrationMessage pickQuestion(int id, String answer) {
         App app = App.getInstance();
         Question question = Question.getQuestion(id);
-        ClientController.getInstance().getLastUser().setQuestion(question);
-        ClientController.getInstance().getLastUser().setAnswer(answer);
+        User finalUser = ClientController.getInstance().getLastUser();
+        finalUser.setQuestion(question);
+        ClientController.getInstance().removeLastUser();
+        ClientController.getInstance().addUserToDB(finalUser);
         return new RegistrationMessage(null, "Your question and answer successfully saved");
     }
 
@@ -203,6 +206,7 @@ public class RegistrationController implements UserInfoController , Controller{
 
         app.setCurrentUser(user);
         Main.getInstance().getScreen().dispose();
+//        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
         Main.getInstance().setScreen(new LobbyView());
         ClientController.getInstance().informLogin(username);
         return new RegistrationMessage(null, "You logged in successfully! you are now in main menu");

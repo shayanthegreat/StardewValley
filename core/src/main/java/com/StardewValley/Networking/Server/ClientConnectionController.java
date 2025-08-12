@@ -293,6 +293,23 @@ public class ClientConnectionController {
         }
         connection.sendMessage(response);
     }
+
+    public void sendGift(ConnectionMessage message) {
+        String item = message.getFromBody("item");
+        String receiver = message.getFromBody("receiver");
+        String sender = message.getFromBody("sender");
+        ClientConnection connection = ServerMain.getConnectionByUsername(receiver);
+        if(connection == null) {
+            return;
+        }
+        ConnectionMessage inform = new ConnectionMessage(new HashMap<>() {{
+            put("information", "gift_send");
+            put("item", item);
+            put("receiver", receiver);
+            put("sender", sender);
+        }}, ConnectionMessage.Type.inform);
+        connection.sendMessage(inform);
+    }
 }
 
 

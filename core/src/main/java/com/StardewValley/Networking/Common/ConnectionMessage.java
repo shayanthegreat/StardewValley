@@ -58,11 +58,20 @@ public class ConnectionMessage {
     }
 
     public static synchronized String newMessagesToJson(ArrayList<ChatMessage> newMessages) {
-        return gson.toJson(newMessages);
+        ArrayList<String> messages = new ArrayList<>();
+        for (ChatMessage chatMessage : newMessages) {
+            messages.add(gson.toJson(chatMessage));
+        }
+        return gson.toJson(messages);
     }
 
     public static synchronized ArrayList<ChatMessage> newMessagesFromJson(String json) {
-        return gson.fromJson(json, ArrayList.class);
+        ArrayList messages = gson.fromJson(json, ArrayList.class);
+        ArrayList<ChatMessage> chatMessages = new ArrayList<>();
+        for (Object message : messages) {
+            chatMessages.add(gson.fromJson((String) message, ChatMessage.class));
+        }
+        return chatMessages;
     }
 
     private Type type;

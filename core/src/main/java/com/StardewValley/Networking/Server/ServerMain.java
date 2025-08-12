@@ -49,7 +49,7 @@ public class ServerMain {
                 if (connection.refreshStatus()) {
                     System.out.println(connection.getUsername() + " has refreshed");
                     connection.setLastRefresh(System.currentTimeMillis());
-                } else if (System.currentTimeMillis() - connection.getLastRefresh() > 30 * 1000 || connection.isAlive()) {
+                } else if (System.currentTimeMillis() - connection.getLastRefresh() > 30 * 1000 || !connection.isAlive()) {
                     System.out.println("connection ended: " + connection.getUsername());
                     connection.end();
                     continue;
