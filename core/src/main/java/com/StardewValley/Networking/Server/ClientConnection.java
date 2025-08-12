@@ -58,7 +58,15 @@ public class ClientConnection extends Connection {
             }
             if(message.getFromBody("command").equals("file_complete")) {
                 super.endFileReceiving();
-//                TODO: save the file with the name in a function
+                controller.saveMusicFile(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("send_music_list")) {
+                controller.sendMusicList(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("send_music")) {
+                controller.sendMusic(message);
                 return true;
             }
             if (message.getFromBody("command").equals("add_user")) {

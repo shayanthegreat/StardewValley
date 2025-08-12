@@ -30,7 +30,6 @@ public class InLobbyView implements Screen {
 
     @Override
     public void show() {
-        ClientController.getInstance().sendFile();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         Lobby currentLobby = ClientData.getInstance().getLobby(ClientData.getInstance().lobbyCode);

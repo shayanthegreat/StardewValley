@@ -47,7 +47,7 @@ public class ServerConnection extends Connection {
             }
             if(message.getFromBody("command").equals("file_complete")) {
                 super.endFileReceiving();
-//                TODO: move and play the music file in a function
+                controller.saveMusicFile(message);
                 return true;
             }
         } else if (message.getType().equals(ConnectionMessage.Type.inform)) {
@@ -94,5 +94,9 @@ public class ServerConnection extends Connection {
 
     public int getPort() {
         return port;
+    }
+
+    public ServerConnectionController getController() {
+        return controller;
     }
 }

@@ -6,9 +6,15 @@ import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.Lobby;
 import com.StardewValley.Networking.Common.Reaction;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 
 import java.io.File;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -176,7 +182,7 @@ public class ClientController {
     }
 
     public boolean setReaction(String text) {
-        if(!Reaction.isValid(text)) {
+        if (!Reaction.isValid(text)) {
             return false;
         }
         Reaction reaction = new Reaction(text, System.currentTimeMillis());
@@ -186,7 +192,7 @@ public class ClientController {
     }
 
     public boolean setDefaultReaction(String text) {
-        if(!Reaction.isValid(text)) {
+        if (!Reaction.isValid(text)) {
             return false;
         }
         Reaction.addDefault(text);
@@ -215,7 +221,7 @@ public class ClientController {
         connection.sendMessage(message);
     }
 
-    public void removeLastUser(){
+    public void removeLastUser() {
         ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
             put("command", "remove_last_user");
         }}, ConnectionMessage.Type.command);
@@ -237,12 +243,39 @@ public class ClientController {
 
     }
 
-    public void sendFile() {
-        File file = new File("users.db");
-        try{
-            connection.sendFile(file);
-        } catch (Exception e){
-            e.printStackTrace();
+    public void refreshMusicList() {
+        ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
+            put("command", "send_music_list");
+        }}, ConnectionMessage.Type.command);
+        ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
+
+        data.musicList = response.getFromBody("music_list");
+    }
+
+    public void playMusic(String username, String filename) {
+        File file = new File("temp_receives/" + username + "~" + filename);
+        if (file.exists() && file.isFile()) {
+            if (data.currentMusic != null && data.currentMusic.isPlaying()) {
+                data.currentMusic.pause();
+            }
+
+            try {
+                FileHandle handle = Gdx.files.absolute(file.getAbsolutePath());
+                data.currentMusic = Gdx.audio.newMusic(handle);
+                data.currentMusic.play();
+            } catch (Exception e) {
+                System.err.println("Error playing music: " + e.getMessage());
+            }
+        }
+        ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
+            put("command", "send_music");
+            put("username", username);
+            put("filename", filename);
+        }}, ConnectionMessage.Type.command);
+
+        ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
+        if (response.getFromBody("response").equals("ok")) {
+            connection.getController().setSourceOfMusic(username);
         }
     }
 }
