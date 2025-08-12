@@ -7,6 +7,7 @@ import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.Lobby;
 import com.StardewValley.Networking.Common.Reaction;
 
+import java.io.File;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -234,5 +235,14 @@ public class ClientController {
         }
         return ConnectionMessage.userFromJson(response.getFromBody("user"));
 
+    }
+
+    public void sendFile() {
+        File file = new File("users.db");
+        try{
+            connection.sendFile(file);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

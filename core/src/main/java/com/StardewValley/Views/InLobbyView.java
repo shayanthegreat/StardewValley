@@ -5,6 +5,7 @@ import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Networking.Client.ClientController;
 import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Networking.Common.Lobby;
+import com.StardewValley.Networking.Server.ClientConnection;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -29,6 +30,7 @@ public class InLobbyView implements Screen {
 
     @Override
     public void show() {
+        ClientController.getInstance().sendFile();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         Lobby currentLobby = ClientData.getInstance().getLobby(ClientData.getInstance().lobbyCode);

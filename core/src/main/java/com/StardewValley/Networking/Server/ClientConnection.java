@@ -52,6 +52,15 @@ public class ClientConnection extends Connection {
     protected synchronized boolean handleMessage(ConnectionMessage message) {
         System.out.println(message.getBody());
         if (message.getType().equals(ConnectionMessage.Type.command)) {
+            if(message.getFromBody("command").equals("file_meta")) {
+                super.startFileReceiving(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("file_complete")) {
+                super.endFileReceiving();
+//                TODO: save the file with the name in a function
+                return true;
+            }
             if (message.getFromBody("command").equals("add_user")) {
                 controller.addUser(message);
                 return true;

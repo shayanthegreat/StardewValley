@@ -15,6 +15,11 @@ public class GameAssetManager {
         emojiSupport= new EmojiSupport();
         emojiSupport.Load(Gdx.files.internal("emojis25.atlas"));
         emojiSupport.AddEmojisToFont(skin.getFont("font"));
+        emojiSupport.AddEmojisToFont(skin.getFont("button"));
+        emojiSupport.AddEmojisToFont(skin.getFont("title"));
+        emojiSupport.AddEmojisToFont(SKIN.getFont("font"));
+        emojiSupport.AddEmojisToFont(SKIN.getFont("button"));
+        emojiSupport.AddEmojisToFont(SKIN.getFont("title"));
     }
     public static GameAssetManager getInstance() {
         if (gameAssetManager == null) {
