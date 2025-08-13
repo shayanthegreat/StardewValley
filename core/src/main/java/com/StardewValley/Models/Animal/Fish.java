@@ -8,10 +8,12 @@ import com.StardewValley.Models.Game;
 import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.Tile;
 import com.StardewValley.Models.Player;
-import com.StardewValley.Models.Tools.LevelInfo;
 import com.StardewValley.Models.Tools.Tool;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -23,8 +25,17 @@ public class Fish extends Item implements Serializable {
 
 
     public Fish(FishType type) {
-        super(type.getName(), 1,true, type.getTexture());
+        super(type.getName(), 1,true);
         this.type = type;
+        texture = type.getTexture();
+        sprite = new Sprite(texture);
+    }
+    private void readObject(ObjectInputStream ois)
+        throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+
+        texture = type.getTexture();
+        sprite = new Sprite(texture);
     }
 
     public int getFishingCount(Weather weather, int skillLevel) {

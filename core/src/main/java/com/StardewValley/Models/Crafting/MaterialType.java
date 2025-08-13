@@ -3,43 +3,61 @@ package com.StardewValley.Models.Crafting;
 import com.StardewValley.Models.GameAssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 public enum MaterialType implements Serializable {
-    sugar("sugar", GameAssetManager.getInstance().SUGAR),
-    cheese("cheese", GameAssetManager.getInstance().CHEESE),
-    fiber("fiber", GameAssetManager.getInstance().FIBER),
-    oil("oil", GameAssetManager.getInstance().OIL),
-    wheatFlour("wheatFlour", GameAssetManager.getInstance().WHEAT_FLOUR),
-    coffee("coffee", GameAssetManager.getInstance().COFFEE),
-    bouquet("bouquet", GameAssetManager.getInstance().BOUQUET),
-    weddingRing("weddingRing", GameAssetManager.getInstance().WEDDING_RING),
-    wood("wood", GameAssetManager.getInstance().WOOD),
-    stone("stone", GameAssetManager.getInstance().STONE),
-    ironOre("iron Ore", GameAssetManager.getInstance().IRON_ORE),
-    ironBar("iron Bar", GameAssetManager.getInstance().IRON_BAR),
-    copperOre("copper Ore", GameAssetManager.getInstance().COPPER_ORE),
-    copperBar("copper Bar", GameAssetManager.getInstance().COPPER_BAR),
-    goldOre("gold Ore", GameAssetManager.getInstance().GOLD_ORE),
-    goldBar("gold Bar", GameAssetManager.getInstance().GOLD_BAR),
-    iridiumOre("iridium Ore", GameAssetManager.getInstance().IRIDIUM_ORE),
-    iridiumBar("iridium Bar", GameAssetManager.getInstance().IRIDIUM_BAR),
-    coal("coal", GameAssetManager.getInstance().COAL),
-    pickle("pickle", GameAssetManager.getInstance().PICKLES),
-    wine("wine", GameAssetManager.getInstance().WINE),
-    hardWood("hard wood", GameAssetManager.getInstance().HARDWOOD),
-    diamond("diamond", GameAssetManager.getInstance().DIAMOND),
-    quartz("quartz", GameAssetManager.getInstance().QUARTZ),;
+    sugar("Sugar", "SUGAR"),
+    cheese("Cheese", "CHEESE"),
+    fiber("Fiber", "FIBER"),
+    oil("Oil", "OIL"),
+    wheatFlour("Wheat Flour", "WHEAT_FLOUR"),
+    coffee("Coffee", "COFFEE"),
+    bouquet("Bouquet", "BOUQUET"),
+    weddingRing("Wedding Ring", "WEDDING_RING"),
+    wood("Wood", "WOOD"),
+    stone("Stone", "STONE"),
+    ironOre("Iron Ore", "IRON_ORE"),
+    ironBar("Iron Bar", "IRON_BAR"),
+    copperOre("Copper Ore", "COPPER_ORE"),
+    copperBar("Copper Bar", "COPPER_BAR"),
+    goldOre("Gold Ore", "GOLD_ORE"),
+    goldBar("Gold Bar", "GOLD_BAR"),
+    iridiumOre("Iridium Ore", "IRIDIUM_ORE"),
+    iridiumBar("Iridium Bar", "IRIDIUM_BAR"),
+    coal("Coal", "COAL"),
+    pickle("Pickle", "PICKLES"),
+    wine("Wine", "WINE"),
+    hardWood("Hard Wood", "HARDWOOD"),
+    diamond("Diamond", "DIAMOND"),
+    quartz("Quartz", "QUARTZ");
 
     private final String name;
-    private final Texture texture;
-    MaterialType(String name, Texture texture) {
+    private transient Texture texture;
+    private final String textureKey;
+
+    MaterialType(String name, String textureKey) {
         this.name = name;
-        this.texture = texture;
+        this.textureKey = textureKey;
+        this.texture = loadTexture(textureKey);
+    }
+
+    private Texture loadTexture(String key) {
+        GameAssetManager assets = GameAssetManager.getInstance();
+        try {
+            return (Texture) assets.getClass().getField(key).get(assets);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not load texture: " + key, e);
+        }
     }
 
     public String getName() {
         return name;
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 
     public static MaterialType getMaterialTypeByName(String name) {
@@ -51,7 +69,8 @@ public enum MaterialType implements Serializable {
         return null;
     }
 
-    public Texture getTexture() {
-        return texture;
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.texture = loadTexture(textureKey);
     }
 }

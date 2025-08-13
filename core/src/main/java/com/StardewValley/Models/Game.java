@@ -31,7 +31,7 @@ public class Game implements Serializable {
     public final static Time startingTime = new Time();
     private ArrayList<Store> stores = new ArrayList<>();
     private ArrayList<NPC> npcs = new ArrayList<>();
-    private GameView view;
+    private transient GameView view;
 
     public Game(ArrayList<Player> players, Map map) {
         this.players = players;
@@ -294,5 +294,22 @@ public class Game implements Serializable {
 
     public void setView(GameView view) {
         this.view = view;
+    }
+
+    public void serializeToBytes() {
+        try{
+            FileUtils.serializeToBytes(this);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static Game loadGame(byte[] data) {
+        try{
+            return FileUtils.deserializeFromBytes(data);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

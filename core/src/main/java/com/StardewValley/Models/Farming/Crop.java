@@ -4,7 +4,10 @@ import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.Tile;
 import com.StardewValley.Models.Time;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 public class Crop extends Item implements Serializable {
@@ -12,8 +15,18 @@ public class Crop extends Item implements Serializable {
     private CropType type;
 
     public Crop(CropType type) {
-        super(type.getName(), 1, true, type.getTexture());
+        super(type.getName(), 1, true);
         this.type = type;
+        texture = type.getTexture();
+        sprite = new Sprite(texture);
+    }
+
+    private void readObject(ObjectInputStream ois)
+        throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+
+        texture = type.getTexture();
+        sprite = new Sprite(texture);
     }
 
     public CropType getType(){

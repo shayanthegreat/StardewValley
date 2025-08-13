@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 public class Time implements Serializable {
@@ -18,14 +20,24 @@ public class Time implements Serializable {
     private int clockWidth = 225;
     private int clockHeight = 165;
 //    private Position position = new Position(Gdx.graphics.getWidth()-clockWidth, Gdx.graphics.getHeight()-clockHeight);
-    private Sprite clockMain = new Sprite(GameAssetManager.getInstance().CLOCK_MAIN);
-    private Sprite clockArrow = new Sprite(GameAssetManager.getInstance().CLOCK_ARROW);
-    private Sprite seasonSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[1]);
-    private Sprite weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[6]);
+    private transient Sprite clockMain = new Sprite(GameAssetManager.getInstance().CLOCK_MAIN);
+    private transient Sprite clockArrow = new Sprite(GameAssetManager.getInstance().CLOCK_ARROW);
+    private transient Sprite seasonSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[1]);
+    private transient Sprite weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[6]);
     private float clockScale = 1f;
     private int hour;
     private int day;
     private Season season;
+
+    private void readObject(ObjectInputStream ois)
+        throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+
+        clockMain = new Sprite(GameAssetManager.getInstance().CLOCK_MAIN);
+        clockArrow = new Sprite(GameAssetManager.getInstance().CLOCK_ARROW);
+        seasonSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[1]);
+        weatherSprite = new Sprite(GameAssetManager.getInstance().ClOCK_MANNERS[6]);
+    }
 
     public Time() {
         hour = 9;

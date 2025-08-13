@@ -2,7 +2,10 @@ package com.StardewValley.Models.Animal;
 
 import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.Tile;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 public class AnimalProduct extends Item implements Serializable {
@@ -11,9 +14,20 @@ public class AnimalProduct extends Item implements Serializable {
     private Quality quality;
 
     public AnimalProduct(AnimalProductType type) {
-        super(type.getName(), 1, type.isEdible(), type.getTexture());
+        super(type.getName(), 1, type.isEdible());
         this.type = type;
+        texture = type.getTexture();
+        sprite = new Sprite(texture);
     }
+
+    private void readObject(ObjectInputStream ois)
+        throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+
+        texture = type.getTexture();
+        sprite = new Sprite(texture);
+    }
+
 
     public AnimalProductType getType() {
         return type;

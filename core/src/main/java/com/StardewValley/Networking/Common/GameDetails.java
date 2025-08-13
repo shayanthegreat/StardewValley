@@ -1,6 +1,7 @@
 package com.StardewValley.Networking.Common;
 
 import com.StardewValley.Networking.Server.ClientConnection;
+import com.StardewValley.Networking.Server.GameDAO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,9 +22,9 @@ public class GameDetails {
             players.put(username, new PlayerDetails(username));
         }
         this.adminUsername = adminUsername;
-        this.gameId = availableId++;
         this.isRunning = true;
         this.chat = new Chat(usernames);
+         GameDAO.insertGame(this);
     }
 
     public GameDetails(ArrayList<String> usernames, String adminUsername, int gameId) {
@@ -51,6 +52,19 @@ public class GameDetails {
                 connection.sendMessage(update);
             }
         }
+    }
+
+    public void saveAndExit() {
+        ConnectionMessage command = new ConnectionMessage(new  HashMap<>() {{
+            put("command", "exit_game");
+        }}, ConnectionMessage.Type.command);
+        for(ClientConnection connection : connections) {
+            if(connection.isAlive() && !connection.isEnded()) {
+                connection.sendMessage(command);
+            }
+        }
+
+        GameDAO.updateGame(this);
     }
 
     public PlayerDetails getPlayerByUsername(String username) {

@@ -51,6 +51,7 @@ public class ServerMain {
     public static void main(String[] args) {
 //        initPhi();
         UserDAO.initializeDatabase();
+        GameDAO.initializeDatabase();
         try {
             Scanner sc = new Scanner(System.in);
             System.out.print("Enter IP Address: ");

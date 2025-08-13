@@ -68,13 +68,13 @@ public class ServerConnectionController {
         data.isInGame = true;
         User[] users = new User[usernames.size()];
         for (int i = 0; i < usernames.size(); i++) {
-            users[i] = new User(usernames.get(i),"","","","");
+            users[i] = new User(usernames.get(i), "", "", "", "");
 //            TODO: set avatars
             users[i].setAvatarPath((avatarPaths.get(i)));
         }
         GameController.getInstance().createGameWithUsersAndMaps(users, mapId);
 
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
         scheduler.scheduleAtFixedRate(() -> {
             if (data.isInGame) {
                 data.updateAndSendSelf();
@@ -82,6 +82,21 @@ public class ServerConnectionController {
                 scheduler.shutdown();
             }
         }, 3, 1, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(() -> {
+            if (data.isInGame) {
+                try {
+                    String data = FileUtils.serializeToBase64(App.getInstance().getCurrentGame());
+                    ConnectionMessage update = new ConnectionMessage(new HashMap<>() {{
+                        put("update", "update_game_data");
+                        put("data", data);
+                    }}, ConnectionMessage.Type.update);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            } else {
+                scheduler.shutdown();
+            }
+        }, 5, 7, TimeUnit.SECONDS);
 
     }
 
@@ -97,18 +112,18 @@ public class ServerConnectionController {
     public void updateGame(ConnectionMessage message) {
         GameDetails oldGame = data.gameDetails;
         GameDetails newGame = ConnectionMessage.gameDetailsFromJson(message.getFromBody("json"));
-        for(String member : oldGame.getPlayers().keySet()) {
+        for (String member : oldGame.getPlayers().keySet()) {
             Reaction oldReaction = oldGame.getPlayerByUsername(member).reaction;
-            if(oldReaction == null) {
+            if (oldReaction == null) {
                 oldReaction = new Reaction("");
                 System.out.println("brrrr");
             }
             Reaction newReaction = newGame.getPlayerByUsername(member).reaction;
-            if(newReaction == null) {
+            if (newReaction == null) {
                 newReaction = new Reaction("");
                 System.out.println("brrrr");
             }
-            if(!oldReaction.text.equals(newReaction.text) && !newReaction.text.isEmpty()) {
+            if (!oldReaction.text.equals(newReaction.text) && !newReaction.text.isEmpty()) {
                 newReaction.time = System.currentTimeMillis();
             }
         }
@@ -125,14 +140,13 @@ public class ServerConnectionController {
         int count = message.getIntFromBody("count");
 
         for (Store store1 : App.getInstance().getCurrentGame().getMap().getNpcVillage().getStores()) {
-            if(store1.getName().equals(store)) {
+            if (store1.getName().equals(store)) {
                 StoreItem storeItem = store1.getItemByName(item);
-                if(storeItem != null) {
+                if (storeItem != null) {
                     storeItem.removeDailyLimit(count);
-                }
-                else {
+                } else {
                     StoreRecipes storeRecipe = store1.getRecipeByName(item);
-                    if(storeRecipe != null) {
+                    if (storeRecipe != null) {
                         storeRecipe.removeDailyLimit(count);
                     }
                 }
@@ -152,8 +166,8 @@ public class ServerConnectionController {
         File source = new File(sourcePath);
         String targetDirPath = "received_musics/" + App.getInstance().getCurrentUser().getUsername();
         File targetDir = new File(targetDirPath);
-        if(!targetDir.exists()) targetDir.mkdirs();
-        if(!source.exists()){
+        if (!targetDir.exists()) targetDir.mkdirs();
+        if (!source.exists()) {
             System.err.println("Error: File (" + name + ") does not exist");
             return;
         }
@@ -175,7 +189,8 @@ public class ServerConnectionController {
                 data.currentMusic.play();
             } catch (Exception e) {
                 System.err.println("Error playing music: " + e.getMessage());
-            }} catch (Exception e) {
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -185,6 +200,6 @@ public class ServerConnectionController {
         String item = message.getFromBody("item");
         Item item1 = Item.getItemByName(item);
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
-        player.getBackPack().addItem(item1,1);
+        player.getBackPack().addItem(item1, 1);
     }
 }

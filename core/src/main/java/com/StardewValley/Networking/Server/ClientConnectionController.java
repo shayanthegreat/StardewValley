@@ -1,5 +1,6 @@
 package com.StardewValley.Networking.Server;
 
+import com.StardewValley.Models.Game;
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Client.ServerConnection;
 import com.StardewValley.Networking.Common.*;
@@ -200,7 +201,7 @@ public class ClientConnectionController {
         }
 
         GameDetails gameDetails = new GameDetails(lobby.getMembers(), lobby.getAdminUsername());
-        ServerMain.addGame(gameDetails);
+        GameDAO.insertGame(gameDetails);
         String json = ConnectionMessage.gameDetailsToJson(gameDetails);
 
         System.out.println(lobby.getMembers());
