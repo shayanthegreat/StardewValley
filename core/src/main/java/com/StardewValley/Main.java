@@ -2,12 +2,9 @@ package com.StardewValley;
 
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Networking.Client.ClientController;
-import com.StardewValley.Views.FishingMiniGameView;
-import com.StardewValley.Views.MainMenu;
-import com.StardewValley.Views.ProfileMenu;
+import com.StardewValley.Networking.Client.ClientData;
+import com.StardewValley.Views.*;
 import com.StardewValley.Models.Time;
-import com.StardewValley.Views.GameMenu;
-import com.StardewValley.Views.GameView;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -49,16 +46,18 @@ public class Main extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        this.setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));//new GameMenu(GameAssetManager.getInstance().getSkin()));//new RegistrationMenu(GameAssetManager.getInstance().getSkin()));
+        this.setScreen(new RegistrationMenu(GameAssetManager.getInstance().getSkin()));//new MainMenu(GameAssetManager.getInstance().getSkin()));//new GameMenu(GameAssetManager.getInstance().getSkin()));//new RegistrationMenu(GameAssetManager.getInstance().getSkin()));
     }
 
     @Override
     public void render() {
         super.render();
+
     }
 
     @Override
     public void dispose() {
+        ClientController.getInstance().leaveLobby();
         batch.dispose();
     }
 

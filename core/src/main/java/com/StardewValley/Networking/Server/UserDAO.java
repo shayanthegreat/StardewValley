@@ -96,4 +96,71 @@ public class UserDAO {
         }
         return null;
     }
+
+    public static void removeLastInsertedUser() {
+        String getLastUserSql = "SELECT rowid, username FROM users ORDER BY rowid DESC LIMIT 1";
+        String deleteSql = "DELETE FROM users WHERE username = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement getLastUserStmt = conn.prepareStatement(getLastUserSql);
+             PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
+
+            ResultSet rs = getLastUserStmt.executeQuery();
+            if (rs.next()) {
+                String username = rs.getString("username");
+
+                deleteStmt.setString(1, username);
+                int affected = deleteStmt.executeUpdate();
+
+                if (affected > 0) {
+                    System.out.println("Last inserted user '" + username + "' deleted successfully.");
+                } else {
+                    System.out.println("No user was deleted.");
+                }
+            } else {
+                System.out.println("No users found in the database.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static User getLastUser() {
+        String sql = "SELECT * FROM users ORDER BY rowid DESC LIMIT 1";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            Type type = new TypeToken<ArrayList<Integer>>(){}.getType();
+
+            if (rs.next()) {
+                User user = new User(
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("nickname"),
+                    rs.getString("email"),
+                    rs.getString("gender"),
+                    rs.getString("answer"),
+                    gson.fromJson(rs.getString("games_money"), type),
+                    rs.getString("avatar_path")
+                );
+
+                String questionName = rs.getString("question");
+                if (questionName != null) {
+                    user.setQuestion(Question.getQuestionByName(questionName));
+                }
+
+                return user;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
 }

@@ -1,5 +1,8 @@
 package com.StardewValley.Networking.Common;
 
+import com.StardewValley.Models.App;
+import com.StardewValley.Models.Player;
+
 public class PlayerDetails {
     public String username;
     public int posX;
@@ -24,6 +27,9 @@ public class PlayerDetails {
     public PlayerDetails() {}
 
     public void updateInfo() {
-//        TODO: update needed info from game
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        posX = player.getPosition().x;
+        posY = player.getPosition().y;
+        canSleep = (player.isInHouse() || player.isFainted());
     }
 }

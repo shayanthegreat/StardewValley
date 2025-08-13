@@ -1,10 +1,13 @@
 package com.StardewValley.Controllers;
 
+import com.StardewValley.Main;
 import com.StardewValley.Models.Animal.Animal;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Game;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.Player;
+import com.StardewValley.Networking.Client.ClientData;
+import com.StardewValley.Networking.Common.PlayerDetails;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,6 +24,9 @@ public class PlayerController {
     private long pettingStartTime = 0;
     private boolean petting = false;
     private boolean feeding = false;
+    private long lastReactionTime = 0;
+    private boolean hasReaction = false;
+
     private boolean eating = false;
 
     public void update(){
@@ -29,6 +35,7 @@ public class PlayerController {
         feeding();
         eating();
         check();
+        reaction();
     }
 
 
@@ -50,6 +57,9 @@ public class PlayerController {
         else {
             player.setInHouse(false);
         }
+        if(ClientData.getInstance().selfDetails.reaction != null){
+            hasReaction = true;
+        }
     }
 
     public void movePlayer(){
@@ -57,52 +67,52 @@ public class PlayerController {
         Player player = game.getCurrentPlayer();
         if(petting)  return;
         if(goingUp && !goingLeft && !goingRight){
+            move(0,1);
             playerDirection = Direction.up;
             getAnimation(Direction.up);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
-            move(0,1);
         }
         else if(goingDown && !goingLeft && !goingRight){
+            move(0,-1);
             playerDirection = Direction.down;
             getAnimation(Direction.down);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
-            move(0,-1);
         }
         else if(goingLeft && !goingUp && !goingDown){
+            move(-1,0);
             playerDirection = Direction.left;
             getAnimation(Direction.left);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
-            move(-1,0);
         }
         else if(goingRight && !goingDown && !goingUp){
+            move(1,0);
             playerDirection = Direction.right;
             getAnimation(Direction.right);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
-            move(1,0);
         }
         else if(goingUp && goingLeft){
+            move(-1,1);
             playerDirection = Direction.up;
             getAnimation(Direction.upLeft);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
-            move(-1,1);
         }
         else if(goingUp && goingRight){
+            move(1,1);
             playerDirection = Direction.up;
             getAnimation(Direction.upRight);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
-            move(1,1);
         }
         else if(goingDown && goingLeft){
+            move(-1,-1);
             playerDirection = Direction.down;
             getAnimation(Direction.downLeft);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
-            move(-1,-1);
         }
         else if(goingDown && goingRight){
+            move(1,-1);
             playerDirection = Direction.right;
             getAnimation(Direction.downRight);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
-            move(1,-1);
         }
         else {
             animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().TiredAnimation(playerDirection);
@@ -119,6 +129,20 @@ public class PlayerController {
             }
             Camera.getInstance().print(player.getAvatarType().pettingAnimation(),player.getPosition().x,player.getPosition().y,1,1);
         }
+    }
+
+    private void reaction(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+
+        if(hasReaction){
+            if(TimeUtils.millis() - ClientData.getInstance().selfDetails.reaction.time > 5000){
+                hasReaction = false;
+                return;
+            }
+            Camera.getInstance().print(ClientData.getInstance().selfDetails.reaction.text,player.getPosition().x,player.getPosition().y+1);
+
+        }
+
     }
 
     private void feeding(){

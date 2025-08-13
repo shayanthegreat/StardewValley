@@ -24,12 +24,9 @@ public class ServerConnection extends Connection {
     @Override
     public boolean initialHandshake() {
         try {
-            socket.setSoTimeout(TIMEOUT);
-
-            dataInputStream.readUTF();
+            readFrame();
             sendMessage(controller.status());
 
-            socket.setSoTimeout(0);
             return true;
         } catch (Exception e) {
             return false;
@@ -37,9 +34,22 @@ public class ServerConnection extends Connection {
     }
 
     @Override
-    protected boolean handleMessage(ConnectionMessage message) {
+    protected synchronized boolean handleMessage(ConnectionMessage message) {
+        System.out.println(message.getBody());
         if (message.getType().equals(ConnectionMessage.Type.command)) {
-
+            if (message.getFromBody("command").equals("status")) {
+                sendMessage(controller.status());
+                return true;
+            }
+            if(message.getFromBody("command").equals("file_meta")) {
+                super.startFileReceiving(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("file_complete")) {
+                super.endFileReceiving();
+                controller.saveMusicFile(message);
+                return true;
+            }
         } else if (message.getType().equals(ConnectionMessage.Type.inform)) {
             if (message.getFromBody("information").equals("lobby_termination")) {
                 controller.lobbyTerminated(message);
@@ -84,5 +94,9 @@ public class ServerConnection extends Connection {
 
     public int getPort() {
         return port;
+    }
+
+    public ServerConnectionController getController() {
+        return controller;
     }
 }

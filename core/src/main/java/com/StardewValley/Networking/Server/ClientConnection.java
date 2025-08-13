@@ -49,8 +49,26 @@ public class ClientConnection extends Connection {
     }
 
     @Override
-    protected boolean handleMessage(ConnectionMessage message) {
+    protected synchronized boolean handleMessage(ConnectionMessage message) {
+        System.out.println(message.getBody());
         if (message.getType().equals(ConnectionMessage.Type.command)) {
+            if(message.getFromBody("command").equals("file_meta")) {
+                super.startFileReceiving(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("file_complete")) {
+                super.endFileReceiving();
+                controller.saveMusicFile(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("send_music_list")) {
+                controller.sendMusicList(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("send_music")) {
+                controller.sendMusic(message);
+                return true;
+            }
             if (message.getFromBody("command").equals("add_user")) {
                 controller.addUser(message);
                 return true;
@@ -87,6 +105,14 @@ public class ClientConnection extends Connection {
                 controller.storeItemBought(message);
                 return true;
             }
+            if(message.getFromBody("command").equals("remove_last_user")) {
+                controller.removeLastUser();
+                return true;
+            }
+            if(message.getFromBody("command").equals("get_last_user")) {
+                controller.getLastUser();
+                return true;
+            }
 
         }
         if (message.getType().equals(ConnectionMessage.Type.inform)) {
@@ -102,6 +128,7 @@ public class ClientConnection extends Connection {
         if(message.getType().equals(ConnectionMessage.Type.update)) {
             if(message.getFromBody("update").equals("update_self")) {
                 controller.updateSelf(message);
+                return true;
             }
         }
         return false;

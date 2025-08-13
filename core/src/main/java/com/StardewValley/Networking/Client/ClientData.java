@@ -4,6 +4,7 @@ import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
 import com.StardewValley.Networking.Common.PlayerDetails;
+import com.badlogic.gdx.audio.Music;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,18 +22,29 @@ public class ClientData {
         return instance;
     }
 
-    public ServerConnection connection;
-    public ArrayList<Lobby> lobbies;
+    public ServerConnection connection ;
+    public ArrayList<Lobby> lobbies = new ArrayList<>();
     public String lobbyCode;
-    public ArrayList<String> onlineUsers;
+    public ArrayList<String> onlineUsers = new ArrayList<>();
     public boolean isInGame = false;
-    public GameDetails gameDetails;
+    public GameDetails gameDetails = new GameDetails();
     public PlayerDetails selfDetails;
+    public HashMap<String, ArrayList<String>> musicList = new HashMap<>();
+    public Music currentMusic = null;
 //    send selfDetails to server, receive gameDetails from server
 
     public Lobby getLobby(String lobbyCode) {
         for (Lobby lobby : lobbies) {
             if (lobby.getCode().equals(lobbyCode)) {
+                return lobby;
+            }
+        }
+        return null;
+    }
+
+    public Lobby getLobbyByName(String lobbyName) {
+        for (Lobby lobby : lobbies) {
+            if (lobby.getName().equals(lobbyName)) {
                 return lobby;
             }
         }

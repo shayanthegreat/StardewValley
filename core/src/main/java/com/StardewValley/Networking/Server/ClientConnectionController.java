@@ -2,11 +2,15 @@ package com.StardewValley.Networking.Server;
 
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Client.ServerConnection;
-import com.StardewValley.Networking.Common.ConnectionMessage;
-import com.StardewValley.Networking.Common.GameDetails;
-import com.StardewValley.Networking.Common.Lobby;
-import com.StardewValley.Networking.Common.PlayerDetails;
+import com.StardewValley.Networking.Common.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -84,9 +88,11 @@ public class ClientConnectionController {
         }
         Lobby lobby = new Lobby(name, connection.getUsername(), isPrivate, password, isVisible);
         ServerMain.addLobby(lobby);
+        connection.setLobbyCode(lobby.getCode());
 
         response = new ConnectionMessage(new HashMap<>() {{
             put("response", "ok");
+            put("code", lobby.getCode());
         }}, ConnectionMessage.Type.response);
 
         connection.sendMessage(response);
@@ -171,8 +177,8 @@ public class ClientConnectionController {
             error = "you are not in a lobby";
         } else if (!lobby.getAdminUsername().equals(connection.getUsername())) {
             error = "you are not the admin of the lobby";
-        } else if (lobby.getMembers().size() <= 1) {
-            error = "there must be at least two members";
+//        } else if (lobby.getMembers().size() < 1) {
+//            error = "there must be at least two members";
         }
 
         ConnectionMessage response;
@@ -197,7 +203,13 @@ public class ClientConnectionController {
         ServerMain.addGame(gameDetails);
         String json = ConnectionMessage.gameDetailsToJson(gameDetails);
 
+        System.out.println(lobby.getMembers());
         ArrayList<ClientConnection> connections = new ArrayList<>();
+        ArrayList<String> avatarPaths = new ArrayList<>();
+        for(String member : lobby.getMembers()) {
+            User user = UserDAO.getUserByUsername(member);
+            avatarPaths.add(user.getAvatarPath());
+        }
         for (String member : lobby.getMembers()) {
             ClientConnection connection = ServerMain.getConnectionByUsername(member);
             connections.add(connection);
@@ -205,6 +217,7 @@ public class ClientConnectionController {
                 put("information", "start_game");
                 put("game_details", json);
                 put("usernames", lobby.getMembers());
+                put("avatar_paths", avatarPaths);
                 put("map_id", mapId);
             }}, ConnectionMessage.Type.inform);
 
@@ -228,6 +241,7 @@ public class ClientConnectionController {
     public void updateSelf(ConnectionMessage message) {
         String json = message.getFromBody("json");
         PlayerDetails newSelf = ConnectionMessage.playerDetailsFromJson(json);
+        newSelf.username = connection.getUsername();
         String username = newSelf.username;
         GameDetails game = connection.getGame();
         if(game.isRunning()){
@@ -259,6 +273,100 @@ public class ClientConnectionController {
                 continue;
             }
             conn.sendMessage(inform);
+        }
+    }
+
+    public void removeLastUser() {
+        UserDAO.removeLastInsertedUser();
+    }
+
+    public void getLastUser() {
+        User user = UserDAO.getLastUser();
+        ConnectionMessage response;
+        if (user == null) {
+            response = new ConnectionMessage(new HashMap<>() {{
+                put("response", "not_found");
+            }}, ConnectionMessage.Type.response);
+        } else {
+            response = new ConnectionMessage(new HashMap<>() {{
+                put("response", "ok");
+                put("user", ConnectionMessage.userToJson(user));
+            }}, ConnectionMessage.Type.response);
+        }
+        connection.sendMessage(response);
+    }
+
+    public void saveMusicFile(ConnectionMessage message) {
+        String name = message.getFromBody("filename");
+        String sourcePath = "temp_receives/" + name;
+        File source = new File(sourcePath);
+        String targetDirPath = "received_musics/" + connection.getUsername();
+        File targetDir = new File(targetDirPath);
+        if(!targetDir.exists()) targetDir.mkdirs();
+        if(!source.exists()){
+            System.err.println("Error: File (" + name + ") does not exist");
+            return;
+        }
+
+        try {
+            Path sourceFile = source.toPath();
+            Path targetFile = targetDir.toPath().resolve(source.getName());
+
+            Files.move(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void sendMusicList(ConnectionMessage message) {
+        HashMap<String, ArrayList<String>> result = new HashMap<>();
+        File folder = new File("received_musics");
+        if(folder.exists() && folder.isDirectory()) {
+            File[] dirs = folder.listFiles(File::isDirectory);
+            if (dirs != null) {
+                for (File dir : dirs) {
+                    String name = dir.getName();
+                    ArrayList<String> filenames = new ArrayList<>();
+                    File[] items = folder.listFiles();
+                    if (items != null) {
+                        for (File item : items) {
+                            if (item.isFile()) {
+                                filenames.add(item.getName());
+                            }
+                        }
+                    }
+                    result.put(name, filenames);
+                }
+            }
+        }
+        ConnectionMessage response = new ConnectionMessage(new HashMap<>(){{
+            put("response", "ok");
+            put("music_list", result);
+        }},  ConnectionMessage.Type.response);
+        connection.sendMessage(response);
+    }
+
+    public void sendMusic(ConnectionMessage message){
+        String name = message.getFromBody("filename");
+        String username =  message.getFromBody("username");
+        File file =  new File("received_musics/" + username +  "/" + name);
+        if(!file.exists() || !file.isFile()) {
+            ConnectionMessage response = new ConnectionMessage(new HashMap<>() {{
+                put("response", "not_found");
+            }}, ConnectionMessage.Type.response);
+            connection.sendMessage(response);
+            return;
+        }
+        ConnectionMessage response = new ConnectionMessage(new HashMap<>() {{
+            put("response", "ok");
+        }}, ConnectionMessage.Type.response);
+        connection.sendMessage(response);
+
+        try{
+            connection.sendFile(file);
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 }

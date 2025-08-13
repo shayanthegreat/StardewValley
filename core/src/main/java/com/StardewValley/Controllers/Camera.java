@@ -1,11 +1,13 @@
 package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
+import com.StardewValley.Models.GameAssetManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
@@ -18,6 +20,7 @@ public class Camera {
     private SpriteBatch batch;
     private float stateTime = 0f;
     private float zoom = 1f;
+    private BitmapFont font = new BitmapFont();
 
     public static final float TILE_SIZE = 32f;
 
@@ -100,6 +103,25 @@ public class Camera {
             batch.draw(frame, pixelX, pixelY, width * TILE_SIZE, height * TILE_SIZE);
         }
     }
+
+    public void print(String text, int tileX, int tileY) {
+        float pixelX = tileX * TILE_SIZE;
+        float pixelY = tileY * TILE_SIZE;
+
+        Rectangle view = new Rectangle(
+            camera.position.x - camera.viewportWidth / 2,
+            camera.position.y - camera.viewportHeight / 2,
+            camera.viewportWidth,
+            camera.viewportHeight
+        );
+
+        Rectangle tileRect = new Rectangle(pixelX, pixelY, TILE_SIZE, TILE_SIZE);
+
+        if (view.overlaps(tileRect)) {
+            font.draw(batch, GameAssetManager.getInstance().getEmojiSupport().FilterEmojis(text), pixelX, pixelY + TILE_SIZE);
+        }
+    }
+
 
     public OrthographicCamera getCamera() {
         return camera;

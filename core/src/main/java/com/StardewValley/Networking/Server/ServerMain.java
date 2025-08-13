@@ -4,7 +4,9 @@ import com.StardewValley.Networking.Common.ConnectionMessage;
 import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -25,7 +27,29 @@ public class ServerMain {
     private static ArrayList<Lobby> lobbies = new ArrayList<>();
     private static ArrayList<GameDetails> games = new ArrayList<>();
 
+    private static void initPhi() {
+        try {
+            ProcessBuilder pb = new ProcessBuilder(
+                "ollama", "run", "phi", "Hello from Java"
+            );
+            pb.redirectErrorStream(true);
+            Process process = pb.start();
+
+            try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args) {
+//        initPhi();
         UserDAO.initializeDatabase();
         try {
             Scanner sc = new Scanner(System.in);
@@ -47,10 +71,15 @@ public class ServerMain {
             while (it.hasNext()) {
                 ClientConnection connection = it.next();
                 if (connection.refreshStatus()) {
+                    System.out.println(connection.getUsername() + " has refreshed");
                     connection.setLastRefresh(System.currentTimeMillis());
-                } else if (System.currentTimeMillis() - connection.getLastRefresh() > 2 * 60 * 1000) {
+                } else if (System.currentTimeMillis() - connection.getLastRefresh() > 30 * 1000 || !connection.isAlive()) {
+                    System.out.println("connection ended: " + connection.getUsername());
                     connection.end();
                     continue;
+                }
+                if (!connection.getUsername().isEmpty()) {
+                    System.out.println(connection.getUsername() + ":::::");
                 }
                 if (!connection.getUsername().isEmpty() && !connection.isInGame()) {
                     String info = connection.getUsername();
@@ -68,9 +97,10 @@ public class ServerMain {
             ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
                 put("information", "online_users");
                 put("online_users", onlineUsers);
-            }}, ConnectionMessage.Type.response);
+            }}, ConnectionMessage.Type.inform);
 
             for (ClientConnection connection : onlineConnections) {
+                System.out.println(connection.getUsername());
                 connection.sendMessage(message);
             }
         };
@@ -86,7 +116,7 @@ public class ServerMain {
         };
 
         scheduler.scheduleAtFixedRate(refreshStatus, 10, 3, TimeUnit.SECONDS);
-        scheduler.scheduleAtFixedRate(refreshStatus, 10, 3, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(checkLobbies, 10, 3, TimeUnit.SECONDS);
 
 
         try {
@@ -207,8 +237,8 @@ public class ServerMain {
     }
 
     public static GameDetails getGameById(int id) {
-        for(GameDetails game : games) {
-            if(game.getGameId() == id) {
+        for (GameDetails game : games) {
+            if (game.getGameId() == id) {
                 return game;
             }
         }
