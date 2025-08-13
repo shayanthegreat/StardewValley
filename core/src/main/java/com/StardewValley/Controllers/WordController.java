@@ -242,7 +242,6 @@ public class WordController {
             }
             int x = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posX;
             int y = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posY;
-//            Texture texture1 = new Texture(p.getUser().getAvatarPath());
             camera.print(p.getAvatarType().walkingAnimation(Direction.center), x,y,1,1);
         }
 

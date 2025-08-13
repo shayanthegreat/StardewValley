@@ -184,7 +184,7 @@ public class ServerConnectionController {
         String sender = message.getFromBody("sender");
         String item = message.getFromBody("item");
         Item item1 = Item.getItemByName(item);
-        Player player = App.getInstance().getCurrentUser().getPlayer();
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         player.getBackPack().addItem(item1,1);
     }
 }

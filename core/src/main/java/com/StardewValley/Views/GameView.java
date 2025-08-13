@@ -110,13 +110,11 @@ public class GameView implements Screen , InputProcessor {
         else if(i == Input.Keys.C){
             cookingPopUp.show();
         }
-        else if(i == Input.Keys.Q){
-//            fridgePopUp.show();
-        }
+
         else if(i == Input.Keys.B){
             craftingPopUp.show();
         }
-        else if(i == Input.Keys.X){
+        else if(i == Input.Keys.Q){
             GameController.getInstance().buyAnimal(AnimalType.cow,"abbas");
             GameController.getInstance().buyAnimal(AnimalType.pig,"ahmad");
             GameController.getInstance().buyAnimal(AnimalType.goat,"asd");
