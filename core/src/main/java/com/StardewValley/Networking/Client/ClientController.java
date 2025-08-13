@@ -263,6 +263,14 @@ public class ClientController {
         data.musicList = response.getFromBody("music_list");
     }
 
+    public void uploadMusic(File file) {
+        try{
+            connection.sendFile(file);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void playMusic(String username, String filename) {
         File file = new File("temp_receives/" + username + "~" + filename);
         if (file.exists() && file.isFile()) {
