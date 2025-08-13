@@ -59,7 +59,7 @@ public class ServerConnectionController {
         for (int i = 0; i < usernames.size(); i++) {
             users[i] = new User(usernames.get(i),"","","","");
 //            TODO: set avatars
-            users[i].setAvatarTexture(GameAssetManager.getInstance().SAM_TEXTURE);
+            users[i].setAvatarPath((avatarPaths.get(i)));
         }
         GameController.getInstance().createGameWithUsersAndMaps(users, mapId);
 

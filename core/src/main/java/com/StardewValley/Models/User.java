@@ -160,8 +160,8 @@ public class User implements Serializable {
     public void setLobby(Lobby lobby) {
         this.lobby = lobby;
     }
-    public void setAvatarTexture(Texture avatarTexture) {
-        this.avatarTexture = avatarTexture;
+    public void setAvatarPath(String path) {
+        this.avatarPath = path;
     }
 
     public Texture getAvatarTexture() {

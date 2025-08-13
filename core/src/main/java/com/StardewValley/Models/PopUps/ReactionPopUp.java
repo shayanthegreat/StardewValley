@@ -1,5 +1,6 @@
 package com.StardewValley.Models.PopUps;
 
+import com.StardewValley.Models.App;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Networking.Client.ClientController;
 import com.StardewValley.Networking.Common.Reaction;
@@ -64,6 +65,7 @@ public class ReactionPopUp extends PopUpMenu {
             public void clicked(InputEvent event, float x, float y) {
                 if(checkInput(inputField.getText()))
                     ClientController.getInstance().setReaction(inputField.getText());
+
             }
         });
         mainTable.add(buttons[4]).width(200).row();
@@ -103,7 +105,7 @@ public class ReactionPopUp extends PopUpMenu {
             public void clicked(InputEvent event, float x, float y) {
                 hide();
                 PopUpManager.getInstance(stage).hide();
-                GameView.isTyping = false;
+                App.getInstance().getCurrentGame().getView().isTyping = false;
             }
         });
         return closeTab;
@@ -116,6 +118,7 @@ public class ReactionPopUp extends PopUpMenu {
         if (matcher.matches()) {
             String reaction = matcher.group("reaction");
             Reaction.addDefault(reaction);
+            ClientController.getInstance().setDefaultReaction(reaction);
             return false;
         }
         return true;

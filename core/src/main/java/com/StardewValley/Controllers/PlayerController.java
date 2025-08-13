@@ -8,6 +8,7 @@ import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.Player;
 import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Networking.Common.PlayerDetails;
+import com.StardewValley.Views.GameView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -144,7 +145,7 @@ public class PlayerController {
                 hasReaction = false;
                 return;
             }
-            Camera.getInstance().print(ClientData.getInstance().selfDetails.reaction.text,player.getPosition().x,player.getPosition().y+1);
+            Camera.getInstance().print(ClientData.getInstance().selfDetails.reaction.text,player.getPosition().x,player.getPosition().y+1, GameView.getStage());
 
         }
 

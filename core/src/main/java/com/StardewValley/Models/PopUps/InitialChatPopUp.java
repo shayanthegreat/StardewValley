@@ -25,6 +25,8 @@ public class InitialChatPopUp extends PopUpMenu {
         createPopupMenu();
     }
 
+    private ChatScreen openedChat;
+
 
     protected void createPopupMenu() {
         popupWindow = new Window("", skin);
@@ -46,25 +48,30 @@ public class InitialChatPopUp extends PopUpMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ChatScreen chatScreen = new ChatScreen(GameView.getStage(),"all");
+                openedChat = chatScreen;
                 chatScreen.show();
             }
         });
         mainTable.add(allButton).row();
 
 
-        Set<String> playerNames = ClientData.getInstance().gameDetails.getPlayers().keySet();
+        Set<String> originalNames = ClientData.getInstance().gameDetails.getPlayers().keySet();
+        List<String> playerNames = new ArrayList<>(originalNames);
+        playerNames.remove(ClientData.getInstance().selfDetails.username);
 
         for (String playerName : playerNames) {
             TextButton playerButton = new TextButton(playerName, skin);
             playerButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    ChatScreen chatScreen = new ChatScreen(GameView.getStage(),playerName);
+                    ChatScreen chatScreen = new ChatScreen(GameView.getStage(), playerName);
+                    openedChat = chatScreen;
                     chatScreen.show();
                 }
             });
             mainTable.add(playerButton).row();
         }
+
 
         // Close tab
         tabs.clear();
@@ -105,5 +112,9 @@ public class InitialChatPopUp extends PopUpMenu {
             }
         });
         return closeTab;
+    }
+
+    public ChatScreen getOpenedChat() {
+        return openedChat;
     }
 }

@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Camera {
@@ -103,7 +105,7 @@ public class Camera {
         }
     }
 
-    public void print(String text, int tileX, int tileY) {
+    public void print(String text, int tileX, int tileY, Stage stage) {
         float pixelX = tileX * TILE_SIZE;
         float pixelY = tileY * TILE_SIZE;
 
@@ -117,9 +119,19 @@ public class Camera {
         Rectangle tileRect = new Rectangle(pixelX, pixelY, TILE_SIZE, TILE_SIZE);
 
         if (view.overlaps(tileRect)) {
-            font.draw(batch, GameAssetManager.getInstance().getEmojiSupport().FilterEmojis(text), pixelX, pixelY + TILE_SIZE);
+            Label label = new Label(
+                GameAssetManager.getInstance().getEmojiSupport().FilterEmojis(text),
+                GameAssetManager.getInstance().getSkin()
+            );
+
+            label.setPosition(pixelX, pixelY + TILE_SIZE);
+
+            label.setWrap(true);
+
+            stage.addActor(label);
         }
     }
+
 
 
     public OrthographicCamera getCamera() {

@@ -58,7 +58,7 @@ public class RegistrationController implements UserInfoController , Controller{
             String randomPassword = generateRandomPassword();
             String codedRandomPassword = sha256(randomPassword);
             User newUser = new User(username, codedRandomPassword, nickName, email, gender);
-            ClientController.getInstance().addUserToDB(newUser);
+            App.getInstance().setRawUser(newUser);
             return new RegistrationMessage(RegistrationCommand.askForPassword, "This is a random password: " + randomPassword + "\ndo you want to set this as your password?");
         }
 
@@ -91,7 +91,7 @@ public class RegistrationController implements UserInfoController , Controller{
         }
 //        String codedPassword = sha256(password);
         User newUser = new User(username, password, nickName, email, gender);
-        ClientController.getInstance().addUserToDB(newUser);
+        App.getInstance().setRawUser(newUser);
         return new RegistrationMessage(RegistrationCommand.askQuestion, "You are successfully registered");
 
     }
@@ -129,7 +129,7 @@ public class RegistrationController implements UserInfoController , Controller{
             return new RegistrationMessage(null, "You are successfully registered");
         } else {
             App app = App.getInstance();
-            ClientController.getInstance().removeLastUser();
+            App.getInstance().setRawUser(null);
             return new RegistrationMessage(RegistrationCommand.askForPassword, "Ok you can try again");
         }
     }
@@ -142,10 +142,11 @@ public class RegistrationController implements UserInfoController , Controller{
     public RegistrationMessage pickQuestion(int id, String answer) {
         App app = App.getInstance();
         Question question = Question.getQuestion(id);
-        User finalUser = ClientController.getInstance().getLastUser();
+        User finalUser = App.getInstance().getRawUser();
         finalUser.setQuestion(question);
-        ClientController.getInstance().removeLastUser();
+        finalUser.setAnswer(answer);
         ClientController.getInstance().addUserToDB(finalUser);
+        App.getInstance().setRawUser(null);
         return new RegistrationMessage(null, "Your question and answer successfully saved");
     }
 

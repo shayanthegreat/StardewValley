@@ -24,6 +24,7 @@ public class App implements Serializable {
     }
 
 //    private final ArrayList<User> users = new ArrayList<>();
+    private User rawUser;
     private final ArrayList<Game> games = new ArrayList<>();
     private Menu currentMenu = Menu.RegistrationMenu;
     private User currentUser = new User("ali","Ali@@13","ali","adsd","sdasasd");
@@ -141,4 +142,11 @@ public class App implements Serializable {
         instance = null;
     }
 
+    public void setRawUser(User rawUser) {
+        this.rawUser = rawUser;
+    }
+
+    public User getRawUser() {
+        return rawUser;
+    }
 }

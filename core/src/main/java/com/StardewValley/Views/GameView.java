@@ -45,7 +45,7 @@ public class GameView implements Screen , InputProcessor {
     private FridgePopUp fridgePopUp;
     private CraftingPopUp craftingPopUp;
     private TextButton reaction;
-    public static boolean isTyping = false;
+    public boolean isTyping = false;
     private TextButton scoreBoard;
     private TextButton chat;
     private InitialChatPopUp initialChatPopUp;
@@ -160,6 +160,7 @@ public class GameView implements Screen , InputProcessor {
 
     @Override
     public void show() {
+        App.getInstance().getCurrentGame().setView(this);
         stage = new Stage();
         reaction = new TextButton("React", GameAssetManager.getInstance().getSkin());
         reaction.setSize(120, 50);
@@ -325,6 +326,10 @@ public class GameView implements Screen , InputProcessor {
         GameController.getInstance().update(Gdx.graphics.getDeltaTime());
         AnimalController.getInstance().update();
         NPCController.getInstance().update();
+        if(initialChatPopUp.getOpenedChat() != null){
+            initialChatPopUp.getOpenedChat().refreshMessages();
+            initialChatPopUp.getOpenedChat().updateWindowPosition();
+        }
 
         LightningEffect lightning = GameController.getInstance().getLightningEffect();
         if (lightning != null) {
@@ -396,5 +401,9 @@ public class GameView implements Screen , InputProcessor {
 
     public static Stage getStage() {
         return stage;
+    }
+
+    public InitialChatPopUp getChatPopUp() {
+        return initialChatPopUp;
     }
 }

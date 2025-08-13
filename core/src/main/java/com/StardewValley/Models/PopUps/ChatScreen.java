@@ -1,11 +1,13 @@
 package com.StardewValley.Models.PopUps;
 
+import com.StardewValley.Models.App;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Networking.Client.ClientController;
 import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Networking.Common.ChatMessage;
 import com.StardewValley.Views.GameView;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -78,28 +80,32 @@ public class ChatScreen extends PopUpMenu {
         refreshMessages();
     }
 
-    private void refreshMessages() {
+    public void refreshMessages() {
         messagesTable.clear();
-        ArrayList<ChatMessage> messages = ClientData.getInstance()
-            .gameDetails.getChat()
-            .getChats(ClientData.getInstance().selfDetails.username, otherUsername);
 
-        if (messages != null) {
-            for (ChatMessage msg : messages) {
-                Label label = new Label(msg.sender + ": " + msg.text, skin);
-//                Tagging
-                if(msg.text.contains(ClientData.getInstance().selfDetails.username)) {
-                    label.setColor(Color.RED);
-                }
-                label.setWrap(true);
+        String self = ClientData.getInstance().selfDetails.username;
+
+        ArrayList<ChatMessage> messages = new ArrayList<>();
+        messages.addAll(ClientData.getInstance().gameDetails.getChat().getChats(self, otherUsername));
+
+
+        for (ChatMessage msg : messages) {
+            Label label = new Label(msg.sender + ": " + msg.text, skin);
+
+            if (msg.text.contains(self)) {
+                label.setColor(Color.RED);
+            } else {
                 label.setColor(Color.BLACK);
-                messagesTable.add(label).width(280).left().row();
             }
+
+            label.setWrap(true);
+            messagesTable.add(label).width(280).left().row();
         }
     }
 
+
     @Override
-    protected void updateWindowPosition() {
+    public void updateWindowPosition() {
         float x = Gdx.graphics.getWidth() / 2f - popupWindow.getWidth() / 2f;
         float y = Gdx.graphics.getHeight() / 2f - popupWindow.getHeight() / 2f;
         popupWindow.setPosition(x, y);
@@ -112,6 +118,7 @@ public class ChatScreen extends PopUpMenu {
         super.show();
     }
 
+
     Image createCloseTabImage(Texture texture) {
         Image closeTab = new Image(texture);
         closeTab.addListener(new ClickListener() {
@@ -119,7 +126,6 @@ public class ChatScreen extends PopUpMenu {
             public void clicked(InputEvent event, float x, float y) {
                 hide();
                 PopUpManager.getInstance(stage).hide();
-                GameView.isTyping = false;
             }
         });
         return closeTab;

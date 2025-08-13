@@ -3,6 +3,7 @@ package com.StardewValley.Models.PopUps;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Communication.FriendShip;
 import com.StardewValley.Models.GameAssetManager;
+import com.StardewValley.Networking.Client.ClientController;
 import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Views.GameView;
 import com.badlogic.gdx.Gdx;
@@ -82,8 +83,8 @@ public class FriendshipPopUp extends PopUpMenu {
                 giftButton.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        // TODO: Implement gifting logic for player "username"
-                        System.out.println("Gift button clicked for " + username);
+                        BackPackPopUp backPackPopUp = new BackPackPopUp(stage,username);
+                        backPackPopUp.show();
                     }
                 });
                 friendshipsTable.add(giftButton).width(100).right();

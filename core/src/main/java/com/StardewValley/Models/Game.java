@@ -10,6 +10,7 @@ import com.StardewValley.Models.Enums.Weather;
 import com.StardewValley.Models.Farming.Plant;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.Store.Store;
+import com.StardewValley.Views.GameView;
 
 import java.io.Serializable;
 import java.sql.SQLTransactionRollbackException;
@@ -28,6 +29,8 @@ public class Game implements Serializable {
     public final static Time startingTime = new Time();
     private ArrayList<Store> stores = new ArrayList<>();
     private ArrayList<NPC> npcs = new ArrayList<>();
+    private GameView view;
+
     public Game(ArrayList<Player> players, Map map) {
         this.players = players;
         this.currentPlayer = players.getFirst();
@@ -287,5 +290,14 @@ public class Game implements Serializable {
                 }
             }
         }
+    }
+
+
+    public GameView getView() {
+        return view;
+    }
+
+    public void setView(GameView view) {
+        this.view = view;
     }
 }

@@ -27,6 +27,17 @@ public enum AvatarType {
 
     }
 
+    public static AvatarType getAvatarTypeByPath(String path) {
+        switch (path) {
+            case "Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Harvey.png":
+                return Harvey;
+            case "Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Sam.png":
+                return SAM;
+            default:
+                return ABIGAIL;
+        }
+    }
+
     public Animation walkingAnimation(Direction direction) {
         int x = 0;
         switch (direction) {

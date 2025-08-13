@@ -238,11 +238,12 @@ public class WordController {
         }
         for (Player p : App.getInstance().getCurrentGame().getPlayers()) {
             if(p.getUser().getUsername().equals(App.getInstance().getCurrentUser().getUsername())){
-                return;
+                continue;
             }
             int x = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posX;
             int y = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posY;
-            camera.print(GameAssetManager.getInstance().SAM_TEXTURE, x,y,1,1);
+//            Texture texture1 = new Texture(p.getUser().getAvatarPath());
+            camera.print(p.getAvatarType().walkingAnimation(Direction.center), x,y,1,1);
         }
 
     }

@@ -1,5 +1,6 @@
 package com.StardewValley.Models.PopUps;
 
+import com.StardewValley.Controllers.FriendShipController;
 import com.StardewValley.Controllers.HouseController;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.GameAssetManager;
@@ -19,10 +20,12 @@ import java.util.HashMap;
 public class BackPackPopUp extends PopUpMenu {
 
     private Table itemsTable;
+    private String receiver;
 
-    public BackPackPopUp(Stage stage) {
+    public BackPackPopUp(Stage stage, String receiver) {
         super(stage);
         createPopupMenu();
+        this.receiver = receiver;
     }
 
     protected void createPopupMenu() {
@@ -76,9 +79,7 @@ public class BackPackPopUp extends PopUpMenu {
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    HouseController.getInstance().refrigerator(item.getName(), true);
-                    hide();
-                    PopUpManager.getInstance(stage).hide();
+                    FriendShipController.getInstance().gifting(item,receiver);
                 }
             });
 

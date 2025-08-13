@@ -180,7 +180,7 @@ public class ClientController {
         }
         Reaction reaction = new Reaction(text, System.currentTimeMillis());
         data.selfDetails.reaction = reaction;
-//        data.gameDetails.getPlayerByUsername(App.getInstance().getCurrentUser().getUsername()).reaction = reaction;
+        data.gameDetails.getPlayerByUsername(App.getInstance().getCurrentUser().getUsername()).reaction = reaction;
         return true;
     }
 

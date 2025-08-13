@@ -87,6 +87,7 @@ public class InLobbyView implements Screen {
         updateMemberList();
 
         // Layout
+
         rootTable.add(new Label(currentLobby.getName() + "(" + currentLobby.getCode() + ")", skin)).padBottom(5).row();
         rootTable.add(new Label("Lobby Members:", skin)).left().top().padBottom(10).row();
         rootTable.add(memberTable).left().top().expandY().row();
@@ -118,8 +119,9 @@ public class InLobbyView implements Screen {
         stage.draw();
         updateMemberList();
         if(ClientData.getInstance().lobbyCode.isEmpty()){
-            Main.getInstance().getScreen().dispose();
+            Gdx.app.postRunnable(() -> {
             Main.getInstance().setScreen(new LobbyView());
+        });
         }
         if(isGameStarted){
             Main.getInstance().setScreen(new GameView());
