@@ -5,6 +5,7 @@ import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Networking.Client.ClientController;
 import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Networking.Common.Lobby;
+import com.StardewValley.Networking.Server.ClientConnection;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

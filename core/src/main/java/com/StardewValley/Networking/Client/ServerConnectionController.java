@@ -4,8 +4,14 @@ import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Models.*;
 import com.StardewValley.Networking.Common.*;
 import com.StardewValley.Views.InLobbyView;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -114,6 +120,46 @@ public class ServerConnectionController {
         int count = message.getIntFromBody("count");
 
 //        TODO: reduce the quantity of the item from the store
+    }
+
+    private String sourceOfMusic = "";
+
+    public void setSourceOfMusic(String sourceOfMusic) {
+        this.sourceOfMusic = sourceOfMusic;
+    }
+
+    public void saveMusicFile(ConnectionMessage message) {
+        String name = message.getFromBody("filename");
+        String sourcePath = "temp_receives/" + name;
+        File source = new File(sourcePath);
+        String targetDirPath = "received_musics/" + App.getInstance().getCurrentUser().getUsername();
+        File targetDir = new File(targetDirPath);
+        if(!targetDir.exists()) targetDir.mkdirs();
+        if(!source.exists()){
+            System.err.println("Error: File (" + name + ") does not exist");
+            return;
+        }
+
+        try {
+            Path sourceFile = source.toPath();
+            Path targetFile = targetDir.toPath().resolve(sourceOfMusic + "~" + source.getName());
+
+            Files.move(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
+            File file = targetFile.toFile();
+
+            if (data.currentMusic != null && data.currentMusic.isPlaying()) {
+                data.currentMusic.pause();
+            }
+
+            try {
+                FileHandle handle = Gdx.files.absolute(file.getAbsolutePath());
+                data.currentMusic = Gdx.audio.newMusic(handle);
+                data.currentMusic.play();
+            } catch (Exception e) {
+                System.err.println("Error playing music: " + e.getMessage());
+            }} catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addGift(ConnectionMessage message) {

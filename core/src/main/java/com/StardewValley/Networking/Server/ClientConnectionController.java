@@ -2,13 +2,15 @@ package com.StardewValley.Networking.Server;
 
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Client.ServerConnection;
-import com.StardewValley.Networking.Common.ConnectionMessage;
-import com.StardewValley.Networking.Common.GameDetails;
-import com.StardewValley.Networking.Common.Lobby;
-import com.StardewValley.Networking.Common.PlayerDetails;
+import com.StardewValley.Networking.Common.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -294,6 +296,57 @@ public class ClientConnectionController {
         connection.sendMessage(response);
     }
 
+    public void saveMusicFile(ConnectionMessage message) {
+        String name = message.getFromBody("filename");
+        String sourcePath = "temp_receives/" + name;
+        File source = new File(sourcePath);
+        String targetDirPath = "received_musics/" + connection.getUsername();
+        File targetDir = new File(targetDirPath);
+        if(!targetDir.exists()) targetDir.mkdirs();
+        if(!source.exists()){
+            System.err.println("Error: File (" + name + ") does not exist");
+            return;
+        }
+
+        try {
+            Path sourceFile = source.toPath();
+            Path targetFile = targetDir.toPath().resolve(source.getName());
+
+            Files.move(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void sendMusicList(ConnectionMessage message) {
+        HashMap<String, ArrayList<String>> result = new HashMap<>();
+        File folder = new File("received_musics");
+        if(folder.exists() && folder.isDirectory()) {
+            File[] dirs = folder.listFiles(File::isDirectory);
+            if (dirs != null) {
+                for (File dir : dirs) {
+                    String name = dir.getName();
+                    ArrayList<String> filenames = new ArrayList<>();
+                    File[] items = folder.listFiles();
+                    if (items != null) {
+                        for (File item : items) {
+                            if (item.isFile()) {
+                                filenames.add(item.getName());
+                            }
+                        }
+                    }
+                    result.put(name, filenames);
+                }
+            }
+        }
+        ConnectionMessage response = new ConnectionMessage(new HashMap<>(){{
+            put("response", "ok");
+            put("music_list", result);
+        }},  ConnectionMessage.Type.response);
+        connection.sendMessage(response);
+    }
+
     public void sendGift(ConnectionMessage message) {
         String item = message.getFromBody("item");
         String receiver = message.getFromBody("receiver");
@@ -309,6 +362,29 @@ public class ClientConnectionController {
             put("sender", sender);
         }}, ConnectionMessage.Type.inform);
         connection.sendMessage(inform);
+    }
+
+    public void sendMusic(ConnectionMessage message){
+        String name = message.getFromBody("filename");
+        String username =  message.getFromBody("username");
+        File file =  new File("received_musics/" + username +  "/" + name);
+        if(!file.exists() || !file.isFile()) {
+            ConnectionMessage response = new ConnectionMessage(new HashMap<>() {{
+                put("response", "not_found");
+            }}, ConnectionMessage.Type.response);
+            connection.sendMessage(response);
+            return;
+        }
+        ConnectionMessage response = new ConnectionMessage(new HashMap<>() {{
+            put("response", "ok");
+        }}, ConnectionMessage.Type.response);
+        connection.sendMessage(response);
+
+        try{
+            connection.sendFile(file);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
 

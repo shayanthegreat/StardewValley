@@ -24,7 +24,7 @@ public class ServerConnection extends Connection {
     @Override
     public boolean initialHandshake() {
         try {
-            readMessage();
+            readFrame();
             sendMessage(controller.status());
 
             return true;
@@ -39,6 +39,15 @@ public class ServerConnection extends Connection {
         if (message.getType().equals(ConnectionMessage.Type.command)) {
             if (message.getFromBody("command").equals("status")) {
                 sendMessage(controller.status());
+                return true;
+            }
+            if(message.getFromBody("command").equals("file_meta")) {
+                super.startFileReceiving(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("file_complete")) {
+                super.endFileReceiving();
+                controller.saveMusicFile(message);
                 return true;
             }
         } else if (message.getType().equals(ConnectionMessage.Type.inform)) {
@@ -88,5 +97,9 @@ public class ServerConnection extends Connection {
 
     public int getPort() {
         return port;
+    }
+
+    public ServerConnectionController getController() {
+        return controller;
     }
 }

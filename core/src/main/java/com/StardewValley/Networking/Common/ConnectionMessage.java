@@ -96,6 +96,9 @@ public class ConnectionMessage {
         return (int) ((double) ((Double) body.get(fieldName)));
     }
 
+    public long getLongFromBody(String fieldName) {
+        return ((Number) body.get(fieldName)).longValue();
+    }
 
     public HashMap<String, Object> getBody() {
         return body;
