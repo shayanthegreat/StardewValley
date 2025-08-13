@@ -593,12 +593,9 @@ public class GameController implements Controller {
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
         Position playerPos = currentPlayer.getPosition();
         Position playerPos2 = new Position(playerPos.x - 1, playerPos.y);
-        System.out.println("Position");
-        System.out.println(playerPos2.x + " " + playerPos2.y);
         for (Player player : App.getInstance().getCurrentGame().getPlayers()) {
             int x = ClientData.getInstance().gameDetails.getPlayerByUsername(player.getUser().getUsername()).posX;
             int y = ClientData.getInstance().gameDetails.getPlayerByUsername(player.getUser().getUsername()).posY;
-            System.out.println(x + " " + y);
             if(playerPos2.x == x && playerPos2.y == y){
                 PlayerController.getInstance().startHugging(player);
                 return;
