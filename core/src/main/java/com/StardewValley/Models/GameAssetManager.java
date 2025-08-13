@@ -13,8 +13,9 @@ import java.util.ArrayList;
 
 public class GameAssetManager {
     private static GameAssetManager gameAssetManager = new GameAssetManager();
+
     private GameAssetManager() {
-        emojiSupport= new EmojiSupport();
+        emojiSupport = new EmojiSupport();
         emojiSupport.Load(Gdx.files.internal("emojis25.atlas"));
         emojiSupport.AddEmojisToFont(skin.getFont("font"));
         emojiSupport.AddEmojisToFont(skin.getFont("button"));
@@ -23,12 +24,14 @@ public class GameAssetManager {
         emojiSupport.AddEmojisToFont(SKIN.getFont("button"));
         emojiSupport.AddEmojisToFont(SKIN.getFont("title"));
     }
+
     public static GameAssetManager getInstance() {
         if (gameAssetManager == null) {
             gameAssetManager = new GameAssetManager();
         }
         return gameAssetManager;
     }
+
     public final Texture CLOCK_ALL = new Texture("Clock/Clock_All.png");
     private EmojiSupport emojiSupport = new EmojiSupport();
     //    public final Skin SKIN = new Skin(Gdx.files.internal("skin/craftacular-ui.json"));
@@ -1733,9 +1736,11 @@ public class GameAssetManager {
     public final Texture NOTIFICATION = new Texture("Inventory/Notification.png");
     public final Texture NIGHT = new Texture("Night/night.jpg");
     public final Sprite NIGHT_SPRITE = new Sprite(NIGHT);
+
     {
         NIGHT_SPRITE.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
+
     public final Texture AMETHYST_NODE = new Texture("Node/Amethyst_Node.png");
     public final Texture AQUAMARINE_NODE = new Texture("Node/Aquamarine_Node.png");
     public final Texture BONE_NODE_1 = new Texture("Node/Bone_Node_1.png");
@@ -2461,19 +2466,20 @@ public class GameAssetManager {
     public Texture SAM = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/sprites/Sam.png");
 
     public Texture Harvey = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/sprites/Harvey.png");
+
     {
         for (int i = 0; i < 12; i++) {
             ClOCK_MANNERS[i] = new TextureRegion(CLOCK_ALL, 80 + i % 4 * 13, i / 4 * 9, 13, 9);
         }
     }
 
-    public Animation<TextureRegion> COW_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Cow White1.png")),new TextureRegion(new Texture("AnimalAnimations/Cow White2.png")),new TextureRegion(new Texture("AnimalAnimations/Cow White3.png")),new TextureRegion(new Texture("AnimalAnimations/Cow White4.png")));
+    public Animation<TextureRegion> COW_WALK = new Animation<>(0.2f, new TextureRegion(new Texture("AnimalAnimations/Cow White1.png")), new TextureRegion(new Texture("AnimalAnimations/Cow White2.png")), new TextureRegion(new Texture("AnimalAnimations/Cow White3.png")), new TextureRegion(new Texture("AnimalAnimations/Cow White4.png")));
 
-    public Animation<TextureRegion> GOAT_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Goat1.png")),new TextureRegion(new Texture("AnimalAnimations/Goat2.png")),new TextureRegion(new Texture("AnimalAnimations/Goat3.png")),new TextureRegion(new Texture("AnimalAnimations/Goat4.png")));
+    public Animation<TextureRegion> GOAT_WALK = new Animation<>(0.2f, new TextureRegion(new Texture("AnimalAnimations/Goat1.png")), new TextureRegion(new Texture("AnimalAnimations/Goat2.png")), new TextureRegion(new Texture("AnimalAnimations/Goat3.png")), new TextureRegion(new Texture("AnimalAnimations/Goat4.png")));
 
-    public Animation<TextureRegion> PIG_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Pig1.png")),new TextureRegion(new Texture("AnimalAnimations/Pig2.png")),new TextureRegion(new Texture("AnimalAnimations/Pig3.png")),new TextureRegion(new Texture("AnimalAnimations/Pig4.png")));
+    public Animation<TextureRegion> PIG_WALK = new Animation<>(0.2f, new TextureRegion(new Texture("AnimalAnimations/Pig1.png")), new TextureRegion(new Texture("AnimalAnimations/Pig2.png")), new TextureRegion(new Texture("AnimalAnimations/Pig3.png")), new TextureRegion(new Texture("AnimalAnimations/Pig4.png")));
 
-    public Animation<TextureRegion> SHEEP_WALK = new Animation<>(0.2f,new TextureRegion(new Texture("AnimalAnimations/Sheep1.png")),new TextureRegion(new Texture("AnimalAnimations/Sheep2.png")),new TextureRegion(new Texture("AnimalAnimations/Sheep3.png")),new TextureRegion(new Texture("AnimalAnimations/Sheep4.png")));
+    public Animation<TextureRegion> SHEEP_WALK = new Animation<>(0.2f, new TextureRegion(new Texture("AnimalAnimations/Sheep1.png")), new TextureRegion(new Texture("AnimalAnimations/Sheep2.png")), new TextureRegion(new Texture("AnimalAnimations/Sheep3.png")), new TextureRegion(new Texture("AnimalAnimations/Sheep4.png")));
 
     public Texture ABIGAIL_PORTRAIT = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Abigail.png");
 
@@ -2508,11 +2514,19 @@ public class GameAssetManager {
     public Texture DIALOG = new Texture("ChatGPT Image Jul 29, 2025, 04_38_08 PM.png");
 
 
+    public ArrayList<Texture> NPC_HOUSES = new ArrayList<>();
+
+    {
+        for (int i = 1; i <= 5; i++) {
+            NPC_HOUSES.add(new Texture("NPCHouse/NpcHouse" + i + ".png"));
+        }
+    }
+
     public Skin getSkin() {
         return skin;
     }
 
-    public EmojiSupport getEmojiSupport(){
+    public EmojiSupport getEmojiSupport() {
         return this.emojiSupport;
     }
 }

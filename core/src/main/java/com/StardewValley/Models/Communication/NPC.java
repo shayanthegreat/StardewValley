@@ -25,6 +25,7 @@ public class NPC extends TileObject implements Serializable {
     private NPCDialogue dialogue;
     private transient Texture texture; // transient: not serialized
     private Position position;
+    private final Position housePosition;
     private NPCQuest quest;
 
     // Store texture key for restoration after deserialization
@@ -76,7 +77,8 @@ public class NPC extends TileObject implements Serializable {
                 setTextureKey("LEAH");
             }
         }
-        restoreTexture(); // initialize texture immediately
+        restoreTexture();
+        housePosition = new Position(position.x, position.y - 1);
     }
 
     private void setTextureKey(String key) {
@@ -136,5 +138,11 @@ public class NPC extends TileObject implements Serializable {
 
     public Texture getTexture() { return texture; }
     public Position getPosition() { return position; }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public Position getHousePosition() { return housePosition; }
     public NPCQuest getQuest() { return quest; }
 }
