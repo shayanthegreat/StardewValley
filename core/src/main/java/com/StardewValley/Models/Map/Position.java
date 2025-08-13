@@ -39,4 +39,13 @@ public class Position implements Serializable {
     public String toString() {
         return x + " " + y;
     }
+
+    public static boolean isNear(Position positionA, Position positionB){
+        int dx = positionA.x - positionB.x;
+        int dy = positionA.y - positionB.y;
+        if(dx * dx + dy * dy <= 2){
+            return true;
+        }
+        return false;
+    }
 }

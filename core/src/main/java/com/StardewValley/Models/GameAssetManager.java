@@ -1,5 +1,6 @@
 package com.StardewValley.Models;
 
+import com.StardewValley.Views.EmojiSupport;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -10,6 +11,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class GameAssetManager {
     private static GameAssetManager gameAssetManager = new GameAssetManager();
+    private GameAssetManager() {
+        emojiSupport= new EmojiSupport();
+        emojiSupport.Load(Gdx.files.internal("emojis25.atlas"));
+        emojiSupport.AddEmojisToFont(skin.getFont("font"));
+        emojiSupport.AddEmojisToFont(skin.getFont("button"));
+        emojiSupport.AddEmojisToFont(skin.getFont("title"));
+        emojiSupport.AddEmojisToFont(SKIN.getFont("font"));
+        emojiSupport.AddEmojisToFont(SKIN.getFont("button"));
+        emojiSupport.AddEmojisToFont(SKIN.getFont("title"));
+    }
     public static GameAssetManager getInstance() {
         if (gameAssetManager == null) {
             gameAssetManager = new GameAssetManager();
@@ -17,7 +28,8 @@ public class GameAssetManager {
         return gameAssetManager;
     }
     public final Texture CLOCK_ALL = new Texture("Clock/Clock_All.png");
-//    public final Skin SKIN = new Skin(Gdx.files.internal("skin/craftacular-ui.json"));
+    private EmojiSupport emojiSupport = new EmojiSupport();
+    //    public final Skin SKIN = new Skin(Gdx.files.internal("skin/craftacular-ui.json"));
     public final BitmapFont MAIN_FONT = new BitmapFont();
     public final TextureRegion CLOCK_MAIN = new TextureRegion(CLOCK_ALL, 0, 0, 72, 59);
     public final TextureRegion CLOCK_ARROW = new TextureRegion(CLOCK_ALL, 72, 0, 8, 18);
@@ -41,7 +53,7 @@ public class GameAssetManager {
     public final Texture DELUXE_COOP = new Texture("Farm_Buildings/Deluxe_Coop.png");
     public final Texture WELL = new Texture("Farm_Buildings/Well.png");
     public final Texture SHIPPINGBIN = new Texture("Farm_Buildings/Shipping_Bin_Anim.png");
-//    public final Texture HOUSE = new Texture("Cottage/House_(tier_3).png");
+    //    public final Texture HOUSE = new Texture("Cottage/House_(tier_3).png");
     public final Texture COTTAGE_INSIDE = new Texture("Cottage/Cottage_Inside.png");
     public final Texture BROKEN_GREENHOUSE = new Texture("Greenhouse/Broken_Greenhouse.png");
     public final Texture WATER = new Texture("Flooring/water.png");
@@ -50,7 +62,7 @@ public class GameAssetManager {
     public final Texture GREEN_FLOOR = new Texture("Flooring/Flooring_28.png");
     public final Texture PATH_FLOOR = new Texture("Flooring/Flooring_52.png");
     public final Texture STONE_FENCE = new Texture("Fence/Stone_Fence.png");
-//    public final Texture GATE = new Texture("Fence/Gate.png");
+    //    public final Texture GATE = new Texture("Fence/Gate.png");
     public final Texture PLOWED_FLOOR = new Texture("Flooring/Flooring_21.png");
     public final Texture SNOWED_FLOOR = new Texture("Flooring/Flooring_54.png");
     public final Texture FLOWER = new Texture("Crafting/Tub_o%27_Flowers.png");
@@ -594,7 +606,7 @@ public class GameAssetManager {
     public final Texture FIBER = new Texture("Crafting/Fiber.png");
     public final Texture FIBER_SEEDS = new Texture("Crafting/Fiber_Seeds.png");
     public final Texture FIRE_QUARTZ = new Texture("Crafting/Fire_Quartz.png");
-//    public final Texture FISH = new Texture("Crafting/Fish.png");
+    //    public final Texture FISH = new Texture("Crafting/Fish.png");
     public final Texture FROZEN_TEAR = new Texture("Crafting/Frozen_Tear.png");
     public final Texture GARLIC = new Texture("Crafting/Garlic.png");
     public final Texture GINGER = new Texture("Crafting/Ginger.png");
@@ -2310,7 +2322,7 @@ public class GameAssetManager {
     public final Texture WILD_TREE_STUMP_FALL = new Texture("Trees/Wild_Tree_stump_Fall.png");
     public final Texture WILD_TREE_STUMP_SPRING = new Texture("Trees/Wild_Tree_stump_Spring.png");
     public final Texture WILD_TREE_STUMP_WINTER = new Texture("Trees/Wild_Tree_stump_Winter.png");
-//    public final Texture ABIGAIL = new Texture("Villagers/Abigail.png");
+    //    public final Texture ABIGAIL = new Texture("Villagers/Abigail.png");
     public final Texture ALEX = new Texture("Villagers/Alex.png");
     public final Texture BIRDIE = new Texture("Villagers/Birdie.png");
     public final Texture BOUNCER = new Texture("Villagers/Bouncer.png");
@@ -2349,7 +2361,7 @@ public class GameAssetManager {
     public final Texture PIERRE = new Texture("Villagers/Pierre.png");
     public final Texture PROFESSOR_SNAIL = new Texture("Villagers/Professor_Snail.png");
     public final Texture ROBIN = new Texture("Villagers/Robin.png");
-//    public final Texture SAM = new Texture("Villagers/Sam.png");
+    //    public final Texture SAM = new Texture("Villagers/Sam.png");
     public final Texture SANDY = new Texture("Villagers/Sandy.png");
     public final Texture SEBASTIAN = new Texture("Villagers/Sebastian.png");
     public final Texture SHANE = new Texture("Villagers/Shane.png");
@@ -2462,6 +2474,8 @@ public class GameAssetManager {
 
     public Texture ABIGAIL_PORTRAIT = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Abigail.png");
 
+    public String ABIGAIL_PATH = "Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Abigail.png";
+
     public Texture GATE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Fence/Gate.png");
 
     public Texture HOUSE = new Texture("House/House.png");
@@ -2482,11 +2496,19 @@ public class GameAssetManager {
 
     public Texture SAM_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Sam.png");
 
+    public String SAM_PATH = "Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Sam.png";
+
     public Texture HARVEY_TEXTURE = new Texture("Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Harvey.png");
+
+    public String HARVEY_PATH = "Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Harvey.png";
 
     public Texture DIALOG = new Texture("ChatGPT Image Jul 29, 2025, 04_38_08 PM.png");
 
     public Skin getSkin() {
         return skin;
+    }
+
+    public EmojiSupport getEmojiSupport(){
+        return this.emojiSupport;
     }
 }

@@ -8,8 +8,12 @@ import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Interactions.Commands.RegistrationCommand;
 import com.StardewValley.Models.Interactions.Messages.RegistrationMessage;
 import com.StardewValley.Models.User;
+import com.StardewValley.Networking.Client.ClientController;
+import com.StardewValley.Networking.Client.ClientData;
+import com.StardewValley.Views.LobbyView;
 import com.StardewValley.Views.MainMenu;
 import com.StardewValley.Views.MenuView;
+import com.StardewValley.Views.ProfileMenu;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -54,7 +58,7 @@ public class RegistrationController implements UserInfoController , Controller{
             String randomPassword = generateRandomPassword();
             String codedRandomPassword = sha256(randomPassword);
             User newUser = new User(username, codedRandomPassword, nickName, email, gender);
-            app.addUser(newUser);
+            App.getInstance().setRawUser(newUser);
             return new RegistrationMessage(RegistrationCommand.askForPassword, "This is a random password: " + randomPassword + "\ndo you want to set this as your password?");
         }
 
@@ -87,7 +91,7 @@ public class RegistrationController implements UserInfoController , Controller{
         }
 //        String codedPassword = sha256(password);
         User newUser = new User(username, password, nickName, email, gender);
-        app.addUser(newUser);
+        App.getInstance().setRawUser(newUser);
         return new RegistrationMessage(RegistrationCommand.askQuestion, "You are successfully registered");
 
     }
@@ -125,7 +129,7 @@ public class RegistrationController implements UserInfoController , Controller{
             return new RegistrationMessage(null, "You are successfully registered");
         } else {
             App app = App.getInstance();
-            app.removeLastUser();
+            App.getInstance().setRawUser(null);
             return new RegistrationMessage(RegistrationCommand.askForPassword, "Ok you can try again");
         }
     }
@@ -138,8 +142,11 @@ public class RegistrationController implements UserInfoController , Controller{
     public RegistrationMessage pickQuestion(int id, String answer) {
         App app = App.getInstance();
         Question question = Question.getQuestion(id);
-        app.getLastUser().setQuestion(question);
-        app.getLastUser().setAnswer(answer);
+        User finalUser = App.getInstance().getRawUser();
+        finalUser.setQuestion(question);
+        finalUser.setAnswer(answer);
+        ClientController.getInstance().addUserToDB(finalUser);
+        App.getInstance().setRawUser(null);
         return new RegistrationMessage(null, "Your question and answer successfully saved");
     }
 
@@ -168,12 +175,13 @@ public class RegistrationController implements UserInfoController , Controller{
             return new RegistrationMessage(null, "Wrong Username");
         }
         App app = App.getInstance();
-        return new RegistrationMessage(RegistrationCommand.answerQuestion, app.getUserByUsername(username).getQuestion().toString().substring(3));
+//        TODO: look at DB
+        return new RegistrationMessage(RegistrationCommand.answerQuestion, ClientController.getInstance().getUserFromDB(username).getQuestion().toString().substring(3));
     }
 
     public RegistrationMessage checkAnswer(String username, String answer) {
         App app = App.getInstance();
-        User user = app.getUserByUsername(username);
+        User user = ClientController.getInstance().getUserFromDB(username);
         if (user.getAnswer().equals(answer)) {
             return new RegistrationMessage(null, user.getPassword());
         }
@@ -181,13 +189,14 @@ public class RegistrationController implements UserInfoController , Controller{
     }
 
     public RegistrationMessage login(String username, String password, boolean stayLoggedIn) {
+
         App app = App.getInstance();
-        User user = app.getUserByUsername(username);
+        User user = ClientController.getInstance().getUserFromDB(username);
         if (!isUsernameTaken(username)) {
             return new RegistrationMessage(null, "Wrong Username");
         }
         String codedPassword = sha256(password);
-        if (!user.getPassword().equals(codedPassword)) {
+        if (!user.getPassword().equals(password)) {
             return new RegistrationMessage(null, "Wrong Password");
         }
         if (stayLoggedIn) {
@@ -197,9 +206,10 @@ public class RegistrationController implements UserInfoController , Controller{
         }
 
         app.setCurrentUser(user);
-        app.setCurrentMenu(Menu.MainMenu);
         Main.getInstance().getScreen().dispose();
-        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
+//        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
+        Main.getInstance().setScreen(new LobbyView());
+        ClientController.getInstance().informLogin(username);
         return new RegistrationMessage(null, "You logged in successfully! you are now in main menu");
     }
 

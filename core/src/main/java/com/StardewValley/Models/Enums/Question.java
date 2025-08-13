@@ -25,6 +25,14 @@ public enum Question implements Serializable {
         return null;
     }
 
+    public static Question getQuestionByName(String name) {
+        for(Question question : values()) {
+            if(question.name().equals(name))
+                return question;
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return this.question;

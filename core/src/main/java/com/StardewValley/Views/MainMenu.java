@@ -64,7 +64,7 @@ public class MainMenu extends MenuView {
             }
         });
 
-        avatarButton = new ImageButton(new TextureRegionDrawable(App.getInstance().getCurrentUser().getAvatarTexture()));
+//        avatarButton = new ImageButton(new TextureRegionDrawable(App.getInstance().getCurrentUser().getAvatarTexture()));
 
         table = new Table();
     }

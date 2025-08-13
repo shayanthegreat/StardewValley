@@ -5,6 +5,7 @@ import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.*;
 import com.StardewValley.Models.Communication.FriendShip;
 import com.StardewValley.Models.Communication.NPC;
+import com.StardewValley.Models.Crafting.Food;
 import com.StardewValley.Models.Crafting.Material;
 import com.StardewValley.Models.Crafting.MaterialType;
 import com.StardewValley.Models.Enums.FarmBuildings;
@@ -16,6 +17,8 @@ import com.StardewValley.Models.Farming.Seed;
 import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.PopUps.PopUpManager;
+import com.StardewValley.Views.GameView;
+import com.StardewValley.Views.InLobbyView;
 import com.StardewValley.Views.MenuView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -78,12 +82,17 @@ public class GameController implements Controller {
     }
 
     public GameMessage createGameWithUsersAndMaps(User[] users, int mapIDs) {
+        System.out.println("game started");
         ArrayList<Player> players = new ArrayList<>();
         ArrayList<Farm> farms = new ArrayList<>();
 
+        User user1 = null;
         for (int i = 0; i < users.length; i++) {
             Farm farm = new Farm(FarmMap.getFarmMap(mapIDs), i);
             Player player = new Player(users[i], farm);
+            if(users[i].getUsername().equals(App.getInstance().getCurrentUser().getUsername())) {
+                user1 = users[i];
+            }
             farms.add(farm);
             players.add(player);
         }
@@ -102,10 +111,17 @@ public class GameController implements Controller {
         app.addGame(game);
         app.setCurrentGame(game);
         app.setCurrentGameStarter(app.getCurrentUser());
+        game.setCurrentPlayer(user1.getPlayer());
+
 
         for (User user : users) {
             user.setCurrentGame(game);
         }
+        InLobbyView.setInGame(true);
+//        Gdx.app.postRunnable(() -> {
+//            Main.getInstance().setScreen(new GameView());
+//        });
+
         return new GameMessage(null,"You successfully created the game");
     }
 
@@ -153,9 +169,10 @@ public class GameController implements Controller {
         int hoursToAdvance = (int) (elapsed / 30000);
         if (hoursToAdvance > 0) {
             for (int i = 0; i < hoursToAdvance; i++) {
-                App.getInstance().getCurrentGame().nextHour();
+                if(App.getInstance().getCurrentGame().nextHour()) {
+                    time += 30000;
+                }
             }
-            time += hoursToAdvance * 30000;
         }
     }
 
@@ -518,9 +535,24 @@ public class GameController implements Controller {
         }
 
         if(isNear(position)){
-            if(player.getCurrentTool() != null){
+            if(player.getCurrentTool() != null && !PopUpManager.instance.isVisible()){
                 GameMessage gameMessage = player.getCurrentTool().use(position);
                 System.out.println(gameMessage.message());
+//                GameView currentView = (GameView) Main.getInstance().getScreen();
+//                currentView.triggerToolUseAnimation();
+            }
+            if(player.getCurrentTool() == null){
+                Map map = App.getInstance().getCurrentGame().getMap();
+                Tile tile = map.getTile(position);
+                if(tile != null){
+                    TileObject object = tile.getObject();
+                    if(object != null){
+                        if (object instanceof Food){
+                            ((Food) object).eat();
+                            tile.setObject(null);
+                        }
+                    }
+                }
             }
         }
 
@@ -530,7 +562,6 @@ public class GameController implements Controller {
             player.getBackPack().removeItem(item, 1);
             PopUpManager.getInstance(stage).getInventoryPopUp().refresh();
         }
-
     }
 
     public void plant(Seed seed, Position position) {
@@ -556,5 +587,14 @@ public class GameController implements Controller {
         }
         return true;
     }
+
+//    public void hug(){
+//        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+//        for (Player player : App.getInstance().getCurrentGame().getPlayers()) {
+//            if(!Objects.equals(currentPlayer.getUser().getUsername(), player.getUser().getUsername())){
+//                if(currentPlayer.pos)
+//            }
+//        }
+//    }
 
 }

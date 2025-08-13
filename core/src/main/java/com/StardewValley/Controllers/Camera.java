@@ -1,14 +1,19 @@
 package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
+import com.StardewValley.Models.GameAssetManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Camera {
@@ -17,6 +22,7 @@ public class Camera {
     private SpriteBatch batch;
     private float stateTime = 0f;
     private float zoom = 1f;
+    private BitmapFont font = new BitmapFont();
 
     public static final float TILE_SIZE = 32f;
 
@@ -100,6 +106,35 @@ public class Camera {
         }
     }
 
+    public void print(String text, int tileX, int tileY, Stage stage) {
+        float pixelX = tileX * TILE_SIZE;
+        float pixelY = tileY * TILE_SIZE;
+
+        Rectangle view = new Rectangle(
+            camera.position.x - camera.viewportWidth / 2,
+            camera.position.y - camera.viewportHeight / 2,
+            camera.viewportWidth,
+            camera.viewportHeight
+        );
+
+        Rectangle tileRect = new Rectangle(pixelX, pixelY, TILE_SIZE, TILE_SIZE);
+
+        if (view.overlaps(tileRect)) {
+            Label label = new Label(
+                GameAssetManager.getInstance().getEmojiSupport().FilterEmojis(text),
+                GameAssetManager.getInstance().getSkin()
+            );
+
+            label.setPosition(pixelX, pixelY + TILE_SIZE);
+
+            label.setWrap(true);
+
+            stage.addActor(label);
+        }
+    }
+
+
+
     public OrthographicCamera getCamera() {
         return camera;
     }
@@ -124,6 +159,30 @@ public class Camera {
         getCamera().zoom = this.zoom;  // <-- THIS was missing
         update(centerX, centerY);
     }
+
+    public void print(Sprite sprite, int tileX, int tileY, float width, float height) {
+        float pixelX = tileX * TILE_SIZE;
+        float pixelY = tileY * TILE_SIZE;
+
+        float pixelWidth = width * TILE_SIZE;
+        float pixelHeight = height * TILE_SIZE;
+
+        sprite.setBounds(pixelX, pixelY, pixelWidth, pixelHeight);
+
+        Rectangle view = new Rectangle(
+            camera.position.x - camera.viewportWidth / 2,
+            camera.position.y - camera.viewportHeight / 2,
+            camera.viewportWidth,
+            camera.viewportHeight
+        );
+
+        Rectangle spriteRect = new Rectangle(pixelX, pixelY, pixelWidth, pixelHeight);
+
+        if (view.overlaps(spriteRect)) {
+            sprite.draw(batch);
+        }
+    }
+
 
 
 

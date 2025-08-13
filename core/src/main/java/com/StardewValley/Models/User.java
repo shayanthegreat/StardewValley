@@ -1,10 +1,12 @@
 package com.StardewValley.Models;
 
 import com.StardewValley.Models.Enums.Question;
+import com.StardewValley.Networking.Common.Lobby;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class User implements Serializable {
     private String username;
@@ -14,9 +16,13 @@ public class User implements Serializable {
     private final String gender;
     private Question question;
     private String answer;
-    private Game currentGame;
+    private transient Game currentGame;
     private ArrayList<Integer> gamesMoney;
-    private Texture avatarTexture;
+    private transient Texture avatarTexture;
+    private String avatarPath;
+    private transient Player player;
+
+    private transient Lobby lobby = null;
 
     public User(String username, String password, String nickname, String email, String gender) {
         this.username = username;
@@ -25,9 +31,38 @@ public class User implements Serializable {
         this.email = email;
         this.gender = gender;
         this.gamesMoney = new ArrayList<>();
-        this.question = Question.first;
         this.answer = "none";
-        this.avatarTexture = GameAssetManager.getInstance().ABIGAIL_PORTRAIT;
+        this.question = Question.first;
+        Random rand = new Random();
+        int randNum = rand.nextInt(3);
+        switch (randNum) {
+            case 0:
+                this.avatarPath = GameAssetManager.getInstance().ABIGAIL_PATH;
+                break;
+            case 1:
+                this.avatarPath = GameAssetManager.getInstance().HARVEY_PATH;
+                break;
+            case 2:
+                this.avatarPath = GameAssetManager.getInstance().SAM_PATH;
+                break;
+            default:
+                this.avatarPath = GameAssetManager.getInstance().ABIGAIL_PATH;
+                break;
+        }
+    }
+
+//    constructor for SQLite database
+    public User(String username, String password, String nickname, String email, String gender,
+                String answer, ArrayList<Integer> gamesMoney, String avatarPath) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.email = email;
+        this.gender = gender;
+        this.answer = answer;
+        this.gamesMoney = gamesMoney;
+        this.avatarPath = avatarPath;
+//        this.avatarTexture = GameAssetManager.getInstance().ABIGAIL_PORTRAIT;
     }
 
     public String getNickname() {
@@ -94,6 +129,14 @@ public class User implements Serializable {
         this.answer = answer;
     }
 
+    public ArrayList<Integer> getGamesMoney() {
+        return gamesMoney;
+    }
+
+    public String getAvatarPath() {
+        return avatarPath;
+    }
+
     public void addGamesMoney(int money) {
         this.gamesMoney.add(money);
     }
@@ -110,12 +153,26 @@ public class User implements Serializable {
         return maxMoney;
     }
 
-    public void setAvatarTexture(Texture avatarTexture) {
-        this.avatarTexture = avatarTexture;
+    public Lobby getLobby() {
+        return lobby;
+    }
+
+    public void setLobby(Lobby lobby) {
+        this.lobby = lobby;
+    }
+    public void setAvatarPath(String path) {
+        this.avatarPath = path;
     }
 
     public Texture getAvatarTexture() {
-        return avatarTexture;
+        return new Texture(this.avatarPath);
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 }

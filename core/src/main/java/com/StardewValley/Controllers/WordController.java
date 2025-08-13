@@ -1,17 +1,15 @@
 package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
+import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.AnimalProduct;
 import com.StardewValley.Models.Animal.Barn;
 import com.StardewValley.Models.Animal.Coop;
-import com.StardewValley.Models.App;
 import com.StardewValley.Models.Enums.Weather;
 import com.StardewValley.Models.Farming.Plant;
-import com.StardewValley.Models.Game;
-import com.StardewValley.Models.GameAssetManager;
-import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.Store.Store;
+import com.StardewValley.Networking.Client.ClientData;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -237,6 +235,14 @@ public class WordController {
                 }
 
             }
+        }
+        for (Player p : App.getInstance().getCurrentGame().getPlayers()) {
+            if(p.getUser().getUsername().equals(App.getInstance().getCurrentUser().getUsername())){
+                continue;
+            }
+            int x = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posX;
+            int y = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posY;
+            camera.print(p.getAvatarType().walkingAnimation(Direction.center), x,y,1,1);
         }
 
     }

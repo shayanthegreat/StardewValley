@@ -15,6 +15,7 @@ import com.StardewValley.Models.Map.Farm;
 import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Store.Store;
 import com.StardewValley.Models.Tools.*;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ public class Player implements Serializable {
 //        backPack.addItem(new Fish(FishType.flounder),1);
         // add this bullshit to backpack
         backPack.addItem(new Seed(SeedType.carrot), 8);
+        backPack.addItem(new Food(CookingRecipe.pancakes), 1);
         trashCan = new TrashCan();
         skills = new HashMap<>();
         skills.put(SkillType.mining, new Skill(SkillType.mining));
@@ -101,7 +103,7 @@ public class Player implements Serializable {
         this.NPCFriendships.add(new NPCFriendship(npcs.get(3)));
         this.NPCFriendships.add(new NPCFriendship(npcs.get(4)));
         this.Hay = 100;
-        this.avatarType = AvatarType.ABIGAIL;
+        this.avatarType = AvatarType.getAvatarTypeByPath(user.getAvatarPath());
         this.NPCQuests = new ArrayList<>();
         this.NPCQuests.add(new NPCQuest(new NPC("Sebastian")));
         this.NPCQuests.add(new NPCQuest(new NPC("Abigail")));
@@ -111,6 +113,7 @@ public class Player implements Serializable {
         this.isChoosingBarn = false;
         this.isChoosingCoop = false;
         this.isInHouse = false;
+        user.setPlayer(this);
     }
 
     public ArrayList<FriendShip> getFriendShips() {
@@ -354,5 +357,13 @@ public class Player implements Serializable {
 
     public boolean isInHouse() {
         return isInHouse;
+    }
+
+    public Time[] getLastBuffTime() {
+        return lastBuffTime;
+    }
+
+    public void setLastBuffTime(Time[] lastBuffTime) {
+        this.lastBuffTime = lastBuffTime;
     }
 }

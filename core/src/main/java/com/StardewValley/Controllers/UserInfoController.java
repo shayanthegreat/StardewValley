@@ -1,6 +1,7 @@
 package com.StardewValley.Controllers;
 
 import com.StardewValley.Models.App;
+import com.StardewValley.Networking.Client.ClientController;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -9,7 +10,7 @@ public interface UserInfoController {
 
     public default boolean isUsernameTaken(String username) {
         App app = App.getInstance();
-        if (app.getUserByUsername(username) != null) {
+        if (ClientController.getInstance().getUserFromDB(username) != null) {
             return true;
         }
         return false;

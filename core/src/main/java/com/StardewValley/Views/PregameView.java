@@ -44,9 +44,6 @@ public class PregameView extends MenuView{
             User[] users = new User[] { App.getInstance().getCurrentUser() };
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.createGameWithUsersAndMaps(users,1);
-                Main.getInstance().getScreen().dispose();
-                Main.getInstance().setScreen(new GameView());
             }
         });
         table = new Table();

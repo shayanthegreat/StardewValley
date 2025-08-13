@@ -24,7 +24,17 @@ public enum AvatarType {
         this.texture = texture;
         this.gender = gender;
         this.textureRegion = TextureRegion.split(texture, 16, 32);
+    }
 
+    public static AvatarType getAvatarTypeByPath(String path) {
+        switch (path) {
+            case "Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Harvey.png":
+                return Harvey;
+            case "Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Sam.png":
+                return SAM;
+            default:
+                return ABIGAIL;
+        }
     }
 
     public Animation walkingAnimation(Direction direction) {
@@ -96,6 +106,10 @@ public enum AvatarType {
         return animation;
     }
 
-
+    public Animation eatingAnimation() {
+        Animation<TextureRegion> animation = new Animation<>(1f,textureRegion[8][3],textureRegion[8][2],textureRegion[8][1],textureRegion[8][0] );
+        animation.setPlayMode(Animation.PlayMode.NORMAL);
+        return animation;
+    }
 
 }
