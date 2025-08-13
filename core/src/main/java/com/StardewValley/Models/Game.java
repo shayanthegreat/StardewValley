@@ -10,6 +10,8 @@ import com.StardewValley.Models.Enums.Weather;
 import com.StardewValley.Models.Farming.Plant;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.Store.Store;
+import com.StardewValley.Networking.Client.ClientData;
+import com.StardewValley.Networking.Common.PlayerDetails;
 
 import java.io.Serializable;
 import java.sql.SQLTransactionRollbackException;
@@ -63,25 +65,11 @@ public class Game implements Serializable {
         return stores;
     }
 
-    public void setNextPlayer() {
-//        TODO: check if the player is fainted
-        int index = players.indexOf(currentPlayer);
-        if (index == players.size() - 1) {
-            index = 0;
-            nextHour();
-        } else {
-            index++;
-        }
-        setCurrentPlayer(players.get(index));
-    }
-
     public void nextSeason() {
         time.nextSeason();
     }
 
     public void nextDay() {
-
-
         // todayWeather for nextDay is tomrrowWeather for today!
         todayWeather = tomrrowWeather;
         setTomorrowWeather();
@@ -186,11 +174,18 @@ public class Game implements Serializable {
         }
     }
 
-    public void nextHour() {
+    public boolean nextHour() {
+
         if (time.getHour() == 22) {
+            for(PlayerDetails playerDetails : ClientData.getInstance().gameDetails.getPlayers().values()) {
+                if(!playerDetails.canSleep) {
+                    return false;
+                }
+            }
             nextDay();
         }
         time.nextHour();
+        return true;
     }
 
     public Time getTime() {

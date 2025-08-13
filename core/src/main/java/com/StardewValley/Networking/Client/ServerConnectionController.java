@@ -2,6 +2,9 @@ package com.StardewValley.Networking.Client;
 
 import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Models.App;
+import com.StardewValley.Models.Store.Store;
+import com.StardewValley.Models.Store.StoreItem;
+import com.StardewValley.Models.Store.StoreRecipes;
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.*;
 import com.StardewValley.Views.InLobbyView;
@@ -120,7 +123,20 @@ public class ServerConnectionController {
         String item = message.getFromBody("item");
         int count = message.getIntFromBody("count");
 
-//        TODO: reduce the quantity of the item from the store
+        for (Store store1 : App.getInstance().getCurrentGame().getMap().getNpcVillage().getStores()) {
+            if(store1.getName().equals(store)) {
+                StoreItem storeItem = store1.getItemByName(item);
+                if(storeItem != null) {
+                    storeItem.removeDailyLimit(count);
+                }
+                else {
+                    StoreRecipes storeRecipe = store1.getRecipeByName(item);
+                    if(storeRecipe != null) {
+                        storeRecipe.removeDailyLimit(count);
+                    }
+                }
+            }
+        }
     }
 
     private String sourceOfMusic = "";

@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -164,9 +165,10 @@ public class GameController implements Controller {
         int hoursToAdvance = (int) (elapsed / 30000);
         if (hoursToAdvance > 0) {
             for (int i = 0; i < hoursToAdvance; i++) {
-                App.getInstance().getCurrentGame().nextHour();
+                if(App.getInstance().getCurrentGame().nextHour()) {
+                    time += 30000;
+                }
             }
-            time += hoursToAdvance * 30000;
         }
     }
 
@@ -581,5 +583,14 @@ public class GameController implements Controller {
         }
         return true;
     }
+
+//    public void hug(){
+//        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+//        for (Player player : App.getInstance().getCurrentGame().getPlayers()) {
+//            if(!Objects.equals(currentPlayer.getUser().getUsername(), player.getUser().getUsername())){
+//                if(currentPlayer.pos)
+//            }
+//        }
+//    }
 
 }
