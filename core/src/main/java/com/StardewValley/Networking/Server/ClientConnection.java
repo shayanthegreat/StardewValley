@@ -115,6 +115,15 @@ public class ClientConnection extends Connection {
             }
             if(message.getFromBody("command").equals("gift_send")) {
                 controller.sendGift(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("send_games_list")) {
+                controller.sendGamesList(message);
+                return true;
+            }
+            if(message.getFromBody("command").equals("save_and_exit")) {
+                controller.saveAndExit(message);
+                return true;
             }
 
         }
@@ -127,10 +136,22 @@ public class ClientConnection extends Connection {
                 controller.informLogout(message);
                 return true;
             }
+            if(message.getFromBody("information").equals("ready_to_load")) {
+                controller.playerReadyToLoad(message);
+                return true;
+            }
+            if(message.getFromBody("information").equals("not_ready_to_load")) {
+                controller.playerNotReadyToLoad(message);
+                return true;
+            }
         }
         if(message.getType().equals(ConnectionMessage.Type.update)) {
             if(message.getFromBody("update").equals("update_self")) {
                 controller.updateSelf(message);
+                return true;
+            }
+            if(message.getFromBody("update").equals("update_game_data")) {
+                controller.updateGameData(message);
                 return true;
             }
         }

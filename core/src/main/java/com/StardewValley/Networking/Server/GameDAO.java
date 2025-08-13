@@ -94,7 +94,9 @@ public class GameDAO {
 
             if (rs.next()) {
                 String json = rs.getString("game_json");
-                return gson.fromJson(json, GameDetails.class);
+                GameDetails game = gson.fromJson(json, GameDetails.class);
+                game.setDefaultReadies();
+                return game;
             }
 
         } catch (SQLException e) {
@@ -115,6 +117,7 @@ public class GameDAO {
                 String json = rs.getString("game_json");
                 GameDetails game = gson.fromJson(json, GameDetails.class);
                 games.add(game);
+                game.setDefaultReadies();
             }
 
         } catch (SQLException e) {

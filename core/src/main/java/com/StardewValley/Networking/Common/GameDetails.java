@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameDetails {
-    private static int availableId = 0;
 
     private String adminUsername;
     private HashMap<String, PlayerDetails> players;
@@ -24,7 +23,7 @@ public class GameDetails {
         this.adminUsername = adminUsername;
         this.isRunning = true;
         this.chat = new Chat(usernames);
-         GameDAO.insertGame(this);
+        this.gameId = GameDAO.insertGame(this);
     }
 
     public GameDetails(ArrayList<String> usernames, String adminUsername, int gameId) {
@@ -36,7 +35,8 @@ public class GameDetails {
         this.gameId = gameId;
     }
 
-    public GameDetails() {}
+    public GameDetails() {
+    }
 
     public void sendGameDetails() {
         String json = ConnectionMessage.gameDetailsToJson(this);
@@ -47,24 +47,62 @@ public class GameDetails {
             put("game_code", gameId);
             put("new_messages", chatJson);
         }}, ConnectionMessage.Type.update);
-        for(ClientConnection connection : connections) {
-            if(connection.isAlive()) {
+        for (ClientConnection connection : connections) {
+            if (connection.isAlive()) {
                 connection.sendMessage(update);
             }
         }
     }
 
     public void saveAndExit() {
-        ConnectionMessage command = new ConnectionMessage(new  HashMap<>() {{
+        ConnectionMessage command = new ConnectionMessage(new HashMap<>() {{
             put("command", "exit_game");
         }}, ConnectionMessage.Type.command);
-        for(ClientConnection connection : connections) {
-            if(connection.isAlive() && !connection.isEnded()) {
+        for (ClientConnection connection : connections) {
+            if (connection.isAlive() && !connection.isEnded()) {
                 connection.sendMessage(command);
+                connection.setInGame(false);
+                connection.setGame(null);
             }
         }
 
         GameDAO.updateGame(this);
+    }
+
+    public void setDefaultReadies() {
+        for (PlayerDetails player : players.values()) {
+            player.isReady = false;
+        }
+    }
+
+    public boolean isReady() {
+        for (PlayerDetails player : players.values()) {
+            if (!player.isReady) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setPlayerReady(String username) {
+        players.get(username).isReady = true;
+        if (isReady()) {
+            ConnectionMessage inform = new ConnectionMessage(new HashMap<>() {{
+                put("information", "load_game");
+                put("usernames", players.keySet());
+                put("game_details", this);
+            }}, ConnectionMessage.Type.inform);
+            for (ClientConnection connection : connections) {
+                if (connection.isAlive() && !connection.isEnded()) {
+                    inform.getBody().put("data", players.get(connection.getUsername()).data);
+                    connection.sendMessage(inform);
+                }
+            }
+        }
+    }
+
+    public void setPlayerNotReady(String username) {
+        players.get(username).isReady = false;
     }
 
     public PlayerDetails getPlayerByUsername(String username) {

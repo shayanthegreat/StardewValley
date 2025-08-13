@@ -64,7 +64,7 @@ public class ServerMain {
             e.printStackTrace();
         }
 
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
         Runnable refreshStatus = () -> {
             ArrayList<String> onlineUsers = new ArrayList<>();
             ArrayList<ClientConnection> onlineConnections = new ArrayList<>();
@@ -76,6 +76,9 @@ public class ServerMain {
                     connection.setLastRefresh(System.currentTimeMillis());
                 } else if (System.currentTimeMillis() - connection.getLastRefresh() > 30 * 1000 || !connection.isAlive()) {
                     System.out.println("connection ended: " + connection.getUsername());
+                    if(connection.isInGame() && connection.getGame() != null) {
+                        connection.getGame().saveAndExit();
+                    }
                     connection.end();
                     continue;
                 }
@@ -115,9 +118,13 @@ public class ServerMain {
                 }
             }
         };
+        Runnable refreshGamesList = () -> {
+            games = GameDAO.getAllGames();
+        };
 
         scheduler.scheduleAtFixedRate(refreshStatus, 10, 3, TimeUnit.SECONDS);
         scheduler.scheduleAtFixedRate(checkLobbies, 10, 3, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(refreshGamesList, 5, 15, TimeUnit.SECONDS);
 
 
         try {

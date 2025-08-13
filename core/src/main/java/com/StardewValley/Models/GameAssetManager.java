@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import java.util.ArrayList;
+
 public class GameAssetManager {
     private static GameAssetManager gameAssetManager = new GameAssetManager();
     private GameAssetManager() {
@@ -57,7 +59,8 @@ public class GameAssetManager {
     public final Texture COTTAGE_INSIDE = new Texture("Cottage/Cottage_Inside.png");
     public final Texture BROKEN_GREENHOUSE = new Texture("Greenhouse/Broken_Greenhouse.png");
     public final Texture WATER = new Texture("Flooring/water.png");
-    public final Texture LIGHT_GREEN_FLOOR = new Texture("Flooring/Flooring_44.png");
+    public final
+    Texture LIGHT_GREEN_FLOOR = new Texture("Flooring/Flooring_44.png");
     public final Texture DARK_GREEN_FLOOR = new Texture("Flooring/Flooring_50.png");
     public final Texture GREEN_FLOOR = new Texture("Flooring/Flooring_28.png");
     public final Texture PATH_FLOOR = new Texture("Flooring/Flooring_52.png");
@@ -2503,6 +2506,7 @@ public class GameAssetManager {
     public String HARVEY_PATH = "Stardew_Valley_Images-main/Stardew_Valley_Images-main/Villagers/Harvey.png";
 
     public Texture DIALOG = new Texture("ChatGPT Image Jul 29, 2025, 04_38_08 PM.png");
+
 
     public Skin getSkin() {
         return skin;

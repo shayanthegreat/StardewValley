@@ -201,7 +201,6 @@ public class ClientConnectionController {
         }
 
         GameDetails gameDetails = new GameDetails(lobby.getMembers(), lobby.getAdminUsername());
-        GameDAO.insertGame(gameDetails);
         String json = ConnectionMessage.gameDetailsToJson(gameDetails);
 
         System.out.println(lobby.getMembers());
@@ -236,7 +235,6 @@ public class ClientConnectionController {
                 scheduler.shutdown();
             }
         }, 5, 1, TimeUnit.SECONDS);
-//        TODO: do other stuff for game
     }
 
     public void updateSelf(ConnectionMessage message) {
@@ -385,6 +383,49 @@ public class ClientConnectionController {
             connection.sendFile(file);
         }catch(Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public void updateGameData(ConnectionMessage message) {
+        String data = message.getFromBody("data");
+        GameDetails game = connection.getGame();
+        game.getPlayerByUsername(connection.getUsername()).data = data;
+    }
+
+    public void sendGamesList(ConnectionMessage message) {
+        String username = connection.getUsername();
+        ArrayList<String> games = new ArrayList<>();
+        for(GameDetails game : ServerMain.getGames()) {
+            if(game.getPlayers().containsKey(username)) {
+                String json = ConnectionMessage.gameDetailsToJson(game);
+                games.add(json);
+            }
+        }
+        ConnectionMessage response = new ConnectionMessage(new HashMap<>() {{
+            put("response", "ok");
+            put("games_list", games);
+        }}, ConnectionMessage.Type.response);
+        connection.sendMessage(response);
+    }
+
+    public void playerReadyToLoad(ConnectionMessage message) {
+        String username = connection.getUsername();
+        int gameId = message.getIntFromBody("game_id");
+        GameDetails game = ServerMain.getGameById(gameId);
+        game.setPlayerReady(username);
+    }
+
+    public void playerNotReadyToLoad(ConnectionMessage message) {
+        String username = connection.getUsername();
+        int gameId = message.getIntFromBody("game_id");
+        GameDetails game = ServerMain.getGameById(gameId);
+        game.setPlayerNotReady(username);
+    }
+
+    public void saveAndExit(ConnectionMessage message) {
+        String username = connection.getUsername();
+        if(username.equals(connection.getGame().getAdminUsername())) {
+            connection.getGame().saveAndExit();
         }
     }
 }

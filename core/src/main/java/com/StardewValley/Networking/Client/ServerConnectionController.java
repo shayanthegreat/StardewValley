@@ -11,7 +11,6 @@ import com.StardewValley.Networking.Common.*;
 import com.StardewValley.Views.InLobbyView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -69,7 +68,6 @@ public class ServerConnectionController {
         User[] users = new User[usernames.size()];
         for (int i = 0; i < usernames.size(); i++) {
             users[i] = new User(usernames.get(i), "", "", "", "");
-//            TODO: set avatars
             users[i].setAvatarPath((avatarPaths.get(i)));
         }
         GameController.getInstance().createGameWithUsersAndMaps(users, mapId);
@@ -90,7 +88,8 @@ public class ServerConnectionController {
                         put("update", "update_game_data");
                         put("data", data);
                     }}, ConnectionMessage.Type.update);
-                }catch (Exception e){
+                    connection.sendMessage(update);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
@@ -98,6 +97,64 @@ public class ServerConnectionController {
             }
         }, 5, 7, TimeUnit.SECONDS);
 
+    }
+
+    public void gameLoaded(ConnectionMessage message) {
+        GameDetails gameDetails = ConnectionMessage.gameDetailsFromJson(message.getFromBody("game_details"));
+        ArrayList<String> usernames = message.getFromBody("usernames");
+        Chat chat = new Chat(usernames);
+        gameDetails.setChat(chat);
+        data.selfDetails = new PlayerDetails(App.getInstance().getCurrentUser().getUsername());
+        data.gameDetails = gameDetails;
+        data.isInGame = true;
+        try {
+            Game game = FileUtils.deserializeFromBase64(message.getFromBody("data"));
+
+
+            App app = App.getInstance();
+            app.addGame(game);
+            app.setCurrentGame(game);
+            app.setCurrentGameStarter(app.getCurrentUser());
+            App.getInstance().getCurrentUser().setPlayer(game.getCurrentPlayer());
+            InLobbyView.setInGame(true);
+//            TODO: CHECK
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+            scheduler.scheduleAtFixedRate(() -> {
+                if (data.isInGame) {
+                    data.updateAndSendSelf();
+                } else {
+                    scheduler.shutdown();
+                }
+            }, 3, 1, TimeUnit.SECONDS);
+            scheduler.scheduleAtFixedRate(() -> {
+                if (data.isInGame) {
+                    try {
+                        String data = FileUtils.serializeToBase64(App.getInstance().getCurrentGame());
+                        ConnectionMessage update = new ConnectionMessage(new HashMap<>() {{
+                            put("update", "update_game_data");
+                            put("data", data);
+                        }}, ConnectionMessage.Type.update);
+                        connection.sendMessage(update);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    scheduler.shutdown();
+                }
+            }, 5, 7, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void exitGame(ConnectionMessage message) {
+        data.selfDetails = null;
+        data.gameDetails = null;
+        data.isInGame = false;
+
+        App.getInstance().getCurrentUser().setCurrentGame(null);
+        App.getInstance().setCurrentUser(null);
+//        TODO: FIX THE MENU
     }
 
     public void updateOnlineUsers(ConnectionMessage message) {
@@ -164,7 +221,7 @@ public class ServerConnectionController {
         String name = message.getFromBody("filename");
         String sourcePath = "temp_receives/" + name;
         File source = new File(sourcePath);
-        String targetDirPath = "received_musics/" + App.getInstance().getCurrentUser().getUsername();
+        String targetDirPath = "downloaded_musics";
         File targetDir = new File(targetDirPath);
         if (!targetDir.exists()) targetDir.mkdirs();
         if (!source.exists()) {
@@ -202,4 +259,6 @@ public class ServerConnectionController {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         player.getBackPack().addItem(item1, 1);
     }
+
+
 }
