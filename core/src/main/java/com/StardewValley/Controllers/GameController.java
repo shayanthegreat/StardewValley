@@ -5,6 +5,7 @@ import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.*;
 import com.StardewValley.Models.Communication.FriendShip;
 import com.StardewValley.Models.Communication.NPC;
+import com.StardewValley.Models.Crafting.Food;
 import com.StardewValley.Models.Crafting.Material;
 import com.StardewValley.Models.Crafting.MaterialType;
 import com.StardewValley.Models.Enums.FarmBuildings;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -167,9 +169,10 @@ public class GameController implements Controller {
         int hoursToAdvance = (int) (elapsed / 30000);
         if (hoursToAdvance > 0) {
             for (int i = 0; i < hoursToAdvance; i++) {
-                App.getInstance().getCurrentGame().nextHour();
+                if(App.getInstance().getCurrentGame().nextHour()) {
+                    time += 30000;
+                }
             }
-            time += hoursToAdvance * 30000;
         }
     }
 
@@ -532,9 +535,24 @@ public class GameController implements Controller {
         }
 
         if(isNear(position)){
-            if(player.getCurrentTool() != null){
+            if(player.getCurrentTool() != null && !PopUpManager.instance.isVisible()){
                 GameMessage gameMessage = player.getCurrentTool().use(position);
                 System.out.println(gameMessage.message());
+//                GameView currentView = (GameView) Main.getInstance().getScreen();
+//                currentView.triggerToolUseAnimation();
+            }
+            if(player.getCurrentTool() == null){
+                Map map = App.getInstance().getCurrentGame().getMap();
+                Tile tile = map.getTile(position);
+                if(tile != null){
+                    TileObject object = tile.getObject();
+                    if(object != null){
+                        if (object instanceof Food){
+                            ((Food) object).eat();
+                            tile.setObject(null);
+                        }
+                    }
+                }
             }
         }
 
@@ -544,7 +562,6 @@ public class GameController implements Controller {
             player.getBackPack().removeItem(item, 1);
             PopUpManager.getInstance(stage).getInventoryPopUp().refresh();
         }
-
     }
 
     public void plant(Seed seed, Position position) {
@@ -570,5 +587,14 @@ public class GameController implements Controller {
         }
         return true;
     }
+
+//    public void hug(){
+//        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+//        for (Player player : App.getInstance().getCurrentGame().getPlayers()) {
+//            if(!Objects.equals(currentPlayer.getUser().getUsername(), player.getUser().getUsername())){
+//                if(currentPlayer.pos)
+//            }
+//        }
+//    }
 
 }

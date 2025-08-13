@@ -10,6 +10,7 @@ import com.StardewValley.Models.Store.Store;
 import com.StardewValley.Models.Store.StoreItem;
 import com.StardewValley.Models.Store.StoreRecipes;
 import com.StardewValley.Models.UIUtils;
+import com.StardewValley.Networking.Client.ClientController;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -108,6 +109,7 @@ public class StorePopUp {
                         if (quantity > 0) {
                             App.getInstance().getCurrentGame().getCurrentPlayer().getBackPack().addItem(storeItem.getItem(), quantity);
                             storeItem.removeDailyLimit(quantity);
+                            ClientController.getInstance().storeItemBought(store.getName(), storeItem.getItem().toString(), quantity);
                         }
                     }
                     for (StoreRecipes storeRecipes : recipeQuantities.keySet()) {
@@ -120,6 +122,7 @@ public class StorePopUp {
                                 App.getInstance().getCurrentGame().getCurrentPlayer().getKnownCraftingRecipes().add((CraftingRecipe) recipe);
                             }
                             storeRecipes.removeDailyLimit(quantity);
+                            ClientController.getInstance().storeItemBought(store.getName(), storeRecipes.getRecipe().getProductName(), quantity);
                         }
                     }
                     App.getInstance().getCurrentGame().getCurrentPlayer().decreaseMoney(totalPrice);

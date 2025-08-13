@@ -3,6 +3,7 @@ package com.StardewValley.Models.Communication;
 import com.StardewValley.Models.Animal.AnimalProduct;
 import com.StardewValley.Models.Animal.Fish;
 import com.StardewValley.Models.Animal.FishType;
+import com.StardewValley.Models.App;
 import com.StardewValley.Models.Crafting.CookingRecipe;
 import com.StardewValley.Models.Crafting.Food;
 import com.StardewValley.Models.Crafting.Material;
@@ -13,6 +14,7 @@ import com.StardewValley.Models.Farming.Plant;
 import com.StardewValley.Models.Farming.PlantType;
 import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Pair;
+import com.StardewValley.Models.Player;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ import java.util.HashMap;
 public class NPCQuest implements Serializable {
     private ArrayList<Pair<Item, Integer> > requests;
     private ArrayList<Pair<Item, Integer> > rewards;
+    private ArrayList<Player> doneQuests = new ArrayList<>();
+    private ArrayList<Boolean> receivedQuests = new ArrayList<>();
     private NPC npc;
     private int activeQuest;
     private boolean isDone = false;
@@ -69,6 +73,9 @@ public class NPCQuest implements Serializable {
         return activeQuest;
     }
 
+    public Pair<Item, Integer> getRequest() {
+        return requests.get(activeQuest);
+    }
     public void addActiveQuest() {
         this.activeQuest++;
         if (activeQuest == 3){
@@ -103,11 +110,43 @@ public class NPCQuest implements Serializable {
 //        return rewardString.toString();
 //    }
 
+    public boolean canFinish(Player player){
+        if(player.getBackPack().checkItem(getRequest().key, getRequest().value)){
+            player.getBackPack().removeItem(getRequest().key, getRequest().value);
+            for (Player player1 : App.getInstance().getCurrentGame().getPlayers()) {
+                for (NPCQuest npcQuest : player1.getNPCQuests()) {
+                    if(npcQuest.getNpc() == this.npc){
+                        npcQuest.addActiveQuest();
+                        npcQuest.getDoneQuests().add(player);
+                        break;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
     public void setIsDone(boolean isDone) {
         this.isDone = isDone;
     }
 
     public boolean isDone() {
         return isDone;
+    }
+
+    public ArrayList<Player> getDoneQuests() {
+        return doneQuests;
+    }
+
+    public ArrayList<Boolean> getReceivedQuests() {
+        return receivedQuests;
+    }
+
+    public boolean CanReceive(){
+        if(receivedQuests.size() == activeQuest){
+            receivedQuests.add(true);
+            return true;
+        }
+        return false;
     }
 }

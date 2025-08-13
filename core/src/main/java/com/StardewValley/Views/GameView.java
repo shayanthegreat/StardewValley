@@ -1,30 +1,26 @@
 package com.StardewValley.Views;
 
 import com.StardewValley.Controllers.*;
-import com.StardewValley.Controllers.Camera;
-import com.StardewValley.Controllers.PlayerController;
-import com.StardewValley.Controllers.WordController;
 import com.StardewValley.Main;
 import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.AnimalType;
-import com.StardewValley.Models.Map.*;
-import com.StardewValley.Models.Store.Store;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
-import com.StardewValley.Models.App;
 import com.StardewValley.Models.Game;
-import com.StardewValley.Models.Player;
+import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.PopUps.*;
+import com.StardewValley.Models.Store.Store;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 
@@ -44,6 +40,13 @@ public class GameView implements Screen , InputProcessor {
     private CookingPopUp cookingPopUp;
     private FridgePopUp fridgePopUp;
     private CraftingPopUp craftingPopUp;
+    private ArtPopUp artPopUp;
+    // Tool rotation animation state
+    private boolean isToolAnimating = false;
+    private float toolAnimationTime = 0f;
+    private float toolAnimationDuration = 0.3f; // seconds
+    private float toolMaxRotation = 45f;
+    private Label activeBuffsLabel;
     private TextButton reaction;
     public boolean isTyping = false;
     private TextButton scoreBoard;
@@ -119,8 +122,9 @@ public class GameView implements Screen , InputProcessor {
             GameController.getInstance().buyAnimal(AnimalType.goat,"asd");
             GameController.getInstance().buyAnimal(AnimalType.sheep,"asss");
         }
-        else if(i == Input.Keys.Z){
-            App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool(null);
+        else if (i == Input.Keys.Z) App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool(null);
+        else if(i == Input.Keys.V){
+            artPopUp.show();
         }
         return false;
     }
@@ -175,8 +179,8 @@ public class GameView implements Screen , InputProcessor {
         stage.addActor(reaction);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(this);
-        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(this);  // your GameView InputProcessor first
+        multiplexer.addProcessor(stage); // stage input second for UI drag/drop
         Gdx.input.setInputProcessor(multiplexer);
 //        popUpMenu = PopUpManager.getInstance(stage);
         scoreBoard = new TextButton("Score Board", GameAssetManager.getInstance().getSkin());
@@ -216,6 +220,9 @@ public class GameView implements Screen , InputProcessor {
         fridgePopUp.hide();
         craftingPopUp = new CraftingPopUp(stage);
         craftingPopUp.hide();
+        toolPopUp.show();
+        artPopUp = new ArtPopUp(stage);
+        artPopUp.hide();
         reactionPopUp = new ReactionPopUp(stage);
         initialChatPopUp = new InitialChatPopUp(stage);
         initialChatPopUp.hide();
@@ -237,6 +244,11 @@ public class GameView implements Screen , InputProcessor {
             // Optional: if you want to do something with the tile position
             Position clickedPosition = new Position(tileX, tileY);
 
+            if (App.getInstance().getCurrentGame().getCurrentPlayer().getCurrentTool() != null) {
+                isToolAnimating = true;
+                toolAnimationTime = 0f;
+            }
+
             Map map = App.getInstance().getCurrentGame().getMap();
             Tile tile = map.getTile(clickedPosition);
             if(tile == null){
@@ -253,13 +265,12 @@ public class GameView implements Screen , InputProcessor {
             else if(building instanceof Store){
                 NPCVillage npcVillages = App.getInstance().getCurrentGame().getMap().getNpcVillage();
                 for (int i = 0; i < npcVillages.getStorePositions().size(); i++) {
-                    if(npcVillages.getStorePositions().get(i).equals(clickedPosition)){
-                        storePopUp.refresh(App.getInstance().getCurrentGame().getMap().getNpcVillage().getStores().get(i));
+                    if (npcVillages.getStorePositions().get(i).equals(clickedPosition)) {
+                        storePopUp.refresh(npcVillages.getStores().get(i));
                         storePopUp.show();
                     }
                 }
-            }
-            else{
+            } else {
                 GameController.getInstance().handleTileClick(clickedPosition, stage);
             }
         }
@@ -314,13 +325,14 @@ public class GameView implements Screen , InputProcessor {
     }
 
     @Override
-    public void render(float v) {
-        ScreenUtils.clear(0,0,0,1);
+    public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0, 1);
         Game game = App.getInstance().getCurrentGame();
         Player player = game.getCurrentPlayer();
         Camera.getInstance().update(player.getPosition().x, player.getPosition().y);
+
         Main.getInstance().getBatch().begin();
-//        All To print
+
         WordController.getInstance().update();
         PlayerController.getInstance().update();
         GameController.getInstance().update(Gdx.graphics.getDeltaTime());
@@ -338,21 +350,42 @@ public class GameView implements Screen , InputProcessor {
                 GameController.getInstance().getLightningY());
         }
 
-//        All To print
         if (player.getCurrentTool() != null) {
             Texture toolTexture = player.getCurrentTool().getTexture();
-            float toolDrawX = player.getPosition().x + 1.5f; // offset right by 1 tile
-            float toolDrawY = player.getPosition().y;       // same vertical position (adjust if needed)
+            float toolDrawX = player.getPosition().x + 1.5f;
+            float toolDrawY = player.getPosition().y;
+            float rotation = 0f;
 
-            // Adjust scaling/size as needed; here we draw 1x1 tile size
-            Camera.getInstance().print(toolTexture, App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().x+1, App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().y, 1, 1);
-//            (toolTexture, toolDrawX * TILE_SIZE, toolDrawY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            if (isToolAnimating) {
+                toolAnimationTime += delta;
+                float progress = toolAnimationTime / toolAnimationDuration;
+                if (progress < 0.5f) rotation = toolMaxRotation * (progress / 0.5f);
+                else if (progress < 1f) rotation = toolMaxRotation * (1f - (progress - 0.5f) / 0.5f);
+                else {
+                    isToolAnimating = false;
+                    toolAnimationTime = 0f;
+                }
+            }
+
+            Main.getInstance().getBatch().draw(
+                toolTexture,
+                toolDrawX * TILE_SIZE, toolDrawY * TILE_SIZE,
+                TILE_SIZE / 2f, TILE_SIZE / 2f,
+                TILE_SIZE, TILE_SIZE,
+                1f, 1f,
+                rotation,
+                0, 0,
+                toolTexture.getWidth(), toolTexture.getHeight(),
+                false, false
+            );
         }
+
         game.getTime().updateBatch(Main.getInstance().getBatch(), player.getPosition());
         Main.getInstance().getBatch().end();
-        WordController.getInstance().drawDarknessOverlay();
 
-        stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
+        showOrUpdateActiveBuffs();
+        WordController.getInstance().drawDarknessOverlay();
+        stage.act(Math.min(delta, 1 / 30f));
         stage.draw();
     }
 
@@ -399,6 +432,36 @@ public class GameView implements Screen , InputProcessor {
         }, 5);
     }
 
+
+    private void showOrUpdateActiveBuffs() {
+        StringBuilder sb = new StringBuilder();
+        Time[] lastBuffTime = App.getInstance().getCurrentGame().getCurrentPlayer().getLastBuffTime();
+
+        for (int i = 0; i < 4; i++) {
+            switch (i) {
+                case 0: sb.append("Farming Buff: "); break;
+                case 1: sb.append("Mining Buff: "); break;
+                case 2: sb.append("Foraging Buff: "); break;
+                case 3: sb.append("Fishing Buff: "); break;
+            }
+
+            if (Time.compareTime(App.getInstance().getCurrentGame().getTime(), lastBuffTime[i])) {
+                sb.append("Active!\n");
+            } else {
+                sb.append("Not Active!\n");
+            }
+        }
+
+        if (activeBuffsLabel == null) {
+            activeBuffsLabel = new Label(sb.toString(), GameAssetManager.getInstance().getSkin());
+            activeBuffsLabel.setFontScale(1.2f);
+            activeBuffsLabel.setAlignment(Align.left);
+            activeBuffsLabel.setPosition(50, stage.getHeight() - 100); // Top-left
+            stage.addActor(activeBuffsLabel);
+        } else {
+            activeBuffsLabel.setText(sb.toString());
+        }
+    }
     public static Stage getStage() {
         return stage;
     }

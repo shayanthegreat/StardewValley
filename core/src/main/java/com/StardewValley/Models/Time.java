@@ -268,4 +268,35 @@ public class Time implements Serializable {
         }
     }
 
+    public void addHour(int x){
+        for(int i = 0; i < x; i++){
+            hour++;
+            if(hour > 22){
+                hour = 9;
+                day++;
+                if(day > 28) {
+                    day = 1;
+                    nextSeason();
+                }
+            }
+
+        }
+    }
+
+    public static boolean compareTime(Time time1, Time time2){
+        if(time1.getSeason().getId() < time2.getSeason().getId()){
+            return true;
+        }
+        else if(time1.getSeason().getId() == time2.getSeason().getId()){
+            if(time1.getDay() < time2.getDay()){
+                return true;
+            }
+            else if(time1.getDay() == time2.getDay()){
+                if(time1.getHour() <= time2.getHour()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

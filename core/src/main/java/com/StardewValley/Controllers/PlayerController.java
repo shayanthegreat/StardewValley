@@ -28,11 +28,13 @@ public class PlayerController {
     private long lastReactionTime = 0;
     private boolean hasReaction = false;
 
+    private boolean eating = false;
 
     public void update(){
         movePlayer();
         petting();
         feeding();
+        eating();
         check();
         reaction();
     }
@@ -73,49 +75,42 @@ public class PlayerController {
         }
         else if(goingDown && !goingLeft && !goingRight){
             move(0,-1);
-
             playerDirection = Direction.down;
             getAnimation(Direction.down);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
         }
         else if(goingLeft && !goingUp && !goingDown){
             move(-1,0);
-
             playerDirection = Direction.left;
             getAnimation(Direction.left);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
         }
         else if(goingRight && !goingDown && !goingUp){
             move(1,0);
-
             playerDirection = Direction.right;
             getAnimation(Direction.right);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
         }
         else if(goingUp && goingLeft){
             move(-1,1);
-
             playerDirection = Direction.up;
             getAnimation(Direction.upLeft);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
         }
         else if(goingUp && goingRight){
             move(1,1);
-
             playerDirection = Direction.up;
             getAnimation(Direction.upRight);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
         }
         else if(goingDown && goingLeft){
             move(-1,-1);
-
             playerDirection = Direction.down;
             getAnimation(Direction.downLeft);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
         }
         else if(goingDown && goingRight){
             move(1,-1);
-
             playerDirection = Direction.right;
             getAnimation(Direction.downRight);
             Camera.getInstance().print(animation,player.getPosition().x,player.getPosition().y,1,1);
@@ -159,6 +154,17 @@ public class PlayerController {
                 return;
             }
             Camera.getInstance().print(player.getAvatarType().feedingAnimation(),player.getPosition().x,player.getPosition().y,1,1);
+        }
+    }
+
+    private void eating(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(eating){
+            if(TimeUtils.millis() - pettingStartTime > 3000){
+                eating = false;
+                return;
+            }
+            Camera.getInstance().print(player.getAvatarType().eatingAnimation(),player.getPosition().x,player.getPosition().y,1,1);
         }
     }
 
@@ -230,6 +236,11 @@ public class PlayerController {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         player.setPosition(new Position(animal.getPosition().x+1,animal.getPosition().y));
         feeding = true;
+        pettingStartTime = TimeUtils.millis();
+    }
+
+    public void startEating(){
+        eating = true;
         pettingStartTime = TimeUtils.millis();
     }
 }

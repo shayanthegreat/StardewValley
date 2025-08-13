@@ -71,6 +71,7 @@ public class Player implements Serializable {
 //        backPack.addItem(new Fish(FishType.flounder),1);
         // add this bullshit to backpack
         backPack.addItem(new Seed(SeedType.carrot), 8);
+        backPack.addItem(new Food(CookingRecipe.pancakes), 1);
         trashCan = new TrashCan();
         skills = new HashMap<>();
         skills.put(SkillType.mining, new Skill(SkillType.mining));
@@ -356,5 +357,13 @@ public class Player implements Serializable {
 
     public boolean isInHouse() {
         return isInHouse;
+    }
+
+    public Time[] getLastBuffTime() {
+        return lastBuffTime;
+    }
+
+    public void setLastBuffTime(Time[] lastBuffTime) {
+        this.lastBuffTime = lastBuffTime;
     }
 }

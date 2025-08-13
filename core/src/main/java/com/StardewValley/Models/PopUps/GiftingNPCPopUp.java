@@ -24,7 +24,7 @@ public class GiftingNPCPopUp extends PopUpMenu {
 
     private Table itemsTable;
     private NPC npc;
-
+    private NPCQuestPopUp questPopUp;
     public GiftingNPCPopUp(Stage stage) {
         super(stage);
         createPopupMenu();
@@ -66,14 +66,31 @@ public class GiftingNPCPopUp extends PopUpMenu {
         itemsTable.clear();
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         HashMap<Item, Integer> backpack = getItems();
+
         Table informationTable = new Table();
         Texture NPCTexture = npc.getTexture();
         Drawable drawable1 = new TextureRegionDrawable(NPCTexture);
         Image image = new Image(drawable1);
         informationTable.add(image);
-        Label backpackLabel = new Label("Level: "+player.getNpcFriendshipByName(npc.getName()).getLevel()+"\n" + "XP: "+player.getNpcFriendshipByName(npc.getName()).getXp(), skin);
-        informationTable.add(backpackLabel);
-        itemsTable.add(informationTable);
+
+        Label backpackLabel = new Label("Level: " + player.getNpcFriendshipByName(npc.getName()).getLevel()
+            + "\nXP: " + player.getNpcFriendshipByName(npc.getName()).getXp(), skin);
+        informationTable.add(backpackLabel).padRight(20);
+
+        // Add "Show Quests" button
+        TextButton showQuestsButton = new TextButton("Show Quests", skin);
+        showQuestsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (questPopUp == null) {
+                    questPopUp = new NPCQuestPopUp(stage, npc);
+                }
+                questPopUp.show();
+            }
+        });
+        informationTable.add(showQuestsButton);
+
+        itemsTable.add(informationTable).row();
 
         if (backpack.isEmpty()) {
             itemsTable.add(new Label("No Items Found", skin)).pad(10).row();
@@ -89,7 +106,7 @@ public class GiftingNPCPopUp extends PopUpMenu {
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    NPCController.getInstance().giftNPC(npc,item);
+                    NPCController.getInstance().giftNPC(npc, item);
                     hide();
                     PopUpManager.getInstance(stage).hide();
                 }
@@ -101,6 +118,7 @@ public class GiftingNPCPopUp extends PopUpMenu {
             itemsTable.add(row).pad(10).row();
         }
     }
+
 
     private HashMap<Item, Integer> getItems() {
         HashMap<Item, Integer> items = new HashMap<>();

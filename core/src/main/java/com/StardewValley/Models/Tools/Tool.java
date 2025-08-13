@@ -288,6 +288,7 @@ public class Tool extends Item implements Serializable {
                         backPack.addItem(item, 1);
                         tile.setObject(null);
                     }
+                    tile.setObject(null);
                     return new GameMessage(null, "You collected some " + item.getName() + " !");
                 }
             }
