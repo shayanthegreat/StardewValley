@@ -109,7 +109,7 @@ public class ServerMain {
             Iterator<Lobby> it = lobbies.iterator();
             while (it.hasNext()) {
                 Lobby lobby = it.next();
-                if (time - lobby.getLastJoin() > (10 * 1000)) {
+                if (time - lobby.getLastJoin() > (3 * 60 * 1000)) {
                     lobby.terminate();
                 }
             }
