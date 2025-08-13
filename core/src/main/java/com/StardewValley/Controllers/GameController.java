@@ -17,6 +17,7 @@ import com.StardewValley.Models.Farming.Seed;
 import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.PopUps.PopUpManager;
+import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Views.GameView;
 import com.StardewValley.Views.InLobbyView;
 import com.StardewValley.Views.MenuView;
@@ -588,13 +589,21 @@ public class GameController implements Controller {
         return true;
     }
 
-//    public void hug(){
-//        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
-//        for (Player player : App.getInstance().getCurrentGame().getPlayers()) {
-//            if(!Objects.equals(currentPlayer.getUser().getUsername(), player.getUser().getUsername())){
-//                if(currentPlayer.pos)
-//            }
-//        }
-//    }
+    public void hug(){
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Position playerPos = currentPlayer.getPosition();
+        Position playerPos2 = new Position(playerPos.x - 1, playerPos.y);
+        System.out.println("Position");
+        System.out.println(playerPos2.x + " " + playerPos2.y);
+        for (Player player : App.getInstance().getCurrentGame().getPlayers()) {
+            int x = ClientData.getInstance().gameDetails.getPlayerByUsername(player.getUser().getUsername()).posX;
+            int y = ClientData.getInstance().gameDetails.getPlayerByUsername(player.getUser().getUsername()).posY;
+            System.out.println(x + " " + y);
+            if(playerPos2.x == x && playerPos2.y == y){
+                PlayerController.getInstance().startHugging(player);
+                return;
+            }
+        }
+    }
 
 }

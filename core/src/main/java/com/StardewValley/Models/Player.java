@@ -47,6 +47,7 @@ public class Player implements Serializable {
     private boolean isChoosingBarn;
     private boolean isChoosingCoop;
     private boolean isInHouse;
+    private boolean isHugging;
 
 
     public Player(User user, Farm farm) {
@@ -113,6 +114,7 @@ public class Player implements Serializable {
         this.isChoosingBarn = false;
         this.isChoosingCoop = false;
         this.isInHouse = false;
+        this.isHugging = false;
         user.setPlayer(this);
     }
 
@@ -365,5 +367,13 @@ public class Player implements Serializable {
 
     public void setLastBuffTime(Time[] lastBuffTime) {
         this.lastBuffTime = lastBuffTime;
+    }
+
+    public boolean isHugging() {
+        return isHugging;
+    }
+
+    public void setHugging(boolean hugging) {
+        isHugging = hugging;
     }
 }

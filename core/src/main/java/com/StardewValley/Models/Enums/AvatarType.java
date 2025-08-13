@@ -112,4 +112,24 @@ public enum AvatarType {
         return animation;
     }
 
+    public Animation huggingRightAnimation() {
+        Animation<TextureRegion> animation = new Animation<>(2f,textureRegion[7][2],textureRegion[7][3]);
+        animation.setPlayMode(Animation.PlayMode.NORMAL);
+        return animation;
+    }
+
+    public Animation<TextureRegion> huggingLeftAnimation() {
+        // Copy the right animation frames
+        TextureRegion frame1 = new TextureRegion(textureRegion[7][2]);
+        TextureRegion frame2 = new TextureRegion(textureRegion[7][3]);
+
+        // Flip horizontally
+        frame1.flip(true, false);
+        frame2.flip(true, false);
+
+        Animation<TextureRegion> animation = new Animation<>(2f, frame1, frame2);
+        animation.setPlayMode(Animation.PlayMode.NORMAL);
+        return animation;
+    }
+
 }

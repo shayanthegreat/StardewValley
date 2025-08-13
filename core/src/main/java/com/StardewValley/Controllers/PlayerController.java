@@ -30,11 +30,14 @@ public class PlayerController {
 
     private boolean eating = false;
 
+    private boolean hugging = false;
+
     public void update(){
         movePlayer();
         petting();
         feeding();
         eating();
+        hugging();
         check();
         reaction();
     }
@@ -168,6 +171,20 @@ public class PlayerController {
         }
     }
 
+    private void hugging(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(hugging){
+            if(TimeUtils.millis() - pettingStartTime > 3000){
+                hugging = false;
+                for (Player player1 : App.getInstance().getCurrentGame().getPlayers()) {
+                    player1.setHugging(false);
+                }
+                return;
+            }
+            Camera.getInstance().print(player.getAvatarType().huggingRightAnimation(),player.getPosition().x,player.getPosition().y,1,1);
+        }
+    }
+
     private void move(int dx , int dy){
         Game game = App.getInstance().getCurrentGame();
         Player player = game.getCurrentPlayer();
@@ -241,6 +258,15 @@ public class PlayerController {
 
     public void startEating(){
         eating = true;
+        pettingStartTime = TimeUtils.millis();
+    }
+
+    public void startHugging(Player player){
+        if(hugging){
+            return;
+        }
+        player.setHugging(true);
+        hugging = true;
         pettingStartTime = TimeUtils.millis();
     }
 }

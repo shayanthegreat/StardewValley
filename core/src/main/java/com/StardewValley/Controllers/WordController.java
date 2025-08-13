@@ -242,7 +242,13 @@ public class WordController {
             }
             int x = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posX;
             int y = ClientData.getInstance().gameDetails.getPlayerByUsername(p.getUser().getUsername()).posY;
-            camera.print(p.getAvatarType().walkingAnimation(Direction.center), x,y,1,1);
+
+            if(p.isHugging()){
+                camera.print(p.getAvatarType().huggingLeftAnimation(), x,y,1,1);
+            }
+            else{
+                camera.print(p.getAvatarType().walkingAnimation(Direction.center), x,y,1,1);
+            }
         }
 
     }
