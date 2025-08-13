@@ -53,7 +53,6 @@ public class ChatScreen extends PopUpMenu {
         inputField = new TextField("", skin);
         mainTable.add(inputField).width(220).left();
 
-        // Send button
         TextButton sendButton = new TextButton("Send", skin);
         sendButton.addListener(new ClickListener() {
             @Override
