@@ -389,7 +389,8 @@ public class ClientConnectionController {
     public void updateGameData(ConnectionMessage message) {
         String data = message.getFromBody("data");
         GameDetails game = connection.getGame();
-        game.getPlayerByUsername(connection.getUsername()).data = data;
+        System.out.println("Game data: " + data.substring(0,50));
+        game.putDataByUsername(connection.getUsername(), data);
     }
 
     public void sendGamesList(ConnectionMessage message) {

@@ -13,7 +13,6 @@ public class PlayerDetails {
     public int questCount;
     public int skillSum;
     public int gold;
-    public String data;
     public transient boolean isReady;
 
     public PlayerDetails(String username) {
@@ -25,7 +24,6 @@ public class PlayerDetails {
         questCount = 0;
         skillSum = 0;
         gold = 0;
-        data = "";
         isReady = false;
     }
 

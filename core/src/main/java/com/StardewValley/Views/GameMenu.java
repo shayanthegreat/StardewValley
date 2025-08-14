@@ -25,6 +25,7 @@ public class GameMenu extends MenuView {
     private Skin skin;
     private TextButton loadGame;
     private GameDetailsPopUp gameDetailsPopUp;
+    private static boolean isGameStarted = false;
 
     public GameMenu(Skin skin) {
         super(skin);
@@ -85,11 +86,23 @@ public class GameMenu extends MenuView {
 
     }
 
+    public static boolean isGameStarted() {
+        return isGameStarted;
+    }
+
+    public static void setGameStarted(boolean gameStarted) {
+        isGameStarted = gameStarted;
+    }
+
     @Override
     public void render(float v) {
         ScreenUtils.clear(0,0,0,1);
         stage.act(Math.min( Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+
+        if(isGameStarted){
+            Main.getInstance().setScreen(new GameView());
+        }
     }
 
     @Override

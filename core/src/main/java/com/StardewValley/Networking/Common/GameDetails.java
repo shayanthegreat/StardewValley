@@ -11,6 +11,7 @@ public class GameDetails {
 
     private String adminUsername;
     private HashMap<String, PlayerDetails> players;
+    private HashMap<String, String> data;
     private transient ArrayList<ClientConnection> connections;
     private int gameId;
     private boolean isRunning;
@@ -18,8 +19,10 @@ public class GameDetails {
 
     public GameDetails(ArrayList<String> usernames, String adminUsername) {
         players = new HashMap<>();
+        data = new HashMap<>();
         for (String username : usernames) {
             players.put(username, new PlayerDetails(username));
+            data.put(username, "");
         }
         this.adminUsername = adminUsername;
         this.isRunning = true;
@@ -66,7 +69,6 @@ public class GameDetails {
                 connection.setGame(null);
             }
         }
-        System.out.println("HEHEHEHEHEHEHEHEHEH");
         GameDAO.updateGame(this);
     }
 
@@ -99,14 +101,10 @@ public class GameDetails {
                 ClientConnection connection = ServerMain.getConnectionByUsername(user);
                 connections.add(connection);
                 if (connection.isAlive() && !connection.isEnded()) {
-                    if(players.get(user).data != null) {
-                        System.out.println(players.get(user).data);
-                    }
-                    else {
-                        System.out.println("SOOOOORRRRYYYY");
-                    }
-                    inform.getBody().put("data", players.get(user).data);
+                    inform.getBody().put("data", data.get(user));
                     connection.sendMessage(inform);
+                    connection.setInGame(true);
+                    connection.setGame(this);
                 }
             }
         }
@@ -122,6 +120,14 @@ public class GameDetails {
 
     public void putPlayerByUsername(String username, PlayerDetails player) {
         players.put(username, player);
+    }
+
+    public String getDataByUsername(String username) {
+        return data.get(username);
+    }
+
+    public void putDataByUsername(String username, String data) {
+        this.data.put(username, data);
     }
 
     public int playerCount() {

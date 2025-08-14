@@ -10,6 +10,7 @@ import com.StardewValley.Models.Store.StoreItem;
 import com.StardewValley.Models.Store.StoreRecipes;
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.*;
+import com.StardewValley.Views.GameMenu;
 import com.StardewValley.Views.GameView;
 import com.StardewValley.Views.InLobbyView;
 import com.StardewValley.Views.MainMenu;
@@ -119,7 +120,7 @@ public class ServerConnectionController {
             app.setCurrentGame(game);
             app.setCurrentGameStarter(app.getCurrentUser());
             App.getInstance().getCurrentUser().setPlayer(game.getCurrentPlayer());
-            InLobbyView.setInGame(true);
+            GameMenu.setGameStarted(true);
 //            TODO: CHECK
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
             scheduler.scheduleAtFixedRate(() -> {
