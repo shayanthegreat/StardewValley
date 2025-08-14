@@ -3,6 +3,7 @@ package com.StardewValley.Views;
 import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Main;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -41,7 +42,9 @@ public class GameMenu extends MenuView {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-
+        Image bgImage = new Image(new Texture(Gdx.files.internal("Background.jpg")));
+        bgImage.setFillParent(true);
+        stage.addActor(bgImage);
         table.setFillParent(true);
         table.center().pad(30);
 

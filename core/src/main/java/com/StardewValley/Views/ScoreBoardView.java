@@ -7,6 +7,7 @@ import com.StardewValley.Networking.Common.PlayerDetails;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -32,7 +33,9 @@ public class ScoreBoardView implements Screen {
         stage = new Stage(new ScreenViewport());
         skin = GameAssetManager.getInstance().getSkin();
         Gdx.input.setInputProcessor(stage);
-
+        Image bgImage = new Image(new Texture(Gdx.files.internal("Background.jpg")));
+        bgImage.setFillParent(true);
+        stage.addActor(bgImage);
         players = new ArrayList<>(ClientData.getInstance().gameDetails.getPlayers().values());
 
         // Create SortBox once

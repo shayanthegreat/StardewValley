@@ -8,6 +8,7 @@ import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Networking.Common.Lobby;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -38,7 +39,9 @@ public class LobbyView implements Screen {
     public void show() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-
+        Image bgImage = new Image(new Texture(Gdx.files.internal("Background.jpg")));
+        bgImage.setFillParent(true);
+        stage.addActor(bgImage);
         skin = GameAssetManager.getInstance().getSkin();
         visibleLobbyTable = new Table(skin);
         searchedLobbyTable = new Table(skin);

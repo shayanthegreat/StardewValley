@@ -5,12 +5,10 @@ import com.StardewValley.Controllers.MainMenuController;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.GameAssetManager;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -73,7 +71,9 @@ public class MainMenu extends MenuView {
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
+        Image bgImage = new Image(new Texture(Gdx.files.internal("Background.jpg")));
+        bgImage.setFillParent(true);
+        stage.addActor(bgImage);
         table.setFillParent(true);
         table.center().pad(30);
 

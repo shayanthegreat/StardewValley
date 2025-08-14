@@ -6,6 +6,7 @@ import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Interactions.Commands.RegistrationCommand;
 import com.StardewValley.Models.Interactions.Messages.RegistrationMessage;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -101,7 +102,9 @@ public class RegistrationMenu extends MenuView {
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
+        Image bgImage = new Image(new Texture(Gdx.files.internal("Background.jpg")));
+        bgImage.setFillParent(true);
+        stage.addActor(bgImage);
         gender.getStyle().font.getData().setScale(1.2f);
 
         table.setFillParent(true);

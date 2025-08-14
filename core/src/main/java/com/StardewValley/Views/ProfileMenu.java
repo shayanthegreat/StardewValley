@@ -4,6 +4,7 @@ import com.StardewValley.Controllers.ProfileMenuController;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Models.Interactions.Messages.ProfileMessage;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -206,7 +207,9 @@ public class ProfileMenu extends MenuView{
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
+        Image bgImage = new Image(new Texture(Gdx.files.internal("Background.jpg")));
+        bgImage.setFillParent(true);
+        stage.addActor(bgImage);
         table.setFillParent(true);
 
         table.row().padTop(15);

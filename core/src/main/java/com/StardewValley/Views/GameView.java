@@ -176,6 +176,7 @@ public class GameView implements Screen , InputProcessor {
         reaction.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                reactionPopUp = new ReactionPopUp(stage);
                 reactionPopUp.show();
                 isTyping = true;
             }
@@ -227,7 +228,6 @@ public class GameView implements Screen , InputProcessor {
         toolPopUp.show();
         artPopUp = new ArtPopUp(stage);
         artPopUp.hide();
-        reactionPopUp = new ReactionPopUp(stage);
         initialChatPopUp = new InitialChatPopUp(stage);
         initialChatPopUp.hide();
         friendshipPopUp = new FriendshipPopUp(stage);

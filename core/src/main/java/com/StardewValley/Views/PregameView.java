@@ -105,7 +105,9 @@ public class PregameView extends MenuView{
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
+        Image bgImage = new Image(new Texture(Gdx.files.internal("Background.jpg")));
+        bgImage.setFillParent(true);
+        stage.addActor(bgImage);
 
         table.setFillParent(true);
         table.center().pad(30);
