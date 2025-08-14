@@ -127,6 +127,9 @@ public class GameView implements Screen , InputProcessor {
         else if(i == Input.Keys.L){
             GameController.getInstance().hug();
         }
+        else if(i == Input.Keys.K){
+            GameController.getInstance().giveFlower();
+        }
         return false;
     }
 

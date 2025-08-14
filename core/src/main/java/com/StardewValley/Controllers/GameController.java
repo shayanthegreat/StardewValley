@@ -17,6 +17,7 @@ import com.StardewValley.Models.Farming.Seed;
 import com.StardewValley.Models.Interactions.Messages.GameMessage;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.PopUps.PopUpManager;
+import com.StardewValley.Networking.Client.ClientController;
 import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Views.GameView;
 import com.StardewValley.Views.InLobbyView;
@@ -598,6 +599,21 @@ public class GameController implements Controller {
             int y = ClientData.getInstance().gameDetails.getPlayerByUsername(player.getUser().getUsername()).posY;
             if(playerPos2.x == x && playerPos2.y == y){
                 PlayerController.getInstance().startHugging(player);
+                return;
+            }
+        }
+    }
+
+    public void giveFlower(){
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Position playerPos = currentPlayer.getPosition();
+        Position playerPos2 = new Position(playerPos.x - 1, playerPos.y);
+        for (Player player : App.getInstance().getCurrentGame().getPlayers()) {
+            int x = ClientData.getInstance().gameDetails.getPlayerByUsername(player.getUser().getUsername()).posX;
+            int y = ClientData.getInstance().gameDetails.getPlayerByUsername(player.getUser().getUsername()).posY;
+            if(playerPos2.x == x && playerPos2.y == y){
+                PlayerController.getInstance().startHugging(player);
+                ClientController.getInstance().sendGift("bouquet", player.getUser().getUsername(), currentPlayer.getUser().getUsername());
                 return;
             }
         }
