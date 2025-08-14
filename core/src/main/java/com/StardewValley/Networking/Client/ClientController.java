@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.StardewValley.Networking.Common.Connection.TIMEOUT;
 
@@ -348,5 +349,33 @@ public class ClientController {
             put("command", "save_and_exit");
         }},  ConnectionMessage.Type.command);
         connection.sendMessage(message);
+    }
+
+    public String getNpcDialogue(String npcName, String job, int timeOfDay, String season,
+                       String weather, int friendshipLevel,
+                       List<String> recentTalks, List<String> favoriteItems) {
+
+        if(Math.random() < 0.8) {
+            return null;
+        }
+
+        ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
+            put("command", "get_npc_dialogue");
+            put("npc", npcName);
+            put("job", job);
+            put("timeOfDay", timeOfDay);
+            put("season", season);
+            put("weather", weather);
+            put("friendshipLevel", friendshipLevel);
+            put("recentTalks", recentTalks);
+            put("favoriteItems", favoriteItems);
+        }}, ConnectionMessage.Type.command);
+
+        ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
+
+        if(response.getFromBody("response").equals("ok")) {
+            return response.getFromBody("dialogue");
+        }
+        return null;
     }
 }

@@ -210,6 +210,9 @@ public class Game implements Serializable {
                 npc.setPosition(new Position(storePos.x, storePos.y + 1));
             }
         }
+        for(NPC npc : npcs) {
+            npc.refreshDialogue();
+        }
         return true;
     }
 

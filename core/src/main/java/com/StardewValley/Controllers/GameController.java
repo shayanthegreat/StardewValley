@@ -533,7 +533,7 @@ public class GameController implements Controller {
         }
 
         for (NPC npc : player.getNpcs()) {
-            if(position.equals(npc.getPosition())){
+            if(position.x == npc.getPosition().x && position.y == npc.getPosition().y + 1){
                 NPCController.getInstance().printDialog(npc);
             }
         }

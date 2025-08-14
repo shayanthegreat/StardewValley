@@ -128,6 +128,10 @@ public class ClientConnection extends Connection {
                 return true;
             }
 
+            if(message.getFromBody("command").equals("get_npc_dialogue")) {
+                controller.getNpcDialogue(message);
+                return true;
+            }
         }
         if (message.getType().equals(ConnectionMessage.Type.inform)) {
             if (message.getFromBody("information").equals("inform_login")) {
