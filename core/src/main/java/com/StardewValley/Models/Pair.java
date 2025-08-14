@@ -1,6 +1,8 @@
 package com.StardewValley.Models;
 
-public class Pair<K, V> {
+import java.io.Serializable;
+
+public class Pair<K, V> implements Serializable {
     public final K key;
     public final V value;
 

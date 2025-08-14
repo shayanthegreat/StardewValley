@@ -112,12 +112,11 @@ public class ReactionPopUp extends PopUpMenu {
     }
 
     private boolean checkInput(String text) {
-        Pattern pattern = Pattern.compile("/set default (?<reaction>.+?)");
+        Pattern pattern = Pattern.compile("/setdefault (?<reaction>.+?)");
         Matcher matcher = pattern.matcher(text);
 
         if (matcher.matches()) {
             String reaction = matcher.group("reaction");
-            Reaction.addDefault(reaction);
             ClientController.getInstance().setDefaultReaction(reaction);
             return false;
         }

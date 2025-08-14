@@ -2,17 +2,30 @@ package com.StardewValley.Models.Crafting;
 
 import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.Tile;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 
 public class CraftingItem extends Item implements Serializable {
 
-    private  CraftingRecipe recipe;
+    private CraftingRecipe recipe;
 
     public CraftingItem(CraftingRecipe recipe) {
-        super(recipe.getProductName(),1,false, recipe.getTexture());
+        super(recipe.getProductName(),1,false);
         this.recipe = recipe;
+        texture = recipe.getTexture();
+        sprite = new Sprite(texture);
+    }
+
+    private void readObject(ObjectInputStream ois)
+        throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+
+        texture = recipe.getTexture();
+        sprite = new Sprite(texture);
     }
 
     public CraftingRecipe getRecipe() { return recipe; }

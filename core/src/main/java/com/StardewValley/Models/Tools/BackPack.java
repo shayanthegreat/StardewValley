@@ -15,7 +15,7 @@ public class BackPack implements Serializable {
     private HashMap<Item, Integer> items = new HashMap<>();
     private static ArrayList<Integer> capacity = new ArrayList<>();
     private static final ArrayList<String> name = new ArrayList<>();
-    private static final ArrayList<Texture> tex = new ArrayList<>();
+    private transient static final ArrayList<Texture> tex = new ArrayList<>();
     private int level;
     private int maxCapacity;
     private int amount;

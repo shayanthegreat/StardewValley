@@ -10,6 +10,8 @@ import com.StardewValley.Models.Tools.ToolType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 public abstract class Item extends TileObject implements Serializable {
@@ -18,17 +20,15 @@ public abstract class Item extends TileObject implements Serializable {
     protected final int takenSpace;
     protected final boolean isEdible;
     protected int price;
-    protected Texture texture;
-    protected Sprite sprite;
+    protected transient Texture texture;
+    protected transient Sprite sprite;
     abstract public int getPrice();
 
-    public Item(String name, int takenSpace, boolean isEdible, Texture texture) {
+    public Item(String name, int takenSpace, boolean isEdible) {
         this.name = name;
         this.takenSpace = takenSpace;
         this.isEdible = isEdible;
         this.price = 0;
-        this.texture = texture;
-        this.sprite = new Sprite(texture);
 //        this.sprite
     }
 

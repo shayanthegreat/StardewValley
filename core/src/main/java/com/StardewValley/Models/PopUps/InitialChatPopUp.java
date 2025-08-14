@@ -1,5 +1,6 @@
 package com.StardewValley.Models.PopUps;
 
+import com.StardewValley.Models.App;
 import com.StardewValley.Models.GameAssetManager;
 import com.StardewValley.Networking.Client.ClientData;
 import com.StardewValley.Views.GameView;
@@ -50,6 +51,7 @@ public class InitialChatPopUp extends PopUpMenu {
                 ChatScreen chatScreen = new ChatScreen(GameView.getStage(),"all");
                 openedChat = chatScreen;
                 chatScreen.show();
+                App.getInstance().getCurrentGame().getView().isTyping = true;
             }
         });
         mainTable.add(allButton).row();
@@ -67,6 +69,7 @@ public class InitialChatPopUp extends PopUpMenu {
                     ChatScreen chatScreen = new ChatScreen(GameView.getStage(), playerName);
                     openedChat = chatScreen;
                     chatScreen.show();
+                    App.getInstance().getCurrentGame().getView().isTyping = true;
                 }
             });
             mainTable.add(playerButton).row();

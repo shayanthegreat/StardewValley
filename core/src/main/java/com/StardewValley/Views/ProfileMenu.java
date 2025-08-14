@@ -121,7 +121,7 @@ public class ProfileMenu extends MenuView{
             }
         });
 
-        changeEmail = new TextButton("Change Username", skin);
+        changeEmail = new TextButton("Change Email", skin);
         changeEmail.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -157,7 +157,7 @@ public class ProfileMenu extends MenuView{
             }
         });
 
-        changePassword = new TextButton("Change Username", skin);
+        changePassword = new TextButton("Change Password", skin);
         changePassword.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -228,7 +228,7 @@ public class ProfileMenu extends MenuView{
         table.add(changeEmail).width(400).height(50).left();
 
         table.row().padTop(15);
-        table.add(changePassword).width(400).height(50).left();
+        table.add(back).width(400).height(50).left();
 
         stage.addActor(table);
     }

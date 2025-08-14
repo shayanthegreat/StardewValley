@@ -82,10 +82,12 @@ public class ChatScreen extends PopUpMenu {
     public void refreshMessages() {
         messagesTable.clear();
 
-        String self = ClientData.getInstance().selfDetails.username;
+        String self = App.getInstance().getCurrentUser().getUsername();
 
         ArrayList<ChatMessage> messages = new ArrayList<>();
-        messages.addAll(ClientData.getInstance().gameDetails.getChat().getChats(self, otherUsername));
+        if(ClientData.getInstance().gameDetails.getChat() != null) {
+            messages.addAll(ClientData.getInstance().gameDetails.getChat().getChats(self, otherUsername));
+        }
 
 
         for (ChatMessage msg : messages) {
@@ -125,6 +127,7 @@ public class ChatScreen extends PopUpMenu {
             public void clicked(InputEvent event, float x, float y) {
                 hide();
                 PopUpManager.getInstance(stage).hide();
+                App.getInstance().getCurrentGame().getView().isTyping = false;
             }
         });
         return closeTab;

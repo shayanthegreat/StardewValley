@@ -4,11 +4,14 @@ import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.ConnectionMessage;
+import com.StardewValley.Networking.Common.GameDetails;
 import com.StardewValley.Networking.Common.Lobby;
 import com.StardewValley.Networking.Common.Reaction;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.net.Socket;
@@ -243,7 +246,7 @@ public class ClientController {
 
     }
 
-    public void sendGift(String itemName , String receiverUsername , String senderUsername ) {
+    public void sendGift(String itemName, String receiverUsername, String senderUsername) {
         ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
             put("command", "gift_send");
             put("item", itemName);
@@ -254,29 +257,38 @@ public class ClientController {
         connection.sendMessage(message);
     }
 
+
+// ...
+
     public void refreshMusicList() {
         ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
             put("command", "send_music_list");
         }}, ConnectionMessage.Type.command);
+
         ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
 
-        data.musicList = response.getFromBody("music_list");
+        Object raw = response.getFromBody("music_list");
+
+        String json = new Gson().toJson(raw); // serialize back to JSON
+        HashMap<String, ArrayList<String>> musicList = new Gson().fromJson(
+            json, new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType()
+        );
+
+        data.musicList = musicList;
     }
 
+
     public void uploadMusic(File file) {
-        try{
+        try {
             connection.sendFile(file);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void playMusic(String username, String filename) {
-        File file = new File("temp_receives/" + username + "~" + filename);
+        File file = new File("downloaded_musics/" + username + "~" + filename);
         if (file.exists() && file.isFile()) {
-            if (data.currentMusic != null && data.currentMusic.isPlaying()) {
-                data.currentMusic.pause();
-            }
 
             try {
                 FileHandle handle = Gdx.files.absolute(file.getAbsolutePath());
@@ -296,5 +308,45 @@ public class ClientController {
         if (response.getFromBody("response").equals("ok")) {
             connection.getController().setSourceOfMusic(username);
         }
+    }
+
+    public ArrayList<GameDetails> getGames() {
+        ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
+            put("command", "send_games_list");
+        }}, ConnectionMessage.Type.command);
+
+        ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
+
+        ArrayList<GameDetails> games = new ArrayList<>();
+        ArrayList<String> gamesJson = response.getFromBody("games_list");
+        for (String json : gamesJson) {
+            GameDetails game = ConnectionMessage.gameDetailsFromJson(json);
+            games.add(game);
+        }
+        return games;
+    }
+
+    public void informReadyToLoad(int gameId) {
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
+            put("information", "ready_to_load");
+            put("game_id", gameId);
+        }}, ConnectionMessage.Type.inform);
+
+        connection.sendMessage(message);
+    }
+    public void informNotReadyToLoad(int gameId) {
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
+            put("information", "not_ready_to_load");
+            put("game_id", gameId);
+        }}, ConnectionMessage.Type.inform);
+
+        connection.sendMessage(message);
+    }
+
+    public void saveAndExitGame() {
+        ConnectionMessage message = new ConnectionMessage(new HashMap<>() {{
+            put("command", "save_and_exit");
+        }},  ConnectionMessage.Type.command);
+        connection.sendMessage(message);
     }
 }

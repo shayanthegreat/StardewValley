@@ -2,6 +2,9 @@ package com.StardewValley.Views;
 
 import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Main;
+import com.StardewValley.Models.PopUps.GameDetailsPopUp;
+import com.StardewValley.Networking.Client.ClientController;
+import com.StardewValley.Networking.Common.GameDetails;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -11,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.ArrayList;
+
 public class GameMenu extends MenuView {
     private Stage stage;
     private TextButton startGame;
@@ -18,6 +23,8 @@ public class GameMenu extends MenuView {
     private GameController controller;
     private Table table;
     private Skin skin;
+    private TextButton loadGame;
+    private GameDetailsPopUp gameDetailsPopUp;
 
     public GameMenu(Skin skin) {
         super(skin);
@@ -28,7 +35,23 @@ public class GameMenu extends MenuView {
         startGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.changeMenu(new PregameView(skin));
+                Main.getInstance().setScreen(new LobbyView());
+            }
+        });
+        back.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.changeMenu(new MainMenu(skin));
+            }
+        });
+        loadGame = new TextButton("Load Game", skin);
+        loadGame.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                ArrayList<GameDetails> games = ClientController.getInstance().getGames();
+                gameDetailsPopUp = new GameDetailsPopUp(stage, games);
+                gameDetailsPopUp.show();
             }
         });
         stage = new Stage();
@@ -51,10 +74,14 @@ public class GameMenu extends MenuView {
         table.row().padTop(5);
         table.add(startGame).width(400).height(50).left();
 
-        table.row().padTop(15);
+        table.row().padTop(5);
+        table.add(loadGame).width(400).height(50).left();
+
+
         table.row().padTop(5);
         table.add(back).width(400).height(50).left();
         stage.addActor(table);
+
 
     }
 

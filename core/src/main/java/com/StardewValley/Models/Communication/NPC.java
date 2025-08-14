@@ -13,75 +13,100 @@ import com.StardewValley.Models.Map.Position;
 import com.StardewValley.Models.Map.TileObject;
 import com.badlogic.gdx.graphics.Texture;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class NPC extends TileObject implements Serializable {
     private String name;
     private String job;
     private ArrayList<Item> favoriteItems = new ArrayList<>();
     private NPCDialogue dialogue;
-    private Texture texture;
+    private transient Texture texture; // transient: not serialized
     private Position position;
-    //private NPCFriendship friendship;
+    private final Position housePosition;
     private NPCQuest quest;
+
+    // Store texture key for restoration after deserialization
+    private String textureKey;
+
     public NPC(String name) {
-        switch (name){
-            case "Sebastian":{
-                this.name = "Sebastian";
+        this.name = name;
+        this.dialogue = new NPCDialogue(this);
+        this.quest = new NPCQuest(this);
+
+        switch (name) {
+            case "Sebastian" -> {
                 this.job = "Merchant";
                 favoriteItems.add(new AnimalProduct(AnimalProductType.wool));
                 favoriteItems.add(new Food(CookingRecipe.pumpkinPie));
                 favoriteItems.add(new Food(CookingRecipe.pizza));
                 this.position = new Position(120, 133);
-                this.texture = GameAssetManager.getInstance().JAS;
-                break;
+                setTextureKey("JAS");
             }
-            case "Abigail":{
-                this.name = "Abigail";
+            case "Abigail" -> {
                 this.job = "Miner";
                 favoriteItems.add(new Material(MaterialType.stone));
                 favoriteItems.add(new Material(MaterialType.ironOre));
                 favoriteItems.add(new Material(MaterialType.coffee));
                 this.position = new Position(124, 133);
-                this.texture = GameAssetManager.getInstance().JODI;
-                break;
+                setTextureKey("JODI");
             }
-            case "Harvey":{
-                this.name = "Harvey";
+            case "Harvey" -> {
                 this.job = "GarbageSeller";
                 favoriteItems.add(new Material(MaterialType.coffee));
                 favoriteItems.add(new Material(MaterialType.pickle));
                 favoriteItems.add(new Material(MaterialType.wine));
                 this.position = new Position(128, 133);
-                this.texture = GameAssetManager.getInstance().KENT;
-                break;
+                setTextureKey("KENT");
             }
-            case "Lia":{
-                this.name = "Lia";
+            case "Lia" -> {
                 this.job = "Chef";
                 favoriteItems.add(new Crop(CropType.grape));
                 favoriteItems.add(new Material(MaterialType.wine));
                 this.position = new Position(132, 133);
-                this.texture = GameAssetManager.getInstance().LEO;
-                break;
+                setTextureKey("LEO");
             }
-            case "Robin":{
-                this.name = "Robin";
+            case "Robin" -> {
                 this.job = "RandomSeller";
                 favoriteItems.add(new Food(CookingRecipe.pizza));
                 favoriteItems.add(new Material(MaterialType.wood));
                 favoriteItems.add(new Material(MaterialType.ironBar));
                 this.position = new Position(136, 133);
-                this.texture = GameAssetManager.getInstance().LEAH;
-                break;
+                setTextureKey("LEAH");
             }
         }
-        this.dialogue = new NPCDialogue(this);
-        this.quest = new NPCQuest(this);
+        restoreTexture();
+        housePosition = new Position(position.x, position.y - 1);
     }
 
+    private void setTextureKey(String key) {
+        this.textureKey = key;
+        this.texture = getTextureByKey(key);
+    }
+
+    private Texture getTextureByKey(String key) {
+        try {
+            return (Texture) GameAssetManager.getInstance().getClass().getField(key).get(GameAssetManager.getInstance());
+        } catch (Exception e) {
+            throw new RuntimeException("Could not load NPC texture: " + key, e);
+        }
+    }
+
+    private void restoreTexture() {
+        if (textureKey != null) {
+            this.texture = getTextureByKey(textureKey);
+        }
+    }
+
+    // Called automatically after deserialization
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        restoreTexture();
+    }
+
+    // -------------------- existing methods --------------------
     public static NPC getNPCByName(String name){
         ArrayList<NPC> npcs = App.getInstance().getCurrentGame().getCurrentPlayer().getNpcs();
         return switch (name) {
@@ -93,25 +118,12 @@ public class NPC extends TileObject implements Serializable {
             default -> null;
         };
     }
-    public String getName() {
-        return name;
-    }
 
-    public String getJob() {
-        return job;
-    }
-
-    public ArrayList<Item> getFavoriteItems() {
-        return favoriteItems;
-    }
-
-    public boolean checkFavorite(Item item){
-        for (Item favoriteItem : favoriteItems) {
-            if(favoriteItem.getName().equals(item.getName())){
-                return true;
-            }
-        }
-        return false;
+    public String getName() { return name; }
+    public String getJob() { return job; }
+    public ArrayList<Item> getFavoriteItems() { return favoriteItems; }
+    public boolean checkFavorite(Item item) {
+        return favoriteItems.stream().anyMatch(fav -> fav.getName().equals(item.getName()));
     }
 
     public String getDialogue() {
@@ -119,23 +131,18 @@ public class NPC extends TileObject implements Serializable {
         Player player = game.getCurrentPlayer();
         int level = 0;
         for (NPCFriendship npcFriendship : player.getNPCFriendships()) {
-            if (npcFriendship.getNpc().equals(this)) {
-                level = npcFriendship.getLevel();
-            }
+            if (npcFriendship.getNpc().equals(this)) level = npcFriendship.getLevel();
         }
         return dialogue.GetDialogue(game.getTodayWeather(), game.getTime(), level);
     }
 
-    public Texture getTexture(){
-        return texture;
+    public Texture getTexture() { return texture; }
+    public Position getPosition() { return position; }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
-    public Position getPosition(){
-        return position;
-    }
-
-
-    public NPCQuest getQuest() {
-        return quest;
-    }
+    public Position getHousePosition() { return housePosition; }
+    public NPCQuest getQuest() { return quest; }
 }

@@ -19,16 +19,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Timer;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class RegistrationController implements UserInfoController , Controller{
+public class RegistrationController implements UserInfoController, Controller {
 
     private static RegistrationController registrationController;
-    private RegistrationController() {}
+
+    private RegistrationController() {
+    }
+
     public static RegistrationController getInstance() {
         if (registrationController == null) {
             registrationController = new RegistrationController();
@@ -51,7 +57,7 @@ public class RegistrationController implements UserInfoController , Controller{
             return new RegistrationMessage(null, "Email format is invalid");
         }
 
-        if(!gender.equals("male") && !gender.equals("female")) {
+        if (!gender.equals("male") && !gender.equals("female")) {
             return new RegistrationMessage(null, "Gender is invalid (male / female)");
         }
         if (password.equals("random")) {
@@ -62,7 +68,7 @@ public class RegistrationController implements UserInfoController , Controller{
             return new RegistrationMessage(RegistrationCommand.askForPassword, "This is a random password: " + randomPassword + "\ndo you want to set this as your password?");
         }
 
-        if(password.length() < 5) {
+        if (password.length() < 5) {
             return new RegistrationMessage(null, "Password must be at least 5 characters");
         }
 
@@ -118,7 +124,7 @@ public class RegistrationController implements UserInfoController , Controller{
         }
         Collections.shuffle(passwordChars);
         StringBuilder ret = new StringBuilder();
-        for(Character c : passwordChars) {
+        for (Character c : passwordChars) {
             ret.append(c);
         }
         return ret.toString();
@@ -134,10 +140,10 @@ public class RegistrationController implements UserInfoController , Controller{
         }
     }
 
-   public void changeMenu(MenuView menu){
+    public void changeMenu(MenuView menu) {
         Main.getInstance().getScreen().dispose();
         Main.getInstance().setScreen(menu);
-   }
+    }
 
     public RegistrationMessage pickQuestion(int id, String answer) {
         App app = App.getInstance();
@@ -200,15 +206,25 @@ public class RegistrationController implements UserInfoController , Controller{
             return new RegistrationMessage(null, "Wrong Password");
         }
         if (stayLoggedIn) {
-            app.setStayLoggedIn(true);
+            try (FileWriter writer = new FileWriter("username.txt")) {
+                writer.write(username);
+                System.out.println("File created and content written successfully!");
+            } catch (IOException e) {
+            }
         } else {
-            app.setStayLoggedIn(false);
+            File userFile = new File("username.txt");
+            if (userFile.exists()) {
+                try {
+                    userFile.delete();
+                } catch (Exception e) {
+                }
+            }
         }
 
         app.setCurrentUser(user);
         Main.getInstance().getScreen().dispose();
-//        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
-        Main.getInstance().setScreen(new LobbyView());
+        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
+//        Main.getInstance().setScreen(new LobbyView());
         ClientController.getInstance().informLogin(username);
         return new RegistrationMessage(null, "You logged in successfully! you are now in main menu");
     }

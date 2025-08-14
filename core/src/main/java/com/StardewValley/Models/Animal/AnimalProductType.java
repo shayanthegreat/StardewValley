@@ -3,38 +3,52 @@ package com.StardewValley.Models.Animal;
 import com.StardewValley.Models.GameAssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-public enum AnimalProductType implements Serializable {
-    milk("milk",125, true, GameAssetManager.getInstance().MILK),
-    bigMilk("big milk",190, true, GameAssetManager.getInstance().LARGE_MILK),
-    goatMilk("goat milk",225, true, GameAssetManager.getInstance().GOAT_MILK),
-    bigGoatMilk("big goat milk",345, true, GameAssetManager.getInstance().LARGE_GOAT_MILK),
-    wool("wool",250, false, GameAssetManager.getInstance().WOOL),
-    truffle("truffle",625, false, GameAssetManager.getInstance().TRUFFLE),
-    egg("egg",50, true, GameAssetManager.getInstance().EGG),
-    bigEgg("big egg",95, true, GameAssetManager.getInstance().LARGE_EGG),
-    duckEgg("duck egg",95, true, GameAssetManager.getInstance().DUCK_EGG),
-    duckFeather("duck feather",250, false, GameAssetManager.getInstance().DUCK_FEATHER),
-    rabbitWool("rabbit wool",340, false, GameAssetManager.getInstance().WOOL),
-    rabbitFoot("rabbit foot",565, true, GameAssetManager.getInstance().RABBIT_S_FOOT),
-    dinosaurEgg("dinosaur egg",350, true, GameAssetManager.getInstance().DINOSAUR_EGG),
-    ;
-
-
-
+public enum AnimalProductType implements  Serializable {
+    milk("milk", 125, true, "MILK"),
+    bigMilk("big milk", 190, true, "LARGE_MILK"),
+    goatMilk("goat milk", 225, true, "GOAT_MILK"),
+    bigGoatMilk("big goat milk", 345, true, "LARGE_GOAT_MILK"),
+    wool("wool", 250, false, "WOOL"),
+    truffle("truffle", 625, false, "TRUFFLE"),
+    egg("egg", 50, true, "EGG"),
+    bigEgg("big egg", 95, true, "LARGE_EGG"),
+    duckEgg("duck egg", 95, true, "DUCK_EGG"),
+    duckFeather("duck feather", 250, false, "DUCK_FEATHER"),
+    rabbitWool("rabbit wool", 340, false, "WOOL"),
+    rabbitFoot("rabbit foot", 565, true, "RABBIT_S_FOOT"),
+    dinosaurEgg("dinosaur egg", 350, true, "DINOSAUR_EGG");
 
     private String name;
     private int price;
-//    private AnimalType producer;
     private boolean isEdible;
-    private Texture texture;
-    AnimalProductType(String name, int price,  boolean isEdible, Texture texture) {
+
+    private transient Texture texture;
+    private String textureKey; // Used to reload after deserialization
+
+    AnimalProductType(String name, int price, boolean isEdible, String textureKey) {
         this.name = name;
         this.price = price;
-//        this.producer = producer;
         this.isEdible = isEdible;
-        this.texture = texture;
+        this.textureKey = textureKey;
+        this.texture = loadTexture(textureKey);
+    }
+
+    private Texture loadTexture(String key) {
+        GameAssetManager assets = GameAssetManager.getInstance();
+        try {
+            return (Texture) assets.getClass().getField(key).get(assets);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not load texture: " + key, e);
+        }
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.texture = loadTexture(textureKey);
     }
 
     public static AnimalProductType getProductTypeByName(String name) {

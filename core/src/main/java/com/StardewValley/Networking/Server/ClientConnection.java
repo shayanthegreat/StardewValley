@@ -52,20 +52,20 @@ public class ClientConnection extends Connection {
     protected synchronized boolean handleMessage(ConnectionMessage message) {
         System.out.println(message.getBody());
         if (message.getType().equals(ConnectionMessage.Type.command)) {
-            if(message.getFromBody("command").equals("file_meta")) {
+            if (message.getFromBody("command").equals("file_meta")) {
                 super.startFileReceiving(message);
                 return true;
             }
-            if(message.getFromBody("command").equals("file_complete")) {
+            if (message.getFromBody("command").equals("file_complete")) {
                 super.endFileReceiving();
                 controller.saveMusicFile(message);
                 return true;
             }
-            if(message.getFromBody("command").equals("send_music_list")) {
+            if (message.getFromBody("command").equals("send_music_list")) {
                 controller.sendMusicList(message);
                 return true;
             }
-            if(message.getFromBody("command").equals("send_music")) {
+            if (message.getFromBody("command").equals("send_music")) {
                 controller.sendMusic(message);
                 return true;
             }
@@ -97,24 +97,33 @@ public class ClientConnection extends Connection {
                 controller.startGame(message);
                 return true;
             }
-            if(message.getFromBody("command").equals("send_chat_message")) {
+            if (message.getFromBody("command").equals("send_chat_message")) {
                 controller.sendChatMessage(message);
                 return true;
             }
-            if(message.getFromBody("command").equals("store_item_bought")) {
+            if (message.getFromBody("command").equals("store_item_bought")) {
                 controller.storeItemBought(message);
                 return true;
             }
-            if(message.getFromBody("command").equals("remove_last_user")) {
+            if (message.getFromBody("command").equals("remove_last_user")) {
                 controller.removeLastUser();
                 return true;
             }
-            if(message.getFromBody("command").equals("get_last_user")) {
+            if (message.getFromBody("command").equals("get_last_user")) {
                 controller.getLastUser();
                 return true;
             }
-            if(message.getFromBody("command").equals("gift_send")) {
+            if (message.getFromBody("command").equals("gift_send")) {
                 controller.sendGift(message);
+                return true;
+            }
+            if (message.getFromBody("command").equals("send_games_list")) {
+                controller.sendGamesList(message);
+                return true;
+            }
+            if (message.getFromBody("command").equals("save_and_exit")) {
+                controller.saveAndExit(message);
+                return true;
             }
 
         }
@@ -127,10 +136,22 @@ public class ClientConnection extends Connection {
                 controller.informLogout(message);
                 return true;
             }
+            if (message.getFromBody("information").equals("ready_to_load")) {
+                controller.playerReadyToLoad(message);
+                return true;
+            }
+            if (message.getFromBody("information").equals("not_ready_to_load")) {
+                controller.playerNotReadyToLoad(message);
+                return true;
+            }
         }
-        if(message.getType().equals(ConnectionMessage.Type.update)) {
-            if(message.getFromBody("update").equals("update_self")) {
+        if (message.getType().equals(ConnectionMessage.Type.update)) {
+            if (message.getFromBody("update").equals("update_self")) {
                 controller.updateSelf(message);
+                return true;
+            }
+            if (message.getFromBody("update").equals("update_game_data")) {
+                controller.updateGameData(message);
                 return true;
             }
         }

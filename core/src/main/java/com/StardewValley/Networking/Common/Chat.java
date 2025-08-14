@@ -1,5 +1,8 @@
 package com.StardewValley.Networking.Common;
 
+import com.StardewValley.Models.App;
+import com.StardewValley.Views.GameView;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -58,6 +61,9 @@ public class Chat {
             }
             chats.get(message.chatName).add(message);
             lastRegisteredId.set(message.id);
+            if(message.text.contains(App.getInstance().getCurrentUser().getUsername())) {
+                GameView.showError("new message received");
+            }
         }
 
     }

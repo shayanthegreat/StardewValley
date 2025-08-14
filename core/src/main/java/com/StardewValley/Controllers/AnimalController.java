@@ -62,52 +62,86 @@ public class AnimalController implements Controller{
 
     private void printAnimal() {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
-        if(player.getFarm().getBarn() == null){
+        if(player.getFarm().getCoop() == null){
             return;
         }
-        for (Animal animal : player.getFarm().getBarn().getAnimals()) {
+        for (Animal animal : player.getFarm().getCoop().getAnimals()) {
             if(animal.isWalking())  return;
             Camera.getInstance().print(animal.getType().getTexture(), animal.getPosition().x,animal.getPosition().y,1,1);
         }
     }
 
+    public void shepherdAnimals(Animal animal) {
+        App app = App.getInstance();
+        Game game = app.getCurrentGame();
+        Player player = app.getCurrentGame().getCurrentPlayer();
+        int x =  (int)(Math.random() * 8) + 4 + animal.getPosition().x;
+        int y =  (int)(Math.random() * 8) + 4 + animal.getPosition().y;
+
+        if (!animal.isOutside()) {
+//            if (game.getTodayWeather() != Weather.sunny) {
+//                GameView.showError( "The animal can not go outside in this weather");
+//                return;
+//            }
+            animal.setOutside(true);
+            animal.setTargetPosition(new Position(x, y));
+            animal.increaseFriendship(8);
+            animal.setIsWalking(true);
+            player.setPosition(new Position(x+1, y));
+
+        } else {
+            if (animal.getType().isInCage()) {
+                animal.setTargetPosition(player.getFarm().getCoop().getPlacedTile().getPosition());
+                animal.setIsWalking(false);
+                animal.setOutside(true);
+            } else {
+                animal.setTargetPosition(player.getFarm().getBarn().getPlacedTile().getPosition());
+                animal.setOutside(false);
+                animal.setIsWalking(true);
+                animal.setLastFeedingTime(game.getTime());
+                animal.increaseFriendship(8);
+            }
+
+        }
+    }
+
     private void moveAnimal() {
         Barn barn = App.getInstance().getCurrentGame().getCurrentPlayer().getFarm().getBarn();
-        if(barn == null)    return;
+        if (barn == null) return;
+
         ArrayList<Animal> allAnimals = barn.getAnimals();
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
 
         for (Animal animal : allAnimals) {
-            if(animal.getPosition().equals(animal.getTargetPosition())){
-                animal.setIsWalking(false);
-                return;
-            }
-            if (animal.isWalking() && animal.getTargetPosition() != null) {
+            Position current = animal.getPosition();
+            Position target = animal.getTargetPosition();
 
-                Position current = animal.getPosition();
-                Position target = animal.getTargetPosition();
-
-                float speed = 1.2f;
+            if (animal.isWalking() && target != null) {
                 float dx = target.x - current.x;
                 float dy = target.y - current.y;
+                float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
-                if (Math.abs(dx) < 0.05f && Math.abs(dy) < 0.05f) {
+
+                if (distance < 0.05f) {
                     animal.setPosition(target);
                     animal.setIsWalking(false);
                 } else {
-                    float distance = (float) Math.sqrt(dx * dx + dy * dy);
+                    float speed = 2f;
                     float normX = dx / distance;
                     float normY = dy / distance;
-
                     current.x += normX * speed;
                     current.y += normY * speed;
-
                     animal.setPosition(current);
                 }
-                Camera.getInstance().print(animal.getType().getAnimation(), current.x,current.y,1,1);
-            }
-        }
 
+
+            }
+
+            Camera.getInstance().print(animal.getType().getAnimation(), current.x, current.y, 1, 1);
+        }
     }
+
+
 
     public void petAnimal(String animalName){
         App app = App.getInstance();
@@ -271,37 +305,7 @@ public class AnimalController implements Controller{
 
     }
 
-    public void shepherdAnimals(Animal animal) {
-        App app = App.getInstance();
-        Game game = app.getCurrentGame();
-        Player player = app.getCurrentGame().getCurrentPlayer();
-        int x =  (int)(Math.random() * 5) + 1 + animal.getPosition().x;
-        int y =  (int)(Math.random() * 5) + 1 + animal.getPosition().y;
 
-        if (!animal.isOutside()) {
-//            if (game.getTodayWeather() != Weather.sunny) {
-//                GameView.showError( "The animal can not go outside in this weather");
-//                return;
-//            }
-            animal.setOutside(true);
-            animal.setTargetPosition(new Position(x, y));
-            animal.increaseFriendship(8);
-            animal.setIsWalking(true);
-        } else {
-            if (animal.getType().isInCage()) {
-                animal.setTargetPosition(player.getFarm().getCoop().getPlacedTile().getPosition());
-                animal.setIsWalking(true);
-                animal.setOutside(false);
-            } else {
-                animal.setTargetPosition(player.getFarm().getBarn().getPlacedTile().getPosition());
-                animal.setOutside(false);
-                animal.setIsWalking(true);
-                animal.setLastFeedingTime(game.getTime());
-                animal.increaseFriendship(8);
-            }
-
-        }
-    }
 
 
 
