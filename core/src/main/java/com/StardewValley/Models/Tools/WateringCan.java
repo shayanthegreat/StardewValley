@@ -33,7 +33,7 @@ public class WateringCan extends Tool implements Serializable {
     }
 
     @Override
-    public LevelInfo getLevelInfo() {
+    public ToolType.LevelInfo getLevelInfo() {
         return super.getLevelInfo();
     }
 

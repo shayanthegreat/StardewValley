@@ -19,6 +19,8 @@ import com.StardewValley.Models.Time;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import static com.StardewValley.Models.Enums.SkillType.*;
@@ -28,16 +30,27 @@ public class Tool extends Item implements Serializable {
     protected int level = 0;
 
     public Tool(ToolType toolType) {
-        super(toolType.getName(), 0, false, toolType.getTexture());
+        super(toolType.getName(), 0, false);
         this.toolType = toolType;
         this.level = 0;
+        texture = toolType.getTexture();
+        sprite = new Sprite(texture);
+    }
+
+
+    private void readObject(ObjectInputStream ois)
+        throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+
+        texture = toolType.getTexture();
+        sprite = new Sprite(texture);
     }
 
     public int getLevel() {
         return level;
     }
 
-    public LevelInfo getLevelInfo() {
+    public ToolType.LevelInfo getLevelInfo() {
         return toolType.getLevel(level);
     }
 
@@ -326,6 +339,6 @@ public class Tool extends Item implements Serializable {
 
     @Override
     public String toString() {
-        return getLevelInfo().levelName() + " " + getName();
+        return getLevelInfo().getLevelName() + " " + getName();
     }
 }

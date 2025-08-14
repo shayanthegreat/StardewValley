@@ -5,7 +5,10 @@ import com.StardewValley.Models.App;
 import com.StardewValley.Models.Item;
 import com.StardewValley.Models.Map.Tile;
 import com.StardewValley.Models.Time;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 public class Food extends Item implements Serializable {
@@ -13,9 +16,20 @@ public class Food extends Item implements Serializable {
     private CookingRecipe recipe;
 
     public Food(CookingRecipe recipe) {
-        super(recipe.getProductName(), 1,true, recipe.getTexture());
+        super(recipe.getProductName(), 1,true);
         this.recipe = recipe;
+        texture = recipe.getTexture();
+        sprite = new Sprite(texture);
     }
+
+    private void readObject(ObjectInputStream ois)
+        throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+
+        texture = recipe.getTexture();
+        sprite = new Sprite(texture);
+    }
+
 
     public CookingRecipe getRecipe() {
         return recipe;

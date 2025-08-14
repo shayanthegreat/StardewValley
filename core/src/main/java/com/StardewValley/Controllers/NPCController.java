@@ -22,7 +22,9 @@ public class NPCController {
 
     private void printNPCs(){
         Player  player = App.getInstance().getCurrentGame().getCurrentPlayer();
-        for (NPC npc : player.getNpcs()) {
+        for (int i = 0; i < player.getNpcs().size(); i++) {
+            NPC npc = player.getNpcs().get(i);
+            Camera.getInstance().print(GameAssetManager.getInstance().NPC_HOUSES.get(i), npc.getHousePosition().x, npc.getHousePosition().y, 1, 1);
             Camera.getInstance().print(npc.getTexture(),npc.getPosition().x,npc.getPosition().y,1,1);
         }
     }

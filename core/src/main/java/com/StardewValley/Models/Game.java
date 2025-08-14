@@ -31,7 +31,7 @@ public class Game implements Serializable {
     public final static Time startingTime = new Time();
     private ArrayList<Store> stores = new ArrayList<>();
     private ArrayList<NPC> npcs = new ArrayList<>();
-    private GameView view;
+    private transient GameView view;
 
     public Game(ArrayList<Player> players, Map map) {
         this.players = players;
@@ -190,6 +190,26 @@ public class Game implements Serializable {
             nextDay();
         }
         time.nextHour();
+
+        Player  player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Random r = new Random();
+        for(int i = 0; i < player.getNpcs().size(); i++) {
+            NPC npc = player.getNpcs().get(i);
+            Store store = App.getInstance().getCurrentGame().getMap().getNpcVillage().getStores().get(i);
+            Position storePos = App.getInstance().getCurrentGame().getMap().getNpcVillage().getStorePositions().get(i);
+            Position housePos = npc.getHousePosition();
+            if(time.getHour() <= store.getOpeningTime()) {
+                npc.setPosition(new Position(housePos.x, housePos.y + 1));
+            }
+            else if(time.getHour() >= store.getClosingTime()) {
+                int dx = r.nextInt(3) -1;
+                int dy = r.nextInt(15) + 1;
+                npc.setPosition(new Position(housePos.x + dx,housePos.y + dy));
+            }
+            else {
+                npc.setPosition(new Position(storePos.x, storePos.y + 1));
+            }
+        }
         return true;
     }
 
@@ -296,5 +316,22 @@ public class Game implements Serializable {
 
     public void setView(GameView view) {
         this.view = view;
+    }
+
+    public void serializeToBytes() {
+        try{
+            FileUtils.serializeToBytes(this);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static Game loadGame(byte[] data) {
+        try{
+            return FileUtils.deserializeFromBytes(data);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

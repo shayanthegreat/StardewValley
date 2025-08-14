@@ -50,6 +50,10 @@ public class ServerConnection extends Connection {
                 controller.saveMusicFile(message);
                 return true;
             }
+            if(message.getFromBody("command").equals("exit_game")) {
+                controller.exitGame(message);
+                return true;
+            }
         } else if (message.getType().equals(ConnectionMessage.Type.inform)) {
             if (message.getFromBody("information").equals("lobby_termination")) {
                 controller.lobbyTerminated(message);
@@ -69,7 +73,13 @@ public class ServerConnection extends Connection {
             }
             if(message.getFromBody("information").equals("gift_send")) {
                 controller.addGift(message);
+                return true;
             }
+            if (message.getFromBody("information").equals("load_game")) {
+                controller.gameLoaded(message);
+                return true;
+            }
+
         }
         if(message.getType().equals(ConnectionMessage.Type.update)) {
             if(message.getFromBody("update").equals("update_game")) {

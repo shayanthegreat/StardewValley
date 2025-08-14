@@ -3,73 +3,87 @@ package com.StardewValley.Models.Farming;
 import com.StardewValley.Models.GameAssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 public enum SeedType implements Serializable {
-    jazz("jazz", GameAssetManager.getInstance().JAZZ_SEEDS),
-    carrot("carrot", GameAssetManager.getInstance().CARROT_SEEDS),
-    cauliflower("cauliflower", GameAssetManager.getInstance().CAULIFLOWER_SEEDS),
-    coffeeBean("coffee bean", GameAssetManager.getInstance().COFFEE_BEAN),
-    garlic("garlic", GameAssetManager.getInstance().GARLIC_SEEDS),
-    beanStarter("bean starter", GameAssetManager.getInstance().BEAN_STARTER),
-    kale("kale", GameAssetManager.getInstance().KALE_SEEDS),
-    parsnip("parsnip", GameAssetManager.getInstance().PARSNIP_SEEDS),
-    potato("potato", GameAssetManager.getInstance().POTATO_SEEDS),
-    rhubarb("rhubarb", GameAssetManager.getInstance().RHUBARB_SEEDS),
-    strawberry("strawberry", GameAssetManager.getInstance().STRAWBERRY_SEEDS),
-    tulipBulb("tulip bulb", GameAssetManager.getInstance().TULIP_BULB),
-    riceShoot("rice shoot", GameAssetManager.getInstance().RICE_SHOOT),
-    blueberry("blueberry", GameAssetManager.getInstance().BLUEBERRY_SEEDS),
-    corn("corn", GameAssetManager.getInstance().CORN_SEEDS),
-    hopsStarter("hops starter", GameAssetManager.getInstance().HOPS_STARTER),
-    pepper("pepper", GameAssetManager.getInstance().PEPPER_SEEDS),
-    melon("melon", GameAssetManager.getInstance().MELON_SEEDS),
-    poppy("poppy", GameAssetManager.getInstance().POPPY_SEEDS),
-    radish("radish", GameAssetManager.getInstance().RADISH_SEEDS),
-    redCabbage("red cabbage", GameAssetManager.getInstance().RED_CABBAGE_SEEDS),
-    starfruit("starfruit", GameAssetManager.getInstance().STARFRUIT_SEEDS),
-    spangle("spangle", GameAssetManager.getInstance().SPANGLE_SEEDS),
-    summerSquash("summer squash", GameAssetManager.getInstance().SUMMER_SQUASH_SEEDS),
-    sunflower("sunflower", GameAssetManager.getInstance().SUNFLOWER_SEEDS),
-    tomato("tomato", GameAssetManager.getInstance().TOMATO_SEEDS),
-    wheat("wheat", GameAssetManager.getInstance().WHEAT_SEEDS),
-    amaranth("amaranth", GameAssetManager.getInstance().AMARANTH_SEEDS),
-    artichoke("artichoke", GameAssetManager.getInstance().ARTICHOKE_SEEDS),
-    beet("beet", GameAssetManager.getInstance().BEET_SEEDS),
-    bokChoy("bok choy", GameAssetManager.getInstance().BOK_CHOY_SEEDS),
-    broccoli("broccoli", GameAssetManager.getInstance().BROCCOLI_SEEDS),
-    cranberry("cranberry", GameAssetManager.getInstance().CRANBERRY_SEEDS),
-    eggplant("eggplant", GameAssetManager.getInstance().EGGPLANT_SEEDS),
-    fairy("fairy", GameAssetManager.getInstance().FAIRY_SEEDS),
-    grapeStarter("grape starter", GameAssetManager.getInstance().GRAPE_STARTER),
-    pumpkin("pumpkin", GameAssetManager.getInstance().PUMPKIN_SEEDS),
-    yam("yam", GameAssetManager.getInstance().YAM_SEEDS),
-    rare("rare", GameAssetManager.getInstance().RARE_SEED),
-    powdermelon("powdermelon", GameAssetManager.getInstance().POWDERMELON_SEEDS),
-    ancient("ancient", GameAssetManager.getInstance().ANCIENT_SEEDS),
-    apricot("apricot", GameAssetManager.getInstance().APRICOT_SAPLING),
-    cherry("cherry", GameAssetManager.getInstance().CHERRY_SAPLING),
-    banana("banana", GameAssetManager.getInstance().BANANA_SAPLING),
-    mango("mango", GameAssetManager.getInstance().MANGO_SAPLING),
-    orange("orange", GameAssetManager.getInstance().ORANGE_SAPLING),
-    peach("peach", GameAssetManager.getInstance().PEACH_SAPLING),
-    apple("apple", GameAssetManager.getInstance().APPLE_SAPLING),
-    pomegranate("pomegranate", GameAssetManager.getInstance().POMEGRANATE_SAPLING),
-    acorn("acorn", GameAssetManager.getInstance().ACORN),
-    maple("maple", GameAssetManager.getInstance().MAPLE_SEED),
-    pineCone("pine cone", GameAssetManager.getInstance().PINE_CONE),
-    mahogany("mahogany", GameAssetManager.getInstance().MAHOGANY_SEED),
-    mushroomTree("mushroom tree", GameAssetManager.getInstance().MUSHROOM_TREE_SEED),
-    mysticTree("mystic tree", GameAssetManager.getInstance().MYSTIC_TREE_SEED),;
+    jazz("jazz", "JAZZ_SEEDS"),
+    carrot("carrot", "CARROT_SEEDS"),
+    cauliflower("cauliflower", "CAULIFLOWER_SEEDS"),
+    coffeeBean("coffee bean", "COFFEE_BEAN"),
+    garlic("garlic", "GARLIC_SEEDS"),
+    beanStarter("bean starter", "BEAN_STARTER"),
+    kale("kale", "KALE_SEEDS"),
+    parsnip("parsnip", "PARSNIP_SEEDS"),
+    potato("potato", "POTATO_SEEDS"),
+    rhubarb("rhubarb", "RHUBARB_SEEDS"),
+    strawberry("strawberry", "STRAWBERRY_SEEDS"),
+    tulipBulb("tulip bulb", "TULIP_BULB"),
+    riceShoot("rice shoot", "RICE_SHOOT"),
+    blueberry("blueberry", "BLUEBERRY_SEEDS"),
+    corn("corn", "CORN_SEEDS"),
+    hopsStarter("hops starter", "HOPS_STARTER"),
+    pepper("pepper", "PEPPER_SEEDS"),
+    melon("melon", "MELON_SEEDS"),
+    poppy("poppy", "POPPY_SEEDS"),
+    radish("radish", "RADISH_SEEDS"),
+    redCabbage("red cabbage", "RED_CABBAGE_SEEDS"),
+    starfruit("starfruit", "STARFRUIT_SEEDS"),
+    spangle("spangle", "SPANGLE_SEEDS"),
+    summerSquash("summer squash", "SUMMER_SQUASH_SEEDS"),
+    sunflower("sunflower", "SUNFLOWER_SEEDS"),
+    tomato("tomato", "TOMATO_SEEDS"),
+    wheat("wheat", "WHEAT_SEEDS"),
+    amaranth("amaranth", "AMARANTH_SEEDS"),
+    artichoke("artichoke", "ARTICHOKE_SEEDS"),
+    beet("beet", "BEET_SEEDS"),
+    bokChoy("bok choy", "BOK_CHOY_SEEDS"),
+    broccoli("broccoli", "BROCCOLI_SEEDS"),
+    cranberry("cranberry", "CRANBERRY_SEEDS"),
+    eggplant("eggplant", "EGGPLANT_SEEDS"),
+    fairy("fairy", "FAIRY_SEEDS"),
+    grapeStarter("grape starter", "GRAPE_STARTER"),
+    pumpkin("pumpkin", "PUMPKIN_SEEDS"),
+    yam("yam", "YAM_SEEDS"),
+    rare("rare", "RARE_SEED"),
+    powdermelon("powdermelon", "POWDERMELON_SEEDS"),
+    ancient("ancient", "ANCIENT_SEEDS"),
+    apricot("apricot", "APRICOT_SAPLING"),
+    cherry("cherry", "CHERRY_SAPLING"),
+    banana("banana", "BANANA_SAPLING"),
+    mango("mango", "MANGO_SAPLING"),
+    orange("orange", "ORANGE_SAPLING"),
+    peach("peach", "PEACH_SAPLING"),
+    apple("apple", "APPLE_SAPLING"),
+    pomegranate("pomegranate", "POMEGRANATE_SAPLING"),
+    acorn("acorn", "ACORN"),
+    maple("maple", "MAPLE_SEED"),
+    pineCone("pine cone", "PINE_CONE"),
+    mahogany("mahogany", "MAHOGANY_SEED"),
+    mushroomTree("mushroom tree", "MUSHROOM_TREE_SEED"),
+    mysticTree("mystic tree", "MYSTIC_TREE_SEED");
+
     private final String name;
-    private final Texture texture;
-    SeedType(String name, Texture texture) {
+    private transient Texture texture;
+    private final String textureKey;
+
+    SeedType(String name, String textureKey) {
         this.name = name;
-        this.texture = texture;
+        this.textureKey = textureKey;
+        this.texture = loadTexture(textureKey);
     }
 
+    private Texture loadTexture(String key) {
+        GameAssetManager assets = GameAssetManager.getInstance();
+        try {
+            return (Texture) assets.getClass().getField(key).get(assets);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not load texture: " + key, e);
+        }
+    }
 
     public String getName() {
         return name;
@@ -93,5 +107,10 @@ public enum SeedType implements Serializable {
 
     public Texture getTexture() {
         return texture;
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.texture = loadTexture(textureKey);
     }
 }
