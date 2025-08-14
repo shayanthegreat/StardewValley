@@ -44,7 +44,7 @@ public class GameMenu extends MenuView {
             }
         });
         loadGame = new TextButton("Load Game", skin);
-        startGame.addListener(new ClickListener() {
+        loadGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 

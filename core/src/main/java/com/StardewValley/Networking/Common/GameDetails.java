@@ -2,6 +2,7 @@ package com.StardewValley.Networking.Common;
 
 import com.StardewValley.Networking.Server.ClientConnection;
 import com.StardewValley.Networking.Server.GameDAO;
+import com.StardewValley.Networking.Server.ServerMain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,14 +88,24 @@ public class GameDetails {
     public void setPlayerReady(String username) {
         players.get(username).isReady = true;
         if (isReady()) {
+            GameDetails gameDetails = this;
             ConnectionMessage inform = new ConnectionMessage(new HashMap<>() {{
                 put("information", "load_game");
                 put("usernames", players.keySet());
-                put("game_details", this);
+                put("game_details", ConnectionMessage.gameDetailsToJson(gameDetails));
             }}, ConnectionMessage.Type.inform);
-            for (ClientConnection connection : connections) {
+            connections = new ArrayList<>();
+            for(String user : players.keySet()) {
+                ClientConnection connection = ServerMain.getConnectionByUsername(user);
+                connections.add(connection);
                 if (connection.isAlive() && !connection.isEnded()) {
-                    inform.getBody().put("data", players.get(connection.getUsername()).data);
+                    if(players.get(user).data != null) {
+                        System.out.println(players.get(user).data);
+                    }
+                    else {
+                        System.out.println("SOOOOORRRRYYYY");
+                    }
+                    inform.getBody().put("data", players.get(user).data);
                     connection.sendMessage(inform);
                 }
             }

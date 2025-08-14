@@ -30,18 +30,11 @@ public class ServerMain {
     private static void initPhi() {
         try {
             ProcessBuilder pb = new ProcessBuilder(
-                "ollama", "run", "phi", "Hello from Java"
+                "ollama", "run", "phi"
             );
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
-            try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }

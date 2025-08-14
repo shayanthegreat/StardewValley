@@ -6,6 +6,7 @@ import com.StardewValley.Main;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.GameAssetManager;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -82,7 +83,7 @@ public class MainMenu extends MenuView {
             }
         });
 
-        avatarButton = new ImageButton(new TextureRegionDrawable(App.getInstance().getCurrentUser().getAvatarTexture()));
+        avatarButton = new ImageButton(new TextureRegionDrawable(new Texture(App.getInstance().getCurrentUser().getAvatarPath())));
 
         table = new Table();
     }

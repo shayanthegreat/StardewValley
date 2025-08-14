@@ -14,31 +14,37 @@ public class GameDAO {
 
     private static final Gson gson = new GsonBuilder()
         .setPrettyPrinting()
-        .addSerializationExclusionStrategy(new ExclusionStrategy() {
-            @Override
-            public boolean shouldSkipField(FieldAttributes f) {
-                try {
-                    java.lang.reflect.Field field = f.getDeclaringClass().getDeclaredField(f.getName());
-                    if (f.getDeclaringClass() == GameDetails.class) {
-                        return f.getName().equals("connections") ||
-                            f.getName().equals("chat") ||
-                            f.getName().equals("isRunning");
-                    }
-                    if (f.getDeclaringClass() == PlayerDetails.class) {
+            .addSerializationExclusionStrategy(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    try {
+                        java.lang.reflect.Field field = f.getDeclaringClass().getDeclaredField(f.getName());
+
+                        if (f.getDeclaringClass() == GameDetails.class) {
+                            return f.getName().equals("connections") ||
+                                    f.getName().equals("chat") ||
+                                    f.getName().equals("isRunning");
+                        }
+
+                        if (f.getDeclaringClass() == PlayerDetails.class) {
+                            // Never skip fields in PlayerDetails, including 'data'
+                            return false;
+                        }
+
+                        // For all other classes, skip transient fields
+                        return java.lang.reflect.Modifier.isTransient(field.getModifiers());
+
+                    } catch (NoSuchFieldException e) {
+                        e.printStackTrace();
                         return false;
                     }
-                    return java.lang.reflect.Modifier.isTransient(field.getModifiers());
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
                     return false;
                 }
-            }
-
-            @Override
-            public boolean shouldSkipClass(Class<?> clazz) {
-                return false;
-            }
-        })
+            })
         .create();
 
     public static Connection getConnection() throws SQLException {

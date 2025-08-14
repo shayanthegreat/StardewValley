@@ -21,6 +21,7 @@ public class GameDetailsPopUp extends PopUpMenu {
     public GameDetailsPopUp(Stage stage, ArrayList<GameDetails> games) {
         super(stage);
         createPopupMenu();
+        this.games = games;
     }
 
     protected void createPopupMenu() {
