@@ -207,8 +207,8 @@ public class RegistrationController implements UserInfoController , Controller{
 
         app.setCurrentUser(user);
         Main.getInstance().getScreen().dispose();
-//        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
-        Main.getInstance().setScreen(new LobbyView());
+        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
+//        Main.getInstance().setScreen(new LobbyView());
         ClientController.getInstance().informLogin(username);
         return new RegistrationMessage(null, "You logged in successfully! you are now in main menu");
     }

@@ -163,4 +163,44 @@ public class UserDAO {
     }
 
 
+    public static boolean updateField(String currentUsername, String fieldName, String newValue) {
+        String sql = "UPDATE users SET " + fieldName + " = ? WHERE username = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, newValue);
+            pstmt.setString(2, currentUsername);
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Change username
+    public static boolean updateUsername(String currentUsername, String newUsername) {
+        return updateField(currentUsername, "username", newUsername);
+    }
+
+    // Change password
+    public static boolean updatePassword(String username, String newPassword) {
+        return updateField(username, "password", newPassword);
+    }
+
+    // Change email
+    public static boolean updateEmail(String username, String newEmail) {
+        return updateField(username, "email", newEmail);
+    }
+
+    // Change nickname
+    public static boolean updateNickname(String username, String newNickname) {
+        return updateField(username, "nickname", newNickname);
+    }
+
+
+
 }

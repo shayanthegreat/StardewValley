@@ -135,6 +135,8 @@ public class Game implements Serializable {
                 }
             }
         }
+
+        App.getInstance().getCurrentGame().getCurrentPlayer().resetEnergy();
         // check all plants
         if (time.getDay() == 28) {
             time.nextSeason();

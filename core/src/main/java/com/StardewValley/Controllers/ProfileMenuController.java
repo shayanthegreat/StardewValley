@@ -4,6 +4,7 @@ import com.StardewValley.Main;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Interactions.Messages.ProfileMessage;
 import com.StardewValley.Models.User;
+import com.StardewValley.Networking.Server.UserDAO;
 import com.StardewValley.Views.MenuView;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -43,6 +44,9 @@ public class ProfileMenuController implements Controller , UserInfoController{
 
     public ProfileMessage changeUsername(String newUsername) {
         App app = App.getInstance();
+        if(newUsername != null && newUsername.length() < 4) {
+            return new ProfileMessage(null,"new Username is too short");
+        }
         if(isUsernameTaken(newUsername)) {
             return new ProfileMessage(null,"Username is already taken");
         }
@@ -52,6 +56,10 @@ public class ProfileMenuController implements Controller , UserInfoController{
         if(app.getCurrentUser().getUsername().equals(newUsername)) {
             return new ProfileMessage(null,"New username must be different");
         }
+        if(!UserDAO.updateUsername(app.getCurrentUser().getUsername(), newUsername)){
+            return new ProfileMessage(null,"Error occurred");
+        }
+
         app.getCurrentUser().setUsername(newUsername);
         return new ProfileMessage(null,"Username successfully changed");
     }
@@ -60,6 +68,9 @@ public class ProfileMenuController implements Controller , UserInfoController{
         App app = App.getInstance();
         if(app.getCurrentUser().getNickname().equals(newNickname)) {
             return new ProfileMessage(null,"Your new nickname must be different");
+        }
+        if(!UserDAO.updateNickname(app.getCurrentUser().getUsername(), newNickname)){
+            return new ProfileMessage(null,"Error occurred");
         }
         app.getCurrentUser().setNickname(newNickname);
         return new ProfileMessage(null,"Nickname successfully changed");
@@ -85,15 +96,14 @@ public class ProfileMenuController implements Controller , UserInfoController{
         if (!doesPasswordHaveSpecialChar(newPassword)) {
             return new ProfileMessage(null, "Password doesn't have special characters");
         }
-        String codedOldPassword = sha256(oldPassword);
-        String codedNewPassword = sha256(newPassword);
-        if(!app.getCurrentUser().getPassword().equals(codedOldPassword)) {
-            return new ProfileMessage(null,"Password is invalid");
-        }
+
         if(newPassword.equals(oldPassword)) {
             return new ProfileMessage(null,"Your password must be different");
         }
-        app.getCurrentUser().setPassword(codedNewPassword);
+        if(!UserDAO.updatePassword(app.getCurrentUser().getUsername(), newPassword)) {
+            return new ProfileMessage(null,"Error occurred");
+        }
+        app.getCurrentUser().setPassword(newPassword);
         return new ProfileMessage(null,"Password successfully changed");
     }
 
@@ -116,6 +126,9 @@ public class ProfileMenuController implements Controller , UserInfoController{
         }
         if(app.getCurrentUser().getEmail().equals(email)) {
             return new ProfileMessage(null,"Your email must be different");
+        }
+        if(!UserDAO.updateEmail(app.getCurrentUser().getUsername(), email)) {
+            return new ProfileMessage(null,"Error occurred");
         }
         app.getCurrentUser().setEmail(email);
         return new ProfileMessage(null,"Email successfully changed");

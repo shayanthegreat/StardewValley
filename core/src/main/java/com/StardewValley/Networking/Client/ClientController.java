@@ -9,6 +9,8 @@ import com.StardewValley.Networking.Common.Reaction;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.net.Socket;
@@ -254,14 +256,26 @@ public class ClientController {
         connection.sendMessage(message);
     }
 
+
+// ...
+
     public void refreshMusicList() {
         ConnectionMessage request = new ConnectionMessage(new HashMap<>() {{
             put("command", "send_music_list");
         }}, ConnectionMessage.Type.command);
+
         ConnectionMessage response = connection.sendAndWaitForResponse(request, TIMEOUT);
 
-        data.musicList = response.getFromBody("music_list");
+        Object raw = response.getFromBody("music_list");
+
+        String json = new Gson().toJson(raw); // serialize back to JSON
+        HashMap<String, ArrayList<String>> musicList = new Gson().fromJson(
+            json, new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType()
+        );
+
+        data.musicList = musicList;
     }
+
 
     public void uploadMusic(File file) {
         try{

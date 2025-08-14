@@ -1,6 +1,10 @@
 package com.StardewValley.Controllers;
 
 import com.StardewValley.Main;
+import com.StardewValley.Models.App;
+import com.StardewValley.Models.GameAssetManager;
+import com.StardewValley.Networking.Client.ClientController;
+import com.StardewValley.Views.LoginMenu;
 import com.StardewValley.Views.MenuView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,6 +23,12 @@ public class MainMenuController implements Controller {
     @Override
     public void showError(String error, Stage stage, Skin skin) {
 
+    }
+
+    public void logout(){
+        App.getInstance().setCurrentUser(null);
+        ClientController.getInstance().informLogout();
+        changeMenu(new LoginMenu(GameAssetManager.getInstance().getSkin()));
     }
 
     public void changeMenu(MenuView menu) {

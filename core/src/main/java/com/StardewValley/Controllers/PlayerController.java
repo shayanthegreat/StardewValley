@@ -188,8 +188,12 @@ public class PlayerController {
     }
 
     private void getAnimation(Direction direction){
-        if(App.getInstance().getCurrentGame().getCurrentPlayer().isFainted()){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(player.isFainted() ){
            animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().faintAnimation(direction);
+        }
+        else if(player.getEnergy().amount <= 70){
+            animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().faintAnimation(direction);
         }
         else{
             animation = App.getInstance().getCurrentGame().getCurrentPlayer().getAvatarType().walkingAnimation(direction);

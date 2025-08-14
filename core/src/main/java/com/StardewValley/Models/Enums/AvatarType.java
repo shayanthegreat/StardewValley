@@ -93,6 +93,31 @@ public enum AvatarType {
         return animation;
     }
 
+    public Animation lazyAnimation(Direction direction) {
+        int x = 0;
+        switch (direction) {
+            case up ->{
+                x = 2;
+                break;
+            }
+            case down ->{
+                x = 0;
+                break;
+            }
+            case left, upLeft, downLeft->{
+                x = 3;
+                break;
+            }
+            case right, upRight,downRight->{
+                x = 1;
+                break;
+            }
+        }
+        Animation<TextureRegion> animation = new Animation<>(0.1f , textureRegion[x][0] );
+        animation.setPlayMode(Animation.PlayMode.NORMAL);
+        return animation;
+    }
+
 
     public Animation pettingAnimation() {
         Animation<TextureRegion> animation = new Animation<>(0.1f,textureRegion[7][2],textureRegion[7][3] );

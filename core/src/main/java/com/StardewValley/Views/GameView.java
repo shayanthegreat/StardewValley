@@ -53,6 +53,9 @@ public class GameView implements Screen , InputProcessor {
     private TextButton chat;
     private InitialChatPopUp initialChatPopUp;
     private FriendshipPopUp friendshipPopUp;
+    private MusicListPopUp musicListPopUp;
+    private TextButton music;
+    private TextButton exit;
 
     @Override
     public boolean keyDown(int i) {
@@ -119,6 +122,15 @@ public class GameView implements Screen , InputProcessor {
             GameController.getInstance().buyAnimal(AnimalType.pig,"ahmad");
             GameController.getInstance().buyAnimal(AnimalType.goat,"asd");
             GameController.getInstance().buyAnimal(AnimalType.sheep,"asss");
+        }
+        else if(i == Input.Keys.O){
+            GameController.getInstance().buyAnimal(AnimalType.chicken,"abbas");
+            GameController.getInstance().buyAnimal(AnimalType.dinosaur,"ahmad");
+            GameController.getInstance().buyAnimal(AnimalType.duck,"asd");
+            GameController.getInstance().buyAnimal(AnimalType.rabbit,"asss");
+        }
+        else if(i == Input.Keys.E){
+            GameController.getInstance().cheatEnergy();
         }
         else if (i == Input.Keys.Z) App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool(null);
         else if(i == Input.Keys.V){
@@ -202,6 +214,27 @@ public class GameView implements Screen , InputProcessor {
             }
         });
         stage.addActor(chat);
+
+        music = new TextButton("Music", GameAssetManager.getInstance().getSkin());
+        music.setSize(120, 50);
+        music.setPosition(30, 100);
+        music.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                musicListPopUp.show();
+            }
+        });
+        stage.addActor(music);
+        exit = new TextButton("Exit", GameAssetManager.getInstance().getSkin());
+        exit.setSize(120, 50);
+        exit.setPosition(30, Gdx.graphics.getHeight() - 500);
+        exit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GameController.getInstance().exitGame();
+            }
+        });
+        stage.addActor(exit);
         popUpMenu = PopUpManager.set(stage);
         toolPopUp = new ToolPopUp(stage);
         seedPopUp = new SeedPopUp(stage);
@@ -226,6 +259,8 @@ public class GameView implements Screen , InputProcessor {
         initialChatPopUp.hide();
         friendshipPopUp = new FriendshipPopUp(stage);
         friendshipPopUp.hide();
+        musicListPopUp = new MusicListPopUp(stage);
+        musicListPopUp.hide();
 
     }
 
@@ -422,6 +457,8 @@ public class GameView implements Screen , InputProcessor {
         dialog.text(error);
         dialog.button("OK");
 
+        dialog.show(stage);
+
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -429,6 +466,8 @@ public class GameView implements Screen , InputProcessor {
             }
         }, 5);
     }
+
+
 
 
     private void showOrUpdateActiveBuffs() {

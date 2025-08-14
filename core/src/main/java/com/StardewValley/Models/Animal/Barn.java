@@ -31,7 +31,7 @@ public class Barn extends TileObject implements Serializable {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         switch (type){
             case cow:{
-                animal.setPosition(player.getFarm().getBarn().getPlacedTile().getPosition());
+                animal.setPosition(new Position(player.getFarm().getBarn().getPlacedTile().getPosition().x,player.getFarm().getBarn().getPlacedTile().getPosition().y));
                 break;
             }
             case pig:{

@@ -328,7 +328,7 @@ public class ClientConnectionController {
                 for (File dir : dirs) {
                     String name = dir.getName();
                     ArrayList<String> filenames = new ArrayList<>();
-                    File[] items = folder.listFiles();
+                    File[] items = dir.listFiles();
                     if (items != null) {
                         for (File item : items) {
                             if (item.isFile()) {

@@ -25,6 +25,7 @@ public class LobbyView implements Screen {
     private Table visibleLobbyTable;
     private Table searchedLobbyTable;
     private Table onlineUsersTable;
+    private TextButton back;
 
     private TextField searchField;
     private TextButton searchButton;
@@ -40,6 +41,13 @@ public class LobbyView implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         skin = GameAssetManager.getInstance().getSkin();
+        back = new TextButton("Back", skin);
+        back.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getInstance().setScreen(new GameMenu(GameAssetManager.getInstance().getSkin()));
+            }
+        });
         visibleLobbyTable = new Table(skin);
         searchedLobbyTable = new Table(skin);
         onlineUsersTable = new Table(skin);
@@ -165,6 +173,8 @@ public class LobbyView implements Screen {
         root.row();
         root.add(bottomPanel).colspan(2).expandX().fillX().padTop(20);
         root.add(refreshButton).expandX().fillX().padTop(20);
+        root.row();
+        root.add(back).colspan(2).expandX().fillX();
 
         stage.addActor(root);
     }

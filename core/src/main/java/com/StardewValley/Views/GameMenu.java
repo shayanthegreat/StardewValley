@@ -17,6 +17,7 @@ public class GameMenu extends MenuView {
     private GameController controller;
     private Table table;
     private Skin skin;
+    private TextButton loadGame;
 
     public GameMenu(Skin skin) {
         super(skin);
@@ -27,7 +28,20 @@ public class GameMenu extends MenuView {
         startGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.changeMenu(new PregameView(skin));
+                Main.getInstance().setScreen(new LobbyView());
+            }
+        });
+        back.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.changeMenu(new MainMenu(skin));
+            }
+        });
+        loadGame = new TextButton("Load Game", skin);
+        startGame.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+//                TODO: load the saved game
             }
         });
         stage = new Stage();
@@ -48,7 +62,10 @@ public class GameMenu extends MenuView {
         table.row().padTop(5);
         table.add(startGame).width(400).height(50).left();
 
-        table.row().padTop(15);
+        table.row().padTop(5);
+        table.add(loadGame).width(400).height(50).left();
+
+
         table.row().padTop(5);
         table.add(back).width(400).height(50).left();
         stage.addActor(table);

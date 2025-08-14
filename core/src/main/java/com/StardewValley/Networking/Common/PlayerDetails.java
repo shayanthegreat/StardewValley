@@ -1,6 +1,7 @@
 package com.StardewValley.Networking.Common;
 
 import com.StardewValley.Models.App;
+import com.StardewValley.Models.Enums.SkillType;
 import com.StardewValley.Models.Player;
 
 public class PlayerDetails {
@@ -31,5 +32,13 @@ public class PlayerDetails {
         posX = player.getPosition().x;
         posY = player.getPosition().y;
         canSleep = (player.isInHouse() || player.isFainted());
+        gold = player.getMoney();
+        int x = 0;
+        x+=player.getSkill(SkillType.fishing).getAmount();
+        x+=player.getSkill(SkillType.farming).getAmount();
+        x+=player.getSkill(SkillType.extraction).getAmount();
+        x+=player.getSkill(SkillType.mining).getAmount();
+        x+=player.getSkill(SkillType.foraging).getAmount();
+        skillSum = x;
     }
 }

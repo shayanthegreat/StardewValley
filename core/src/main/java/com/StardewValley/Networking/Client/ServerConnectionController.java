@@ -1,5 +1,6 @@
 package com.StardewValley.Networking.Client;
 
+import com.StardewValley.Controllers.FriendShipController;
 import com.StardewValley.Controllers.GameController;
 import com.StardewValley.Models.*;
 import com.StardewValley.Models.App;
@@ -8,6 +9,7 @@ import com.StardewValley.Models.Store.StoreItem;
 import com.StardewValley.Models.Store.StoreRecipes;
 import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.*;
+import com.StardewValley.Views.GameView;
 import com.StardewValley.Views.InLobbyView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -184,7 +186,10 @@ public class ServerConnectionController {
         String sender = message.getFromBody("sender");
         String item = message.getFromBody("item");
         Item item1 = Item.getItemByName(item);
-        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
-        player.getBackPack().addItem(item1,1);
+        Player send = App.getInstance().getCurrentGame().getPlayerByUsername(sender);
+        Player receive = App.getInstance().getCurrentGame().getCurrentPlayer();
+        send.getFriendShipByPlayer(receive).increaseXp(20);
+        send.getBackPack().addItem(item1,1);
+        FriendShipController.getInstance().showNumberChooser("Rate The new gift",GameView.getStage(),receive,send,item1);
     }
 }

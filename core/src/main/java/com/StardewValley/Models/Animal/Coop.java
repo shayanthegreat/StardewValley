@@ -36,15 +36,15 @@ public class Coop extends TileObject implements Serializable {
                 break;
             }
             case rabbit: {
-                animal.setPosition(new Position(player.getFarm().getCoop().getPlacedTile().getPosition().x, player.getFarm().getBarn().getPlacedTile().getPosition().y + 1));
+                animal.setPosition(new Position(player.getFarm().getCoop().getPlacedTile().getPosition().x, player.getFarm().getCoop().getPlacedTile().getPosition().y + 1));
                 break;
             }
             case dinosaur: {
-                animal.setPosition(new Position(player.getFarm().getCoop().getPlacedTile().getPosition().x + 1, player.getFarm().getBarn().getPlacedTile().getPosition().y));
+                animal.setPosition(new Position(player.getFarm().getCoop().getPlacedTile().getPosition().x + 1, player.getFarm().getCoop().getPlacedTile().getPosition().y));
                 break;
             }
             case chicken: {
-                animal.setPosition(new Position(player.getFarm().getCoop().getPlacedTile().getPosition().x + 1, player.getFarm().getBarn().getPlacedTile().getPosition().y + 1));
+                animal.setPosition(new Position(player.getFarm().getCoop().getPlacedTile().getPosition().x + 1, player.getFarm().getCoop().getPlacedTile().getPosition().y + 1));
                 break;
             }
         }
