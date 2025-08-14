@@ -35,7 +35,9 @@ public class ServerConnection extends Connection {
 
     @Override
     protected synchronized boolean handleMessage(ConnectionMessage message) {
-        System.out.println(message.getBody());
+//        if(message.getFromBody("update").equals("update_game")) {
+//            System.out.println(message.getBody());
+//        }
         if (message.getType().equals(ConnectionMessage.Type.command)) {
             if (message.getFromBody("command").equals("status")) {
                 sendMessage(controller.status());
