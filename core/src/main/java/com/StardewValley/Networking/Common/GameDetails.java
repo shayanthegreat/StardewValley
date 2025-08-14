@@ -66,7 +66,7 @@ public class GameDetails {
                 connection.setGame(null);
             }
         }
-
+        System.out.println("HEHEHEHEHEHEHEHEHEH");
         GameDAO.updateGame(this);
     }
 
