@@ -240,7 +240,7 @@ public class Player implements Serializable {
     }
     public FriendShip getFriendShipByPlayer(Player player) {
         for (FriendShip friendShip : this.friendShips) {
-            if(friendShip.getPlayer().equals(player)) {
+            if(friendShip.getPlayer().getUser().getUsername().equals(player.getUser().getUsername())) {
                 return friendShip;
             }
         }

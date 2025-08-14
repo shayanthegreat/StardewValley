@@ -186,5 +186,6 @@ public class ServerConnectionController {
         Item item1 = Item.getItemByName(item);
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         player.getBackPack().addItem(item1,1);
+
     }
 }

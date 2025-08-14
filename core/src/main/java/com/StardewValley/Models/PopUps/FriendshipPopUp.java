@@ -66,7 +66,10 @@ public class FriendshipPopUp extends PopUpMenu {
     private void refreshFriendships() {
         friendshipsTable.clear();
 
-        List<FriendShip> friendships = App.getInstance().getCurrentGame().getCurrentPlayer().getFriendShips();
+        List<FriendShip> friendships = App.getInstance()
+            .getCurrentGame()
+            .getCurrentPlayer()
+            .getFriendShips();
 
         if (friendships != null) {
             for (FriendShip f : friendships) {
@@ -76,23 +79,35 @@ public class FriendshipPopUp extends PopUpMenu {
                 // Username & XP label
                 Label infoLabel = new Label(username + " - XP: " + xp, skin);
                 infoLabel.setColor(Color.BLACK);
-                friendshipsTable.add(infoLabel).width(250).left();
+                friendshipsTable.add(infoLabel).width(200).left();
 
                 // Gift button
                 TextButton giftButton = new TextButton("Gift", skin);
                 giftButton.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        BackPackPopUp backPackPopUp = new BackPackPopUp(stage,username);
+                        BackPackPopUp backPackPopUp = new BackPackPopUp(stage, username);
                         backPackPopUp.show();
                     }
                 });
-                friendshipsTable.add(giftButton).width(100).right();
+                friendshipsTable.add(giftButton).width(80).right();
+
+                // Gift Log button
+                TextButton giftLogButton = new TextButton("Gift Log", skin);
+                giftLogButton.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        GiftPopUp giftPopUp = new GiftPopUp(stage);
+                        giftPopUp.show();
+                    }
+                });
+                friendshipsTable.add(giftLogButton).width(100).right();
 
                 friendshipsTable.row();
             }
         }
     }
+
 
     @Override
     protected void updateWindowPosition() {

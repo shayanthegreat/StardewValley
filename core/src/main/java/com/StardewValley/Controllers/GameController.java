@@ -4,6 +4,7 @@ import com.StardewValley.Main;
 import com.StardewValley.Models.*;
 import com.StardewValley.Models.Animal.*;
 import com.StardewValley.Models.Communication.FriendShip;
+import com.StardewValley.Models.Communication.Gift;
 import com.StardewValley.Models.Communication.NPC;
 import com.StardewValley.Models.Crafting.Food;
 import com.StardewValley.Models.Crafting.Material;
@@ -614,6 +615,9 @@ public class GameController implements Controller {
             if(playerPos2.x == x && playerPos2.y == y){
                 PlayerController.getInstance().startHugging(player);
                 ClientController.getInstance().sendGift("bouquet", player.getUser().getUsername(), currentPlayer.getUser().getUsername());
+                currentPlayer.getBackPack().removeItem(new Material(MaterialType.bouquet), 1);
+                FriendShip friendShip = currentPlayer.getFriendShipByPlayer(player);
+                friendShip.addGift(new Gift(new Material(MaterialType.bouquet), 1));
                 return;
             }
         }
