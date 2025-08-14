@@ -2,6 +2,7 @@ package com.StardewValley.Networking.Client;
 
 import com.StardewValley.Controllers.FriendShipController;
 import com.StardewValley.Controllers.GameController;
+import com.StardewValley.Main;
 import com.StardewValley.Models.*;
 import com.StardewValley.Models.App;
 import com.StardewValley.Models.Store.Store;
@@ -11,6 +12,7 @@ import com.StardewValley.Models.User;
 import com.StardewValley.Networking.Common.*;
 import com.StardewValley.Views.GameView;
 import com.StardewValley.Views.InLobbyView;
+import com.StardewValley.Views.MainMenu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -112,7 +114,6 @@ public class ServerConnectionController {
         try {
             Game game = FileUtils.deserializeFromBase64(message.getFromBody("data"));
 
-
             App app = App.getInstance();
             app.addGame(game);
             app.setCurrentGame(game);
@@ -155,7 +156,9 @@ public class ServerConnectionController {
         data.isInGame = false;
 
         App.getInstance().getCurrentUser().setCurrentGame(null);
-        App.getInstance().setCurrentUser(null);
+        App.getInstance().setCurrentGame(null);
+        App.getInstance().getCurrentUser().setPlayer(null);
+        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
 //        TODO: FIX THE MENU
     }
 

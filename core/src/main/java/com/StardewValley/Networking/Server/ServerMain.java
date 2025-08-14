@@ -49,7 +49,7 @@ public class ServerMain {
     }
 
     public static void main(String[] args) {
-//        initPhi();
+        initPhi();
         UserDAO.initializeDatabase();
         GameDAO.initializeDatabase();
         try {

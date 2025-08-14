@@ -589,10 +589,6 @@ public class GameController implements Controller {
         return true;
     }
 
-    public void exitGame(){
-        App.getInstance().setCurrentGame(null);
-        Main.getInstance().setScreen(new MainMenu(GameAssetManager.getInstance().getSkin()));
-    }
 
     public void cheatEnergy(){
         App.getInstance().getCurrentGame().getCurrentPlayer().resetEnergy();

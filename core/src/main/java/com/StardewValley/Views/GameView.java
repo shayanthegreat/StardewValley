@@ -8,6 +8,7 @@ import com.StardewValley.Models.Game;
 import com.StardewValley.Models.Map.*;
 import com.StardewValley.Models.PopUps.*;
 import com.StardewValley.Models.Store.Store;
+import com.StardewValley.Networking.Client.ClientController;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -231,7 +232,7 @@ public class GameView implements Screen , InputProcessor {
         exit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                GameController.getInstance().exitGame();
+                ClientController.getInstance().saveAndExitGame();
             }
         });
         stage.addActor(exit);

@@ -10,6 +10,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import java.io.File;
+
 public class MainMenuController implements Controller {
     private static MainMenuController instance;
     private MainMenuController() {}
@@ -28,6 +30,12 @@ public class MainMenuController implements Controller {
     public void logout(){
         App.getInstance().setCurrentUser(null);
         ClientController.getInstance().informLogout();
+        File file = new File("username.txt");
+        if (file.exists()) {
+            try {
+                file.delete();
+            } catch (Exception e) {}
+        }
         changeMenu(new LoginMenu(GameAssetManager.getInstance().getSkin()));
     }
 

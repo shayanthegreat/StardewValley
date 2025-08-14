@@ -50,7 +50,9 @@ public class ClientConnection extends Connection {
 
     @Override
     protected synchronized boolean handleMessage(ConnectionMessage message) {
-        System.out.println(message.getBody());
+        if(message.getFromBody("data") == null){
+            System.out.println(message.getBody());
+        }
         if (message.getType().equals(ConnectionMessage.Type.command)) {
             if(message.getFromBody("command").equals("file_meta")) {
                 super.startFileReceiving(message);
